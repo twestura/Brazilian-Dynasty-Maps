@@ -1,0 +1,782 @@
+#const HERDABLE_A DLC_GOAT
+#const STRAGGLER DLC_RAINTREE
+#const WHALE 2625
+#const PHONL 1544
+
+/* Terrains */
+#const ROAD_FUNGUS 75
+#const MUD 76
+#const UNDERBRUSH_JUNGLE 77
+#const RAINFOREST_GRASS 83
+
+#const SPAWN1 GRASS
+#const SPAWN2 GRASS2
+
+#const NEUTRAL1 ROAD
+#const NEUTRAL2 ROAD2
+#const NEUTRAL3 38 /* Road, Snow */
+
+#MKCONSTS
+
+#const PLAYER_TILES 720
+
+/* Player Island Constants */
+#const R 34
+#const T1 rnd(0,359)
+#const OFFSET rnd(145,215)
+#const T2 (T1 + OFFSET)
+#FOR($i, 1, 3)
+  #TRIG(T$i)
+  #const X$i (R * COS_T$i + 50)
+  #const Y$i (R * SIN_T$i + 50)
+
+  #const U$i (T$i - 25)
+  #TRIG(U$i)
+  #const X1$i (R * COS_U$i + 50)
+  #const Y1$i (R * SIN_U$i + 50)
+
+  #const V$i (T$i + 25)
+  #TRIG(V$i)
+  #const X2$i (R * COS_V$i + 50)
+  #const Y2$i (R * SIN_V$i + 50)
+#END_FOR
+
+/* Neutral Island Constants */
+#const C (OFFSET / 2 + T1)
+#const CR rnd(-5,5)
+#TRIG(C)
+#const CX (CR * COS_C + 50)
+#const CY (CR * SIN_C + 50)
+
+#const RND_ANGLEA rnd(-10,10)
+#const A (C + RND_ANGLEA)
+#const OFF1 rnd(-5,5)
+#const AR (35 + OFF1)
+#TRIG(A)
+#const AX (AR * COS_A + 50)
+#const AY (AR * SIN_A + 50)
+
+#const RND_ANGLEB rnd(-10,10)
+#const B (C + 180 + RND_ANGLEB)
+#const OFF2 rnd(-5,5)
+#const BR (35 + OFF2)
+#TRIG(B)
+#const BX (BR * COS_B + 50)
+#const BY (BR * SIN_B + 50)
+
+<PLAYER_SETUP>
+direct_placement
+behavior_version 2
+ai_info_map_type ISLANDS 0 0 0
+
+#SETPHATTR
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE FLAMINGO ATTR_LINE_OF_SIGHT 0
+effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
+
+/* Sets rocks to spawn only on water. */
+effect_amount SET_ATTRIBUTE DLC_ROCKBEACH ATTR_TERRAIN_ID 19
+effect_amount SET_ATTRIBUTE SEA_ROCKS_2 ATTR_TERRAIN_ID 19
+
+<LAND_GENERATION>
+base_terrain DLC_WATER5
+enable_waves 1
+
+#FOR($i, 1, 3)
+  create_land {
+    land_position X$i Y$i
+    assign_to AT_TEAM -10 0 0
+    terrain_type SPAWN$i
+    number_of_tiles 0
+    base_size 11
+    number_of_tiles PLAYER_TILES
+    border_fuzziness 15
+    top_border 7
+    right_border 8
+    bottom_border 8
+    left_border 7
+    zone $i
+    other_zone_avoidance_distance 8
+  }
+  create_land {
+    land_position X1$i Y1$i
+    terrain_type SPAWN$i
+    number_of_tiles 0
+    base_size 11
+    number_of_tiles PLAYER_TILES
+    border_fuzziness 15
+    top_border 7
+    right_border 8
+    bottom_border 8
+    left_border 7
+    land_id 10
+    zone $i
+    other_zone_avoidance_distance 8
+  }
+  create_land {
+    land_position X2$i Y2$i
+    terrain_type SPAWN$i
+    number_of_tiles 0
+    base_size 11
+    number_of_tiles PLAYER_TILES
+    top_border 7
+    right_border 8
+    bottom_border 8
+    left_border 7
+    land_id 11
+    zone $i
+    other_zone_avoidance_distance 8
+  }
+#END_FOR
+
+/* Neutral Islands */
+create_land {
+  land_position AX AY
+  base_size 8
+  number_of_tiles rnd(500,650)
+  top_border 7
+  right_border 8
+  bottom_border 8
+  left_border 7
+  land_id 30
+  zone 30
+  clumping_factor 30
+  other_zone_avoidance_distance 8
+  terrain_type NEUTRAL1
+}
+
+create_land {
+  land_position BX BY
+  base_size 8
+  number_of_tiles rnd(500,650)
+  top_border 7
+  right_border 8
+  bottom_border 8
+  left_border 7
+  land_id 31
+  zone 31
+  clumping_factor 30
+  other_zone_avoidance_distance 8
+  terrain_type NEUTRAL2
+}
+
+create_land {
+  land_position CX CY
+  base_size 8
+  number_of_tiles rnd(500,650)
+  top_border 7
+  right_border 8
+  bottom_border 8
+  left_border 7
+  land_id 32
+  zone 32
+  clumping_factor 30
+  other_zone_avoidance_distance 8
+  terrain_type NEUTRAL3
+}
+
+<ELEVATION_GENERATION>
+#FOR($i, 1, 3)
+  create_elevation 2 {
+    base_terrain SPAWN$i
+    enable_balanced_elevation
+    number_of_tiles 30
+    number_of_clumps 2
+  }
+#END_FOR
+
+<TERRAIN_GENERATION>
+/* Fill Holes */
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_WATER5
+    spacing_to_specific_terrain SPAWN1 3
+    spacing_to_specific_terrain SPAWN2 3
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SPAWN1 {
+    base_terrain DLC_WATER5
+    spacing_to_specific_terrain SNOW 4
+    spacing_to_specific_terrain SPAWN2 6
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SPAWN2 {
+    base_terrain DLC_WATER5
+    spacing_to_specific_terrain SNOW 4
+    spacing_to_specific_terrain SPAWN1 6
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DLC_WATER5 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Create outlying shallows. */
+create_terrain DLC_MANGROVESHALLOW {
+  base_terrain DLC_WATER5
+  number_of_tiles 1000
+  number_of_clumps 12
+  spacing_to_other_terrain_types 6
+}
+
+/* Eliminate super thin areas. */
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_MANGROVESHALLOW
+    spacing_to_other_terrain_types 1
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DLC_WATER5 {
+    base_terrain DLC_MANGROVESHALLOW
+    spacing_to_specific_terrain SNOW 1
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DLC_MANGROVESHALLOW {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Places outside forests on the shallows. */
+create_terrain DLC_MANGROVEFOREST {
+  base_terrain DLC_MANGROVESHALLOW
+  number_of_tiles 360
+  number_of_clumps 64
+}
+
+/* Small islands of wet rock beach for oysters. */
+create_terrain DLC_WETROCKBEACH {
+  base_terrain DLC_WATER5
+  spacing_to_other_terrain_types 4
+  spacing_to_specific_terrain SPAWN1 6
+  spacing_to_specific_terrain SPAWN2 6
+  number_of_tiles 128
+  number_of_clumps 8
+  clumping_factor 25
+}
+
+/* Small Trees on Neutral Islands */
+#FOR($i, 1, 4)
+  create_terrain PALM_DESERT {
+    base_terrain NEUTRAL$i
+    number_of_tiles 36
+    number_of_clumps 3
+    spacing_to_other_terrain_types 2
+  }
+
+  #REPEAT(8)
+    create_terrain DESERT {
+      base_terrain NEUTRAL$i
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+#REPEAT(8)
+  create_terrain UNDERBRUSH_JUNGLE {
+    base_terrain PALM_DESERT
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain BEACH {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Player Islands */
+#FOR($i, 1, 3)
+  create_terrain JUNGLE {
+    base_terrain SPAWN$i
+    number_of_tiles 256
+    number_of_clumps 6
+    spacing_to_other_terrain_types 3
+    set_avoid_player_start_areas
+  }
+
+  #REPEAT(8)
+    create_terrain ROAD_FUNGUS {
+      base_terrain SPAWN$i
+      land_percent 100
+      number_of_clumps 8192
+      beach_terrain DLC_BEACH2
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Terrain Mixing */
+#REPEAT(8)
+  create_terrain RAINFOREST_GRASS {
+    base_terrain ROAD_FUNGUS
+    land_percent 100
+    number_of_clumps 8192
+    beach_terrain DLC_BEACH2
+    set_avoid_player_start_areas 7
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain RAINFOREST_GRASS {
+    base_terrain ROAD_FUNGUS
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+    beach_terrain DLC_BEACH2
+  }
+#END_REPEAT
+
+/* Forest Mixing */
+create_terrain DLC_RAINFOREST {
+  base_terrain JUNGLE
+  number_of_tiles 256
+  number_of_clumps 256
+}
+
+#REPEAT(8)
+  create_terrain DLC_RAINFOREST {
+    base_terrain JUNGLE
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Terrain Masking */
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain RAINFOREST_GRASS
+  land_percent 5
+  number_of_clumps 8
+  spacing_to_specific_terrain DLC_WATER5 2
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain UNDERBRUSH_JUNGLE
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 1
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain RAINFOREST_GRASS {
+    base_terrain UNDERBRUSH_JUNGLE
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain UNDERBRUSH_JUNGLE {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain MUD {
+  base_terrain RAINFOREST_GRASS
+  land_percent 3
+  number_of_clumps 6
+  terrain_mask 1
+  beach_terrain DLC_BEACH2
+}
+
+/* Water Masking */
+create_terrain WATER {
+  base_terrain DLC_WATER5
+  land_percent 12
+  number_of_clumps 16
+  spacing_to_other_terrain_types 3
+}
+
+create_terrain WATER {
+  base_terrain DLC_WATER5
+  land_percent 12
+  number_of_clumps 128
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+
+create_terrain MED_WATER {
+  base_terrain WATER
+  land_percent 1
+  number_of_clumps 16
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+create_terrain DLC_WATER4 {
+  base_terrain WATER
+  land_percent 1
+  number_of_clumps 16
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+
+create_terrain SHALLOW {
+  base_terrain WATER
+  land_percent 2
+  number_of_clumps 12
+  terrain_mask 1
+}
+
+create_terrain DLC_WATER5 {
+  base_terrain WATER
+  land_percent 1
+  number_of_clumps 32
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+
+<OBJECTS_GENERATION>
+/*
+ * The created actor area and related whale placeholders work to allow whales to
+ * spawn in the middle of the map, but prevent them from spawning behind player
+ * islands. Each player has a circle of placeholder objects created around them
+ * to block the whales. But the placeholders are forced to the edges of the map,
+ * avoiding the middle, by the created actor area and neutral island
+ * placeholders.
+ */
+create_actor_area 59 59 map_middle 40
+create_actor_area 59 60 map_middle 40
+create_actor_area 60 59 map_middle 40
+create_actor_area 60 60 map_middle 40
+
+/* Big fish appropriate for the coast of Brazil. */
+create_object_group CAPTAIN_FIN {
+  add_object TUNA 34
+  add_object SNAPPER 33
+  add_object DORADO 33
+}
+
+/* Birds */
+create_object FLAMINGO {
+  number_of_objects 4
+}
+
+create_object MACAW {
+  number_of_objects 4
+}
+
+/* Placeholders */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DESERT
+  actor_area whale_avoider_avoider
+  actor_area_radius 8
+}
+
+create_object PHON {
+  set_place_for_every_player
+  set_gaia_object_only
+  number_of_objects 14400
+  set_circular_placement
+  max_distance_to_players 45
+  avoid_actor_area map_middle
+  avoid_actor_area whale_avoider_avoider
+  actor_area whale_avoider
+  actor_area_radius 0
+}
+
+/* Placeholders around the coastal beaches for Whales to space away from. */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on BEACH
+  actor_area beach3
+  actor_area_radius 3
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_BEACH2
+  actor_area beach3
+  actor_area_radius 3
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_WETROCKBEACH
+  actor_area beach3
+  actor_area_radius 3
+}
+
+#OBJECTS9VILS
+
+/* Player Resources */
+#FOR($i, 10, 12)
+  create_object GOLD {
+    number_of_objects 4
+    set_tight_grouping
+    group_placement_radius 1
+    max_distance_to_other_zones 7
+    avoid_forest_zone 2
+    min_distance_group_placement 3
+    place_on_specific_land_id $i
+    set_circular_placement
+    min_distance_to_players 12
+    max_distance_to_players 16
+    actor_area placed_mine
+    actor_area_radius 4
+  }
+  create_object STONE {
+    number_of_objects 2
+    set_tight_grouping
+    group_placement_radius 1
+    max_distance_to_other_zones 3
+    avoid_forest_zone 2
+    min_distance_group_placement 3
+    place_on_specific_land_id $i
+    set_circular_placement
+    min_distance_to_players 16
+    max_distance_to_players 16
+    avoid_actor_area placed_mine
+    actor_area placed_mine
+    actor_area_radius 4
+  }
+#END_FOR
+
+create_object PINEAPPLE_BUSH {
+  number_of_objects 6
+  group_placement_radius 2
+  set_place_for_every_player
+  set_gaia_object_only
+  set_tight_grouping
+  max_distance_to_other_zones 5
+  avoid_forest_zone 3
+  avoid_actor_area box10
+  actor_area_to_place_in box14
+  avoid_actor_area placed_mine
+  min_distance_group_placement 3
+}
+
+create_object RELIC {
+  set_place_for_every_player
+  set_gaia_object_only
+  avoid_actor_area box20
+  avoid_forest_zone 1
+  max_distance_to_other_zones 3
+  min_distance_group_placement 1
+}
+
+/* Hunt */
+create_object PHONL {
+  number_of_objects 2
+  set_place_for_every_player
+  set_gaia_object_only
+  max_distance_to_other_zones 2
+  avoid_forest_zone 2
+  set_circular_placement
+  min_distance_to_players 14
+  max_distance_to_players 22
+  enable_tile_shuffling
+  find_closest
+  temp_min_distance_group_placement 8
+  actor_area deer_area
+  actor_area_radius 2
+}
+
+#REPEAT(4)
+  create_object DEER {
+    number_of_objects 2
+    set_place_for_every_player
+    set_gaia_object_only
+    actor_area_to_place_in deer_area
+    temp_min_distance_group_placement 4
+  }
+#END_REPEAT
+
+/* Lure */
+create_object JAVELINA {
+  number_of_objects 2
+  set_place_for_every_player
+  set_gaia_object_only
+  avoid_forest_zone 1
+  max_distance_to_other_zones 3
+  set_circular_placement
+  min_distance_to_players 14
+  max_distance_to_players 16
+  temp_min_distance_group_placement 6
+  min_distance_group_placement 1
+  require_path 0
+}
+
+/* Herd */
+create_object PHONL {
+  number_of_objects 2
+  set_place_for_every_player
+  set_gaia_object_only
+  max_distance_to_other_zones 2
+  avoid_forest_zone 2
+  set_circular_placement
+  min_distance_to_players 16
+  temp_min_distance_group_placement 8
+  actor_area herd_area
+  actor_area_radius 2
+}
+
+#REPEAT(2)
+  create_object CAPYBARA {
+    number_of_objects 2
+    set_place_for_every_player
+    set_gaia_object_only
+    actor_area_to_place_in herd_area
+    min_distance_group_placement 1
+    temp_min_distance_group_placement 4
+  }
+#END_REPEAT
+
+/* Player Objects */
+create_object DLC_PIG {
+  number_of_objects 3
+  set_place_for_every_player
+  set_loose_grouping
+  set_circular_placement
+  min_distance_to_players 7
+  max_distance_to_players 9
+}
+
+create_object SCOUT {
+  set_place_for_every_player
+  set_circular_placement
+  min_distance_to_players 7
+  max_distance_to_players 9
+  avoid_forest_zone 1
+  max_distance_to_other_zones 3
+}
+
+create_object DLC_RAINTREE {
+  number_of_objects 6
+  set_gaia_object_only
+  set_place_for_every_player
+  temp_min_distance_group_placement 4
+  min_distance_group_placement 1
+  max_distance_to_other_zones 3
+  avoid_forest_zone 2
+  avoid_actor_area box16
+}
+
+/* Neutral Land Resources */
+#FOR($i, 30, 33)
+  create_object GOLD {
+    place_on_specific_land_id $i
+    number_of_objects 4
+    number_of_groups 2
+    temp_min_distance_group_placement 6
+    min_distance_group_placement 2
+    set_tight_grouping
+    group_placement_radius 2
+    avoid_forest_zone 3
+    max_distance_to_other_zones 4
+    actor_area neutral_gold
+    actor_area_radius 3
+  }
+
+  create_object STONE {
+    place_on_specific_land_id $i
+    number_of_objects 2
+    number_of_groups 4
+    temp_min_distance_group_placement 5
+    min_distance_group_placement 2
+    set_tight_grouping
+    group_placement_radius 1
+    avoid_forest_zone 2
+    max_distance_to_other_zones 3
+    avoid_actor_area neutral_gold
+  }
+
+  create_object RELIC {
+    place_on_specific_land_id $i
+    avoid_forest_zone 1
+    max_distance_to_other_zones 5
+  }
+#END_FOR
+
+/* Captain Fin */
+create_object OYSTERS {
+  temp_min_distance_group_placement 12
+  number_of_objects 3
+  number_of_groups 32
+  group_placement_radius 5
+  set_loose_grouping
+  group_variance 1
+  terrain_to_place_on DLC_WETROCKBEACH
+  min_distance_group_placement 6
+}
+
+create_object SHORE_FISH {
+  number_of_objects 14400
+  temp_min_distance_group_placement 8
+  min_distance_group_placement 3
+}
+
+create_object WHALE {
+  number_of_objects 32
+  max_distance_to_other_zones 9
+  temp_min_distance_group_placement 12
+  min_distance_group_placement 3
+  avoid_forest_zone 3
+  avoid_actor_area whale_avoider
+  avoid_actor_area beach3
+  actor_area whale_area
+  actor_area_radius 4
+}
+
+create_object CAPTAIN_FIN {
+  number_of_objects 512
+  avoid_forest_zone 3
+  max_distance_to_other_zones 4
+  temp_min_distance_group_placement 8
+  min_distance_group_placement 3
+}
+
+/* Scenery */
+create_object DLC_ROCKBEACH {
+  number_of_objects 8
+  temp_min_distance_group_placement 8
+  min_distance_group_placement 3
+  min_distance_to_map_edge 2
+  max_distance_to_other_zones 6
+  avoid_forest_zone 6
+  avoid_actor_area beach3
+  avoid_actor_area whale_area
+}
+
+create_object SEA_ROCKS_2 {
+  terrain_to_place_on WATER
+  number_of_objects 12
+  temp_min_distance_group_placement 6
+  min_distance_group_placement 3
+  min_distance_to_map_edge 1
+  avoid_actor_area beach3
+  avoid_forest_zone 3
+}

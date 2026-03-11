@@ -1,0 +1,518 @@
+#const PHON 1543
+
+#const MUD 76
+#const UNDERBRUSH_JUNGLE 77
+#const RAINFOREST_GRASS 83
+
+#const HARBOR 1189
+
+#const T0 rnd(0,359)
+#const R 48
+#FOR($i, 0, 4)
+  #const OFFSET$i rnd(-15,15)
+  #const U$i ($i * 90 + T0 + OFFSET$i)
+  #TRIG(U$i)
+  #const X$i (R * COS_U$i + 50)
+  #const Y$i (R * SIN_U$i + 50)
+#END_FOR
+
+#const PLACEHOLDER0 ROAD
+#const PLACEHOLDER1 ROAD2
+#const PLACEHOLDER2 38 /* Road, Snow */
+#const PLACEHOLDER3 39 /* Road, Fungus */
+#const PLACEHOLDER4 DIRT
+
+#define ASSIGN1
+#define ASSIGN3
+
+<PLAYER_SETUP>
+nomad_resources
+random_placement
+behavior_version 2
+ai_info_map_type NOMAD 1 0 0
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE FLAMINGO ATTR_LINE_OF_SIGHT 0
+effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
+
+/* Prohibits Docks from being constructed, allows them only on Black terrain. */
+effect_amount SET_ATTRIBUTE DOCK ATTR_TERRAIN_ID DLC_BLACK
+effect_amount SET_ATTRIBUTE DOCK_F ATTR_TERRAIN_ID DLC_BLACK
+effect_amount SET_ATTRIBUTE DOCK_C ATTR_TERRAIN_ID DLC_BLACK
+effect_amount SET_ATTRIBUTE DOCK_I ATTR_TERRAIN_ID DLC_BLACK
+effect_amount SET_ATTRIBUTE HARBOR ATTR_TERRAIN_ID DLC_BLACK
+
+<LAND_GENERATION>
+base_terrain MUDDY_SHALLOW
+enable_waves 0
+
+/* Side lands. */
+#FOR($i, 0, 4)
+  create_land {
+    if ASSIGN$i
+      assign_to AT_TEAM -10 0 0
+      /* 1 + 1 / 2 => 2 / 2 => 1, 3 + 1 / 4 => 4 / 2 =? 2 */
+      land_id ($i + 1 / 2)
+    endif
+    zone 1$i
+    land_position X$i Y$i
+    terrain_type PLACEHOLDER$i
+    other_zone_avoidance_distance 5
+  }
+#END_FOR
+
+create_land {
+  zone 20
+  land_position 50 50
+  terrain_type DIRT
+  other_zone_avoidance_distance 5
+  base_size 30
+  set_circular_base
+  top_border 20
+  right_border 20
+  bottom_border 20
+  left_border 20
+  land_percent 100
+}
+
+<ELEVATION_GENERATION>
+#FOR($i, 0, 4)
+  create_elevation 2 {
+    base_terrain PLACEHOLDER$i
+    enable_balanced_elevation
+    number_of_tiles 16
+    number_of_clumps 2
+  }
+#END_FOR
+
+<TERRAIN_GENERATION>
+/* Repair cases that are closer than the avoidance distance. */
+#FOR($i, 0, 4)
+  #REPEAT(8)
+    create_terrain SNOW {
+      base_terrain PLACEHOLDER$i
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain DIRT 5
+    }
+  #END_REPEAT
+  #REPEAT(8)
+    create_terrain MUDDY_SHALLOW {
+      base_terrain PLACEHOLDER$i
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+  #REPEAT(8)
+    create_terrain PLACEHOLDER$i {
+      base_terrain SNOW
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Remove Holes in Terrains */
+#FOR($i, 0, 5)
+  #REPEAT(8)
+    create_terrain SNOW {
+      base_terrain MUDDY_SHALLOW
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain PLACEHOLDER$i 2
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain PLACEHOLDER$i {
+      base_terrain MUDDY_SHALLOW
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain SNOW 3
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain MUDDY_SHALLOW {
+      base_terrain SNOW
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Forests around the edges. */
+#FOR($i, 0, 4)
+  #REPEAT(8)
+    create_terrain DLC_RAINFOREST {
+      base_terrain PLACEHOLDER$i
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain DIRT 18
+      beach_terrain DLC_WETROCKBEACH
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Create two clumps of land in the middle. */
+#REPEAT(8)
+  create_terrain GRASS {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain ROAD 30
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain DIRT
+    spacing_to_specific_terrain GRASS 2
+    land_percent 100
+    number_of_clumps 8192
+    beach_terrain DLC_WETROCKBEACH
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain GRASS
+    spacing_to_specific_terrain DIRT 2
+    land_percent 100
+    number_of_clumps 8192
+    beach_terrain DLC_WETROCKBEACH
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain MUDDY_SHALLOW {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+  }
+  create_terrain MUDDY_SHALLOW {
+    base_terrain GRASS
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Create the Middle Forests. */
+create_terrain JUNGLE {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 2
+  number_of_clumps 16
+  spacing_to_other_terrain_types 3
+  beach_terrain DLC_WETROCKBEACH
+}
+
+/* Patch the Outside Forests. */
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain DLC_RAINFOREST
+  land_percent 4
+  number_of_clumps 64
+  beach_terrain DLC_WETROCKBEACH
+}
+
+create_terrain RAINFOREST_GRASS {
+  base_terrain UNDERBRUSH_JUNGLE
+  land_percent 1
+  number_of_clumps 128
+  terrain_mask 2
+  beach_terrain DLC_WETROCKBEACH
+}
+
+/* Replaces the placeholders. */
+#FOR($i, 0, 4)
+  #REPEAT(8)
+    create_terrain RAINFOREST_GRASS {
+      base_terrain PLACEHOLDER$i
+      land_percent 100
+      number_of_clumps 8192
+      beach_terrain DLC_WETROCKBEACH
+      spacing_to_specific_terrain DLC_RAINFOREST 3
+    }
+  #END_REPEAT
+
+  create_terrain UNDERBRUSH_JUNGLE {
+    base_terrain PLACEHOLDER$i
+    number_of_tiles 200
+    number_of_clumps 32
+    beach_terrain DLC_WETROCKBEACH
+  }
+
+  #REPEAT(8)
+    create_terrain UNDERBRUSH_JUNGLE {
+      base_terrain PLACEHOLDER$i
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 2
+      beach_terrain DLC_WETROCKBEACH
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain RAINFOREST_GRASS {
+      base_layer PLACEHOLDER$i
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 1
+      beach_terrain DLC_WETROCKBEACH
+    }
+  #END_REPEAT
+#END_FOR
+
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain RAINFOREST_GRASS
+  land_percent 1
+  number_of_clumps 16
+  beach_terrain DLC_WETROCKBEACH
+}
+
+create_terrain MUD {
+  base_terrain RAINFOREST_GRASS
+  land_percent 4
+  number_of_clumps 6
+  terrain_mask 1
+  beach_terrain DLC_WETROCKBEACH
+}
+
+/* Shallow Masking */
+create_terrain DLC_MANGROVESHALLOW {
+  land_percent 4
+  number_of_clumps 16
+  terrain_mask 1
+  base_terrain MUDDY_SHALLOW
+}
+
+create_terrain SHALLOW {
+  land_percent 3
+  number_of_clumps 8
+  terrain_mask 1
+  base_terrain MUDDY_SHALLOW
+}
+
+create_terrain DLC_NEWSHALLOW {
+  land_percent 3
+  number_of_clumps 32
+  terrain_mask 1
+  base_terrain MUDDY_SHALLOW
+}
+
+#REPEAT(8)
+  create_terrain WEEDS_WATER {
+    base_terrain MUDDY_SHALLOW
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+<OBJECTS_GENERATION>
+create_actor_area 59 59 map_middle 12
+create_actor_area 59 60 map_middle 12
+create_actor_area 60 59 map_middle 12
+create_actor_area 60 60 map_middle 12
+
+/* Birds */
+create_object FLAMINGO {
+  number_of_objects 4
+}
+
+create_object MACAW {
+  number_of_objects 4
+}
+
+/* Placeholdser */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_WETROCKBEACH
+  actor_area beach1
+  actor_area_radius 1
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_WETROCKBEACH
+  actor_area beach2
+  actor_area_radius 2
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_WETROCKBEACH
+  actor_area beach3
+  actor_area_radius 3
+}
+
+/* Middle Scenery */
+create_object FLOWERS_1 {
+  terrain_to_place_on MUDDY_SHALLOW
+  number_of_objects 2
+  temp_min_distance_group_placement 15
+  avoid_actor_area beach3
+  actor_area flowers
+  actor_area_radius 10
+  min_distance_to_map_edge 4
+}
+
+create_object FLOWERS_2 {
+  terrain_to_place_on MUDDY_SHALLOW
+  number_of_objects 5
+  temp_min_distance_group_placement 15
+  avoid_actor_area beach2
+  avoid_actor_area flowers
+  actor_area flowers
+  actor_area_radius 10
+  min_distance_to_map_edge 3
+}
+
+create_object FLOWERS_3 {
+  terrain_to_place_on MUDDY_SHALLOW
+  number_of_objects 5
+  temp_min_distance_group_placement 15
+  avoid_actor_area beach2
+  avoid_actor_area flowers
+  actor_area flowers
+  actor_area_radius 10
+  min_distance_to_map_edge 3
+}
+
+create_object FLOWERS_4 {
+  terrain_to_place_on MUDDY_SHALLOW
+  number_of_objects 5
+  temp_min_distance_group_placement 15
+  avoid_actor_area beach2
+  avoid_actor_area flowers
+  actor_area flowers
+  actor_area_radius 10
+  min_distance_to_map_edge 3
+}
+
+/* Player Villagers */
+#FOR($i, 1, 3)
+  create_object PHON {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    avoid_actor_area beach1
+    find_closest_to_map_center
+    terrain_to_place_on MUDDY_SHALLOW
+    avoid_actor_area map_middle
+    avoid_actor_area villager
+    actor_area vil_area_$i
+    actor_area_radius 2
+  }
+
+  create_object VILLAGER {
+    place_on_specific_land_id $i
+    actor_area_to_place_in vil_area_$i
+    terrain_to_place_on MUDDY_SHALLOW
+    actor_area villager
+    actor_area_radius 20
+  }
+#END_FOR
+
+#FOR($i, 1, 3)
+  create_object VILLAGER {
+    number_of_objects 3
+    number_of_groups 2
+    place_on_specific_land_id $i
+    temp_min_distance_group_placement 30
+    min_distance_to_map_edge 20
+    min_distance_group_placement 8
+    terrain_to_place_on MUDDY_SHALLOW
+    avoid_actor_area villager
+    actor_area villager
+    actor_area_radius 20
+  }
+#END_FOR
+
+/* create_object VILLAGER {
+  number_of_objects 3
+  number_of_groups 3
+  set_place_for_every_player
+  temp_min_distance_group_placement 30
+  actor_area villager
+  actor_area_radius 20
+  avoid_actor_area villager
+  min_distance_to_map_edge 20
+  terrain_to_place_on MUDDY_SHALLOW
+  min_distance_group_placement 8
+} */
+
+/* Javelinas */
+create_object JAVELINA {
+  number_of_objects 64
+  temp_min_distance_group_placement 14
+  terrain_to_place_on MUDDY_SHALLOW
+  avoid_actor_area beach2
+}
+
+/* Outside Resources */
+create_object STONE {
+  terrain_to_place_on RAINFOREST_GRASS
+  number_of_objects 2
+  number_of_groups 32
+  set_tight_grouping
+  group_placement_radius 1
+  temp_min_distance_group_placement 18
+  max_distance_to_other_zones 5
+  avoid_forest_zone 3
+  min_distance_group_placement 2
+  actor_area outside_stone
+  actor_area_radius 6
+}
+
+create_object PAPAYA_TREE {
+  terrain_to_place_on RAINFOREST_GRASS
+  number_of_objects 6
+  number_of_groups 32
+  set_tight_grouping
+  group_placement_radius 2
+  temp_min_distance_group_placement 16
+  max_distance_to_other_zones 5
+  avoid_forest_zone 3
+  min_distance_group_placement 3
+  avoid_actor_area outside_stone
+}
+
+create_object RHEA {
+  number_of_objects 4
+  number_of_groups 32
+  temp_min_distance_group_placement 16
+  set_loose_grouping
+  avoid_forest_zone 3
+  terrain_to_place_on RAINFOREST_GRASS
+}
+
+/* Middle Gold */
+create_object GOLD {
+  number_of_objects 4
+  group_variance 1
+  number_of_groups 32
+  terrain_to_place_on DLC_JUNGLEGRASS
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_forest_zone 3
+  max_distance_to_other_zones 5
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 12
+}
+
+/* Middle Herdables */
+create_object CAPYBARA {
+  number_of_objects 2
+  number_of_groups 32
+  set_loose_grouping
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DLC_JUNGLEGRASS
+}
+
+/* Randomly Spaces Relics */
+create_object RELIC {
+  number_of_objects 5
+  temp_min_distance_group_placement 25
+  min_distance_group_placement 1
+  avoid_forest_zone 2
+  min_distance_to_map_edge 5
+}

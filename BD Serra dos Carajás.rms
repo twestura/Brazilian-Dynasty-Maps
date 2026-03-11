@@ -1,0 +1,637 @@
+#HEADER_START
+/*
+ * Terrace for Brazilian Dynasties.
+ * Edited by T-West, March 2026.
+ * Based on the original map by TheMadCADer.
+ * https://liquipedia.net/ageofempires/Terrace
+ */
+
+/* Terrace (4-19-21) by TheMadCADer */
+/* Changes from 1.0: New map */
+/* Changes from 2.0: Added pine variation, player gold/stone now two piles */
+/* Changes from 2.1: More terrain variety */
+/* Rbase: Changes for onimaru LAN: South american theme */
+#HEADER_END	
+
+/* Flag for testing rock vs no-rock gaps between levels. */
+/* #define ROCK_VERSION */
+
+#const GROUND ROAD
+#const BASE_PLACEHOLDER ROAD2
+#const HERDABLE_A CAPYBARA
+#const PREDATOR JAGUAR
+#const STRAGGLER DLC_AFRICANBUSH
+#const OTHERTHING ROCK
+
+#const FOREST_OAK_BUSH 20
+#const GRAVEL 70
+#const MUD 76
+
+#const ROCKS 40
+#const BUSH_A 302
+
+/* Base terrains for each height. */
+#const LEVEL0 GRAVEL
+#const LEVEL1 MUD
+#const LEVEL2 DIRT
+#const LEVEL3 DIRT3
+#const LEVEL4 GRASS3
+#const LEVEL5 GRASS
+#const LEVEL6 GRASS2
+#const LEVEL7 DLC_JUNGLEGRASS
+/* #const LEVEL7 GRASS_FLOWERS_1 */
+
+/* #const LEVEL0 GRAVEL
+#const LEVEL1 MUD
+#const LEVEL2 DLC_DIRT4
+#const LEVEL3 DIRT
+#const LEVEL4 DIRT3
+#const LEVEL5 GRASS3
+#const LEVEL6 GRASS
+#const LEVEL7 GRASS2 */
+
+/* #const LEVEL0 MUD
+#const LEVEL1 DIRT
+#const LEVEL2 DIRT3
+#const LEVEL3 GRASS3
+#const LEVEL4 GRASS
+#const LEVEL5 GRASS2
+#const LEVEL6 GRASS_FLOWERS_1 */
+
+#MKCONSTS
+
+<PLAYER_SETUP>
+random_placement
+ai_info_map_type ARABIA 0 0 0
+/* Uses the old behavior version for consistency with the land generation. */
+
+#SETPHATTR
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE CONDOR ATTR_LINE_OF_SIGHT 0
+effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
+
+/* Makes the oak forest trees fit the theme. */
+effect_amount GAIA_UPGRADE_UNIT OAKTREE DLC_DEADTREE 0
+effect_amount GAIA_UPGRADE_UNIT BUSH_A DLC_AFRICANBUSH 0
+
+<LAND_GENERATION>
+base_terrain BASE_PLACEHOLDER
+enable_waves 0
+
+create_player_lands {
+  terrain_type GROUND
+  land_percent 9
+  /* land_percent 10 */
+  top_border 5
+  right_border 6
+  bottom_border 6
+  left_border 5
+  base_size 9
+  other_zone_avoidance_distance 16
+  clumping_factor 20
+}
+
+<ELEVATION_GENERATION>
+#REPEAT(8)
+  create_elevation 7 {
+    base_terrain BASE_PLACEHOLDER
+    number_of_tiles 99999
+    number_of_clumps 1000
+    set_scale_by_groups
+    spacing 8
+  }
+#END_REPEAT
+
+<TERRAIN_GENERATION>
+/* Cover the increments with rock terrain. */
+#FOR($i, 0, 8)
+  #REPEAT(8)
+    create_terrain GROUND {
+      base_terrain BASE_PLACEHOLDER
+      land_percent 100
+      number_of_clumps 8192
+      set_flat_terrain_only
+      spacing_to_other_terrain_types 1
+      height_limits $i $i
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain DLC_JUNGLEROAD {
+      base_terrain BASE_PLACEHOLDER
+      land_percent 100
+      number_of_clumps 8192
+      set_flat_terrain_only
+      spacing_to_other_terrain_types 1
+      height_limits ($i + 1) ($i + 1)
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain DLC_QUICKSAND {
+      base_terrain BASE_PLACEHOLDER
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_other_terrain_types 1
+      height_limits $i $i
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain GROUND {
+      base_terrain BASE_PLACEHOLDER
+      land_percent 100
+      number_of_clumps 8192
+      height_limits $i $i
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain BASE_PLACEHOLDER {
+      base_terrain DLC_JUNGLEROAD
+      land_percent 100
+      number_of_clumps 8192
+    }
+    create_terrain DLC_ROCK {
+      base_terrain DLC_QUICKSAND
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+/*
+ * Original technique has a bug where plateaus that are 2-tiles wide do not
+ * have their rock replaced.
+ */
+/* Cover the patch, leaving space for gaps in the hill. */
+/* #REPEAT(8)
+  create_terrain GROUND {
+    base_terrain BASE_PLACEHOLDER
+    land_percent 100
+    number_of_clumps 8192
+    set_flat_terrain_only
+    spacing_to_other_terrain_types 1
+  }
+#END_REPEAT */
+
+/* Cover the exact tile on the hills. */
+/* #REPEAT(8)
+  create_terrain DLC_ROCK {
+    base_terrain BASE_PLACEHOLDER
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 1
+  }
+#END_REPEAT */
+
+/* Cover the remaining patches outside of the hill gaps. */
+/* #REPEAT(8)
+  create_terrain GROUND {
+    base_terrain BASE_PLACEHOLDER
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT */
+
+/* Places forests around the map, avoiding the very bottom. */
+create_terrain SOUTH_AMERICAN_FOREST {
+  base_terrain GROUND
+  /* land_percent 15 */
+  land_percent 10
+  number_of_clumps 24
+  set_scale_by_groups
+  set_avoid_player_start_areas
+  height_limits 1 7
+}
+
+/* Replaces the bottom forests. */
+#REPEAT(8)
+  create_terrain FOREST_OAK_BUSH {
+    base_terrain SOUTH_AMERICAN_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 0 1
+  }
+#END_REPEAT
+
+/* Replaces the top forests. */
+#REPEAT(8)
+  create_terrain DLC_RAINFOREST {
+    base_terrain SOUTH_AMERICAN_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 5 6
+  }
+  create_terrain JUNGLE {
+    base_terrain SOUTH_AMERICAN_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 7 7
+  }
+#END_REPEAT
+
+/* Terrains by height. */
+#REPEAT(8)
+  create_terrain LEVEL0 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 0 0
+  }
+#END_REPEAT
+
+create_terrain DLC_DESERTGRAVEL {
+  base_terrain LEVEL0
+  number_of_tiles 1024
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain DLC_DRYGRASS {
+    base_terrain LEVEL0
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain LEVEL1 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 1 1
+  }
+#END_REPEAT
+
+create_terrain GRAVEL {
+  base_terrain MUD
+  number_of_tiles 512
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+create_terrain DLC_DESERTGRAVEL {
+  base_terrain MUD
+  number_of_tiles 512
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+create_terrain DLC_DRYGRASS {
+  base_terrain MUD
+  number_of_tiles 512
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain LEVEL2 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 2 2
+  }
+#END_REPEAT
+
+create_terrain DLC_DIRT4 {
+  base_terrain DIRT
+  number_of_tiles 1024
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain DLC_DRYGRASS {
+  base_terrain DIRT
+  number_of_tiles 512
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain LEVEL3 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 3 3
+  }
+#END_REPEAT
+
+create_terrain DIRT {
+  base_terrain LEVEL3
+  number_of_tiles 1024
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain LEVEL4 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 4 4
+  }
+#END_REPEAT
+
+create_terrain DLC_DRYGRASS {
+  base_terrain LEVEL4
+  number_of_tiles 512
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain LEVEL5 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 5 5
+  }
+#END_REPEAT
+
+create_terrain DIRT3 {
+  base_terrain LEVEL5
+  number_of_tiles 256
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+create_terrain GRASS2 {
+  base_terrain LEVEL5
+  number_of_tiles 128
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain LEVEL6 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 6 6
+  }
+#END_REPEAT
+
+create_terrain GRASS_FLOWERS_1 {
+  base_terrain LEVEL6
+  number_of_tiles 128
+  number_of_clumps 4
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain LEVEL7 {
+    base_terrain GROUND
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain GRASS_FLOWERS_2 {
+  base_terrain LEVEL7
+  number_of_tiles 32
+  number_of_clumps 3
+  terrain_mask 1
+}
+
+/* Mask the rock differently at different heights. */
+#REPEAT(8)
+  if ROCK_VERSION
+    create_terrain DLC_WETROCKBEACH {
+      base_terrain DLC_ROCK
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 1
+      height_limits 0 1
+    }
+    create_terrain DLC_GRAVELBEACH {
+      base_terrain DLC_ROCK
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 1
+      height_limits 4 7
+    }
+  else
+    create_terrain MUD {
+      base_terrain DLC_ROCK
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 2
+      height_limits 0 1
+    }
+    create_terrain GRAVEL {
+      base_terrain DLC_ROCK
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 2
+      height_limits 2 3
+    }
+    create_terrain DLC_DESERTGRAVEL {
+      base_terrain DLC_ROCK
+      land_percent 100
+      number_of_clumps 8192
+      terrain_mask 2
+      height_limits 4 7
+    }
+  endif
+#END_REPEAT
+
+<OBJECTS_GENERATION>
+/* Birds */
+create_object CONDOR {
+  number_of_objects 4
+}
+
+create_object MACAW {
+  number_of_objects 4
+}
+
+/* Relics */
+/* Place them before the terrain blockers so that require path works. */
+create_object RELIC {
+  number_of_objects 5
+  min_distance_to_players 30
+  set_circular_placement
+  temp_min_distance_group_placement 25
+  min_distance_group_placement 2
+
+  avoid_forest_zone 1
+  set_place_for_every_player
+  require_path 0
+  generate_for_first_land_only
+  set_gaia_object_only
+}
+
+/* Terrain Blockers to prevent objects from spawning on rocks. */
+create_object TERRAIN_BLOCKER {
+  number_of_objects 14400
+  layer_to_place_on DLC_ROCK
+}
+
+/* Player Objects */
+#OBJECTS9VILS
+
+/* Primary Gold */
+create_object GOLD {
+  number_of_objects 4
+  number_of_groups 2
+  set_tight_grouping
+  set_gaia_object_only
+  set_place_for_every_player
+  avoid_actor_area box11
+  actor_area_to_place_in box15
+  min_distance_group_placement 7
+  max_distance_to_other_zones 5
+  temp_min_distance_group_placement 15
+  avoid_forest_zone 1
+  terrain_to_place_on LEVEL0
+}
+
+/* Primary Stone */
+create_object STONE {
+  number_of_objects 3
+  number_of_groups 2
+  set_tight_grouping
+  set_gaia_object_only
+  set_place_for_every_player
+  avoid_actor_area box11
+  actor_area_to_place_in box15
+  min_distance_group_placement 7
+  max_distance_to_other_zones 5
+  temp_min_distance_group_placement 15
+  avoid_forest_zone 1
+  terrain_to_place_on LEVEL0
+}
+
+/* Neutral Gold */
+create_object GOLD {
+  number_of_objects 4
+  number_of_groups 4
+  group_variance 1
+  set_tight_grouping
+  set_scaling_to_map_size
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 20
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+}
+
+/* Neutral Stone */
+create_object STONE {
+  number_of_objects 4
+  number_of_groups 3
+  group_variance 1
+  set_tight_grouping
+  set_scaling_to_map_size
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 20
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+}
+
+/* Player Forage */
+create_object DLC_ORANGEBUSH {
+  number_of_objects 6
+  set_tight_grouping
+  set_gaia_object_only
+  set_place_for_every_player
+  avoid_actor_area box10
+  actor_area_to_place_in box12
+  min_distance_group_placement 6
+  max_distance_to_other_zones 5
+  avoid_forest_zone 1
+  terrain_to_place_on LEVEL0
+}
+
+/* Lure */
+create_object TAPIR {
+  number_of_objects 2
+  set_place_for_every_player
+  set_gaia_object_only
+  temp_min_distance_group_placement 8
+  min_distance_to_players 16
+  max_distance_to_players 18
+  set_circular_placement
+  avoid_forest_zone 1
+}
+
+/* Hunt */
+create_object DEER {
+  number_of_objects 4
+  set_place_for_every_player
+  set_gaia_object_only
+  set_loose_grouping
+  min_distance_to_players 18
+  max_distance_to_players 22
+  set_circular_placement
+  avoid_forest_zone 1
+}
+
+/* Start Herdables */
+create_object HERDABLE_A {
+  set_place_for_every_player
+  number_of_objects 3
+  set_loose_grouping
+  set_circular_placement
+  min_distance_to_players 7
+  max_distance_to_players 9
+}
+
+/* Far Herdables */
+create_object DLC_GOOSE {
+  number_of_objects 2
+  number_of_groups 2
+  set_loose_grouping
+  set_gaia_object_only
+  set_place_for_every_player
+  temp_min_distance_group_placement 8
+  min_distance_to_players 16
+  max_distance_to_players 18
+  set_circular_placement
+}
+
+/* Scout */
+create_object SCOUT {
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
+}
+
+/* Predatores */
+create_object JAGUAR {
+  set_place_for_every_player
+  number_of_objects 3
+  set_gaia_object_only
+  min_distance_to_players 30
+  max_distance_to_players 40
+  set_circular_placement
+}
+
+/* Neutral Forage */
+create_object FORAGE {
+  number_of_objects 4
+  number_of_groups 4
+  set_tight_grouping
+  set_scaling_to_map_size
+  min_distance_to_players 35
+  set_circular_placement
+  temp_min_distance_group_placement 20
+  min_distance_group_placement 4
+  avoid_forest_zone 1
+}
+
+/* Scenery */
+create_object ROCK {
+  number_of_objects 12
+  set_scaling_to_map_size
+  min_distance_to_players 20
+  set_circular_placement
+  min_distance_to_map_edge 1
+  avoid_forest_zone 1
+}

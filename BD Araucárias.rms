@@ -1,0 +1,657 @@
+
+/* Player macro items. */
+#const HERDABLE_A DLC_GOOSE
+#const STRAGGLER TREE_MONKEY_PUZZLE
+#const PHONL 1544
+
+#MKCONSTS
+
+/* Terrains */
+#const ROAD_SNOW 38
+#const UNDERBRUSH_LEAVES 71
+#const UNDERBRUSH_SNOW 72
+
+/* Land Location Coordinates */
+#const T1 rnd(0,359)
+#const OFFSET rnd(170,190)
+#const T2 (T1 + OFFSET)
+#const R 28
+#FOR($i, 1, 3)
+  #TRIG(T$i)
+  #const X$i (R * COS_T$i + 50)
+  #const Y$i (R * SIN_T$i + 50)
+#END_FOR
+
+#const MID_LEAVES1 LEAVES
+#const MID_LEAVES2 UNDERBRUSH_LEAVES
+
+/* Forest land locations. */
+#const T_PERP (T1 + T2 / 2)
+#TRIG(T_PERP)
+
+#const MID_R 18
+#const MID_X1 (MID_R * COS_T_PERP + 50)
+#const MID_Y1 (MID_R * SIN_T_PERP + 50)
+#const MID_X2 (-1 * MID_R * COS_T_PERP + 50)
+#const MID_Y2 (-1 * MID_R * SIN_T_PERP + 50)
+
+/* Side land locations. */
+#const SIDE_R 35
+#const SIDE_X1 (SIDE_R * COS_T_PERP + 50)
+#const SIDE_Y1 (SIDE_R * SIN_T_PERP + 50)
+#const SIDE_X2 (-1 * SIDE_R * COS_T_PERP + 50)
+#const SIDE_Y2 (-1 * SIDE_R * SIN_T_PERP + 50)
+
+#const POND_ANGLE 40
+#const POND_R 31
+#FOR($i, 0, 4)
+  #const POND_RND$i rnd(0,5)
+#END_FOR
+#const POND_T0 (T1 + POND_ANGLE + POND_RND0)
+#const POND_T1 (T1 - POND_ANGLE + POND_RND1)
+#const POND_T2 (T2 + POND_ANGLE + POND_RND2)
+#const POND_T3 (T2 - POND_ANGLE + POND_RND3)
+#FOR($i, 0, 4)
+  #TRIG(POND_T$i)
+  #const POND_X$i_RND rnd(-1,1)
+  #const POND_X$i (POND_R * COS_POND_T$i + 50 + POND_X$i_RND)
+  #const POND_Y$i_RND rnd(-1,1)
+  #const POND_Y$i (POND_R * SIN_POND_T$i + 50 + POND_Y$i_RND)
+#END_FOR
+
+#const POND_WATER0 MED_WATER
+#const POND_WATER1 DEEP_WATER
+#const POND_WATER2 DLC_WATER4
+#const POND_WATER3 DLC_WATER5
+
+<PLAYER_SETUP>
+direct_placement
+ai_info_map_type BLACK_FOREST 0 0 0
+behavior_version 2
+
+#SETPHATTR
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE DLC_VULTURE ATTR_LINE_OF_SIGHT 0
+effect_amount SET_ATTRIBUTE HAWK ATTR_LINE_OF_SIGHT 0
+
+/* Makes the oak forest trees fit the theme. */
+effect_amount GAIA_UPGRADE_UNIT BIRCH_TREE TREE_MONKEY_PUZZLE 0
+
+<LAND_GENERATION>
+base_terrain DLC_ROCK
+enable_waves 0
+
+/*
+ * Middle
+ * Created before the other lands so they appear atop it.
+ */
+create_land {
+  land_position 50 50
+  terrain_type SNOW
+  number_of_tiles 0
+  base_size 50
+  set_circular_base
+  land_id 10
+  zone 10
+}
+
+#FOR($i, 1, 3)
+  /* Players */
+  create_land {
+    land_position X$i Y$i
+    terrain_type SNOW
+    assign_to AT_TEAM -10 0 0
+    number_of_tiles 0
+    top_border 12
+    right_border 13
+    bottom_border 13
+    left_border 12
+    zone $i
+  }
+
+  /* Middle Forests */
+  create_land {
+    land_position MID_X$i MID_Y$i
+    terrain_type MID_LEAVES$i
+    number_of_tiles 0
+    base_size 13
+    set_circular_base
+  }
+
+  /* Side Lanes */
+  create_land {
+    land_position SIDE_X$i SIDE_Y$i
+    terrain_type SNOW
+    number_of_tiles 0
+    base_size 0
+    land_id 10
+  }
+#END_FOR
+
+/* Player Ponds */
+#FOR($i, 0, 4)
+  create_land {
+    land_position POND_X$i POND_Y$i
+    terrain_type POND_WATER$i
+    number_of_tiles 0
+    base_size 6
+    set_circular_base
+    land_id (20 + $i)
+  }
+#END_FOR
+
+<ELEVATION_GENERATION>
+create_elevation 4 {
+  base_terrain DLC_ROCK
+  number_of_tiles 2048
+  number_of_clumps 40
+}
+
+create_elevation 2 {
+  base_terrain SNOW
+  number_of_tiles 512
+  number_of_clumps 40
+}
+
+<TERRAIN_GENERATION>
+/* Wibble the edge of the forest. */
+#REPEAT(8)
+  create_terrain SNOW_FOREST {
+    base_terrain DLC_ROCK
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 6
+  }
+#END_REPEAT
+
+create_terrain DLC_FORESTDEAD {
+  base_terrain DLC_ROCK
+  number_of_tiles 1500
+  number_of_clumps 64
+}
+
+create_terrain SNOW_FOREST {
+  base_terrain DLC_ROCK
+  number_of_tiles 256
+  number_of_clumps 32
+  spacing_to_specific_terrain SNOW 4
+}
+
+create_terrain SNOW_FOREST {
+  base_terrain DLC_FORESTDEAD
+  number_of_tiles 512
+  number_of_clumps 64
+  spacing_to_specific_terrain SNOW 1
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_ROCK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Creates the middle forests. */
+#FOR($i, 1, 3)
+  #REPEAT(8)
+    create_terrain FOREST {
+      base_terrain MID_LEAVES$i
+      spacing_to_other_terrain_types 3
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+
+  create_terrain FOREST {
+    base_terrain MID_LEAVES$i
+    number_of_tiles 128
+    number_of_clumps 32
+  }
+
+  create_terrain FOREST {
+    base_terrain MID_LEAVES$i
+    number_of_tiles 8
+    number_of_clumps 8
+    spacing_to_other_terrain_types 2
+  }
+
+  #REPEAT(8)
+    create_terrain SNOW {
+      base_terrain MID_LEAVES$i
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Creates the ponds. */
+#FOR($i, 0, 4)
+  create_terrain WATER {
+    base_terrain POND_WATER$i
+    number_of_tiles 64
+  }
+
+  #REPEAT(8)
+    create_terrain SNOW {
+      base_terrain POND_WATER$i
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Terrain Masking */
+/* Pond Water Masking */
+#REPEAT(8)
+  create_terrain DEEP_WATER {
+    base_terrain WATER
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DEEP_WATER {
+    base_terrain WATER
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+    spacing_to_specific_terrain SNOW 1
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain MED_WATER {
+    base_terrain WATER
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Ground Masking */
+/* The middle of the map uses a mixture of terrains for a curved road. */
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain SNOW_FOREST 20
+    spacing_to_specific_terrain DLC_FORESTDEAD 20
+  }
+#END_REPEAT
+
+create_terrain GRASS3 {
+  base_terrain ROAD2
+  set_avoid_player_start_areas 7
+  number_of_tiles 1024
+  number_of_clumps 1024
+}
+
+create_terrain SNOW {
+  base_terrain GRASS3
+  number_of_tiles 128
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain GRASS3 {
+  base_terrain SNOW
+  number_of_tiles 1024
+  number_of_clumps 16
+  beach_terrain ICYSHORE
+  terrain_mask 2
+}
+
+create_terrain GRASS3 {
+  base_terrain SNOW
+  number_of_tiles 1024
+  number_of_clumps 16
+  beach_terrain ICYSHORE
+  /* set_avoid_player_start_areas */
+}
+
+/* Covers the terrain in the middle. */
+#REPEAT(8)
+  create_terrain GRASS3 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain SNOW_FOREST 20
+    spacing_to_specific_terrain DLC_FORESTDEAD 20
+    terrain_mask 1
+  }
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain DLC_DRYGRASS {
+  base_terrain GRASS3
+  number_of_tiles 128
+  number_of_clumps 16
+  beach_terrain ICYSHORE
+  terrain_mask 1
+}
+
+/* Forest Masking */
+/* Inner Forests */
+create_terrain BIRCH_FOREST {
+  base_terrain FOREST
+  number_of_tiles 128
+  number_of_clumps 32
+}
+
+create_terrain PINE_FOREST {
+  base_terrain FOREST
+  number_of_tiles 128
+  number_of_clumps 16
+}
+
+create_terrain DLC_FORESTDEAD {
+  base_terrain FOREST
+  number_of_tiles 64
+  number_of_clumps 16
+}
+
+/* Outer Forests */
+create_terrain BIRCH_FOREST {
+  base_terrain SNOW_FOREST
+  number_of_tiles 512
+  number_of_clumps 64
+}
+
+create_terrain PINE_FOREST {
+  base_terrain SNOW_FOREST
+  number_of_tiles 1024
+  number_of_clumps 64
+}
+
+create_terrain DLC_FORESTDEAD {
+  base_terrain SNOW_FOREST
+  number_of_tiles 256
+  number_of_clumps 32
+}
+
+/* Replaces all remaining middle forest. */
+#REPEAT(8)
+  create_terrain SNOW_FOREST {
+    base_terrain FOREST
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Underbrush under the non-snow forests. */
+#REPEAT(8)
+  create_terrain UNDERBRUSH_SNOW {
+    base_terrain PINE_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+  create_terrain UNDERBRUSH_SNOW {
+    base_terrain BIRCH_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+<CONNECTION_GENERATION>
+accumulate_connections
+#FOR($i, 1, 3)
+  create_connect_land_zones $i 10 {
+    replace_terrain SNOW ROAD_SNOW
+    replace_terrain DIRT3 ROAD_SNOW
+    replace_terrain GRASS3 ROAD_SNOW
+    replace_terrain DLC_DRYGRASS ROAD_SNOW
+    replace_terrain UNDERBRUSH_SNOW ROAD_SNOW
+    replace_terrain ROAD2 ROAD_SNOW
+    replace_terrain GRASS ROAD_SNOW
+    replace_terrain DLC_ROCK ROAD_SNOW
+    replace_terrain BIRCH_FOREST ROAD_SNOW
+    replace_terrain FOREST ROAD_SNOW
+    replace_terrain PINE_FOREST ROAD_SNOW
+    replace_terrain SNOW_FOREST ROAD_SNOW
+    terrain_cost SNOW 1
+    terrain_cost DIRT3 5
+    terrain_cost GRASS3 5
+    terrain_cost DLC_DRYGRASS 5
+    terrain_cost UNDERBRUSH_SNOW 5
+    terrain_cost WATER 0
+    terrain_cost SNOW_FOREST 0
+    terrain_cost PINE_FOREST 0
+    terrain_cost BIRCH_FOREST 0
+    terrain_cost FOREST 0
+    terrain_size SNOW 0 0
+    terrain_size DIRT3 0 0
+    terrain_size GRASS3 0 0
+    terrain_size DLC_DRYGRASS 0 0
+    terrain_size UNDERBRUSH_SNOW 0 0
+  }
+#END_FOR
+
+<OBJECTS_GENERATION>
+create_object_group LURE {
+  add_object JAVELINA 50
+  add_object TAPIR 50
+}
+
+/* Birds */
+create_object HAWK {
+  number_of_objects 4
+}
+
+create_object DLC_VULTURE {
+  number_of_objects 4
+}
+
+#OBJECTS9VILS
+
+/* Captain Fin */
+#FOR($i, 20, 24)
+  create_object SHORE_FISH {
+    place_on_specific_land_id $i
+    number_of_objects 3
+    temp_min_distance_group_placement 2
+  }
+#END_FOR
+
+/* Lanes */
+create_object PHON {
+  place_on_specific_land_id 10
+  number_of_objects 14400
+  set_circular_placement
+  max_distance_to_players 20
+  actor_area mid_avoider
+  actor_area_radius 0
+}
+
+create_object RELIC {
+  min_distance_group_placement 1
+  find_closest
+  place_on_specific_land_id 10
+}
+
+create_object LURE {
+  number_of_objects 3
+  min_distance_group_placement 1
+  find_closest
+  place_on_specific_land_id 10
+}
+
+create_object GOLD {
+  number_of_objects 3
+  number_of_groups 2
+  avoid_forest_zone 2
+  set_tight_grouping
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 7
+  place_on_specific_land_id 10
+  set_circular_placement
+  max_distance_to_players 10
+  actor_area lane_gold
+  actor_area_radius 5
+}
+
+create_object STONE {
+  number_of_objects 2
+  avoid_forest_zone 2
+  set_tight_grouping
+  min_distance_group_placement 2
+  place_on_specific_land_id 10
+  set_circular_placement
+  max_distance_to_players 10
+  avoid_actor_area lane_gold
+}
+
+/* Player Objects */
+create_object FORAGE {
+  number_of_objects 6
+  set_place_for_every_player
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 2
+  avoid_forest_zone 5
+  max_distance_to_other_zones 5
+  avoid_actor_area box11
+  actor_area_to_place_in box14
+  min_distance_group_placement 3
+  avoid_actor_area mid_avoider
+  actor_area forage
+  actor_area_radius 7
+}
+
+create_object GOLD {
+  number_of_objects 4
+  set_place_for_every_player
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 2
+  avoid_forest_zone 5
+  max_distance_to_other_zones 4
+  avoid_actor_area box12
+  actor_area_to_place_in box18
+  avoid_actor_area mid_avoider
+  temp_min_distance_group_placement 9
+  number_of_groups 3
+  min_distance_group_placement 3
+  avoid_actor_area forage
+  actor_area player_gold
+  actor_area_radius 7
+}
+
+create_object STONE {
+  number_of_objects 4
+  set_place_for_every_player
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 2
+  avoid_forest_zone 5
+  max_distance_to_other_zones 4
+  avoid_actor_area box12
+  actor_area_to_place_in box18
+  avoid_actor_area mid_avoider
+  temp_min_distance_group_placement 9
+  number_of_groups 2
+  min_distance_group_placement 3
+  avoid_actor_area forage
+  avoid_actor_area player_gold
+  /* actor_area player_gold */
+  /* actor_area_radius 7 */
+}
+
+create_object RELIC {
+  set_place_for_every_player
+  set_gaia_object_only
+  avoid_forest_zone 2
+  max_distance_to_other_zones 2
+  avoid_actor_area mid_avoider
+  set_circular_placement
+  min_distance_to_players 30
+  max_distance_to_players 40
+  min_distance_group_placement 2
+}
+
+/* Player Food Objects */
+create_object PHONL {
+  set_place_for_every_player
+  set_gaia_object_only
+  set_circular_placement
+  min_distance_to_players 18
+  max_distance_to_players 22
+  max_distance_to_other_zones 3
+  avoid_forest_zone 3
+  avoid_actor_area mid_avoider
+  avoid_actor_area forage
+  actor_area deer_area
+  actor_area_radius 2
+}
+
+create_object DEER {
+  number_of_objects 4
+  set_gaia_object_only
+  set_place_for_every_player
+  actor_area_to_place_in deer_area
+  actor_area deer
+  actor_area_radius 3
+}
+
+create_object PHONL {
+  set_place_for_every_player
+  set_gaia_object_only
+  set_circular_placement
+  min_distance_to_players 16
+  max_distance_to_players 22
+  max_distance_to_other_zones 3
+  avoid_forest_zone 3
+  avoid_actor_area mid_avoider
+  avoid_actor_area forage
+  avoid_actor_area deer_area
+  avoid_actor_area deer
+  actor_area capybara_area
+  actor_area_radius 2
+}
+
+create_object CAPYBARA {
+  number_of_objects 2
+  set_gaia_object_only
+  set_place_for_every_player
+  min_distance_group_placement 1
+  actor_area_to_place_in capybara_area
+}
+
+create_object DLC_GOOSE {
+  set_place_for_every_player
+  number_of_objects 3
+  set_loose_grouping
+  set_circular_placement
+  min_distance_to_players 7
+  max_distance_to_players 9
+}
+
+create_object SCOUT {
+  set_place_for_every_player
+  set_circular_placement
+  min_distance_to_players 7
+  max_distance_to_players 9
+  avoid_actor_area villager2
+}
+
+/* Map Objects */
+create_object TREE_MONKEY_PUZZLE {
+  number_of_objects 12
+  set_circular_placement
+  min_distance_to_players 16
+  avoid_forest_zone 2
+  max_distance_to_other_zones 5
+  temp_min_distance_group_placement 4
+  avoid_actor_area deer
+  avoid_actor_area capybaras
+}

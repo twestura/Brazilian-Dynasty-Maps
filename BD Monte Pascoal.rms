@@ -1,0 +1,962 @@
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+#const PHONA 1545
+
+/* Terrains */
+#const UNDERBRUSH_JUNGLE 77
+#const BEACH_NONNAVIGABLE 79
+#const RAINFOREST_GRASS 83
+#const PLAYER_BEACH DLC_BEACH2
+#const SPAWN0 GRASS2
+#const SPAWN1 DLC_DRYGRASS
+
+/* Units */
+#const WHALE 2625
+
+#const PLANT_JUNGLE 1351
+#const PLANT_UNDERBRUSH_TROPICAL 1352
+#const PLANT_UNDERBRUSH 1353
+#const PLANT_RAINFOREST 1354
+#const PLANT_UNDERBRUSH_RAINFOREST 1355
+
+/* Determines the orientation of the mountain. */
+/*
+ * Coordinates are computed as follows:
+ * - North: (x, y)
+ * - East: (100 - y, x)
+ * - South: (100 - x, 100 - y)
+ * - West: (y, 100 - x)
+ * Take care that 0 is allowed as a land position but 100 is not (use 99).
+ */
+/* TODO */
+/* #define NORTH */
+/* #define EAST */
+/* #define SOUTH */
+/* #define WEST */
+start_random
+  percent_chance 25 #define NORTH
+  percent_chance 25 #define EAST
+  percent_chance 25 #define SOUTH
+  percent_chance 25 #define WEST
+end_random
+
+<PLAYER_SETUP>
+direct_placement
+nomad_resources
+behavior_version 2
+ai_info_map_type NOMAD 1 0 0
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
+
+/* Makes Rugs spawn only on the Villager islands. */
+effect_amount SET_ATTRIBUTE RUGS ATTR_TERRAIN_ID 50
+
+<LAND_GENERATION>
+enable_waves 1
+base_terrain SNOW
+
+/* Mountain Top North Corner */
+create_land {
+  if NORTH
+    land_position 99 0
+  elseif EAST
+    land_position 99 99
+  elseif SOUTH
+    land_position 0 99
+  elseif WEST
+    land_position 0 0
+  endif
+  terrain_type DLC_CRACKED
+  base_elevation 7
+  number_of_tiles 0
+  zone 10
+}
+
+/* Mountain Top */
+create_land {
+  if NORTH
+    land_position 90 10
+  elseif EAST
+    land_position 90 90
+  elseif SOUTH
+    land_position 10 90
+  elseif WEST
+    land_position 10 10
+  endif
+  terrain_type DLC_CRACKED
+  base_size 13
+  base_elevation 7
+  number_of_tiles 1000
+  clumping_factor 30
+  zone 10
+}
+
+/* Coast Edge */
+if NORTH
+  create_land { land_position 30 0 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 10 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 20 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 35 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 45 40 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 50 50 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 60 55 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 70 65 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 80 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 90 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 99 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+elseif EAST
+  create_land { land_position 99 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 90 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 80 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 70 35 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 60 45 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 50 50 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 45 60 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 35 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 80 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 90 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 99 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+elseif SOUTH
+  create_land { land_position 70 99 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 70 90 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 70 80 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 65 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 55 60 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 50 50 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 40 45 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 35 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 20 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 10 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 0 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+elseif WEST
+  create_land { land_position 70 0 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 70 10 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 70 20 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 65 30 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 55 40 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 50 50 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 40 55 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 30 65 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 20 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 10 70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 512 zone 10 other_zone_avoidance_distance 8 }
+  create_land { land_position 0  70 terrain_type DESERT set_circular_base base_size 10 number_of_tiles 256 zone 10 other_zone_avoidance_distance 8 }
+endif
+
+/* Gap Between Beach and Mountain */
+create_land {
+  terrain_type DLC_JUNGLEGRASS
+  if NORTH
+    land_position 65 35
+  elseif EAST
+    land_position 65 65
+  elseif SOUTH
+    land_position 35 65
+  elseif WEST
+    land_position 35 35
+  endif
+}
+
+/* Islands */
+create_land {
+  if NORTH
+    land_position rnd(10,15) rnd(30,65)
+  elseif EAST
+    land_position rnd(35,70) rnd(10,15)
+  elseif SOUTH
+    land_position rnd(85,90) rnd(35,70)
+  elseif WEST
+    land_position rnd(30,65) rnd(85,90) 
+  endif
+  terrain_type SPAWN0
+  number_of_tiles 500
+  base_size 6
+  top_border 4
+  right_border 5
+  bottom_border 5
+  left_border 4
+  zone 20
+  other_zone_avoidance_distance 8
+  assign_to AT_TEAM -10 0 0
+}
+
+create_land {
+  if NORTH
+    land_position rnd(35,70) rnd(85,90)
+  elseif EAST
+    land_position rnd(10,15) rnd(35,70)
+  elseif SOUTH
+    land_position rnd(30,65) rnd(10,15)
+  elseif WEST
+    land_position rnd(85,90) rnd(30,65)
+  endif
+  terrain_type SPAWN1
+  number_of_tiles 500
+  base_size 6
+  top_border 4
+  right_border 5
+  bottom_border 5
+  left_border 4
+  zone 21
+  other_zone_avoidance_distance 8
+  assign_to AT_TEAM -10 0 0
+}
+
+<ELEVATION_GENERATION>
+create_elevation 2 {
+  base_terrain DLC_JUNGLEGRASS
+  enable_balanced_elevation
+  number_of_tiles 800
+  number_of_clumps 8
+}
+
+#REPEAT(8)
+  create_elevation 10 {
+    base_terrain DLC_CRACKED
+    enable_balanced_elevation
+    spacing 7
+    number_of_tiles 99999
+    number_of_clumps 99999
+  }
+#END_REPEAT
+
+<TERRAIN_GENERATION>
+/* Cover holes in the player lands. */
+#FOR($i, 0, 2)
+  #REPEAT(8)
+    create_terrain ROAD {
+      base_terrain SNOW
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain SPAWN$i 2
+    }
+  #END_REPEAT
+  #REPEAT(8)
+    create_terrain SPAWN$i {
+      base_terrain SNOW
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain ROAD 3
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain SNOW {
+      base_terrain ROAD
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Place Water in the south. */
+#REPEAT(8)
+  create_terrain WATER {
+    base_terrain SNOW
+    spacing_to_specific_terrain DLC_JUNGLEGRASS 5
+    spacing_to_specific_terrain DLC_CRACKED 10
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Covers the top of the hill with DLC_CRACKED. */
+#REPEAT(8)
+  create_terrain DLC_CRACKED {
+    base_terrain DLC_JUNGLEGRASS
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 6 10
+  }
+  create_terrain DLC_CRACKED {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 6 10
+  }
+#END_REPEAT
+
+/* Covers snow patches. */
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_JUNGLEGRASS 1
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Covers Desert lands intersecting the placeholder. */
+#REPEAT(8)
+  create_terrain ROAD {
+    base_terrain DESERT
+    spacing_to_specific_terrain DLC_JUNGLEGRASS 1
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain DESERT
+    spacing_to_specific_terrain ROAD 1
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Desert to Jungle Transition */
+#REPEAT(8)
+  create_terrain ROAD {
+    base_terrain DLC_JUNGLEGRASS
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DESERT 3
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain DLC_JUNGLEGRASS
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+    spacing_to_specific_terrain ROAD 2
+  }
+#END_REPEAT
+
+create_terrain DLC_QUICKSAND {
+  base_terrain DLC_JUNGLEGRASS
+  number_of_tiles 64
+  number_of_clumps 8
+  terrain_mask 1
+}
+
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Covers water holes on the beach. */
+#REPEAT(8)
+  create_terrain MED_WATER {
+    base_terrain WATER
+    spacing_to_specific_terrain DESERT 2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain WATER
+    spacing_to_specific_terrain MED_WATER 3
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DLC_WATER5 {
+    base_terrain WATER
+    land_percent 100
+    number_of_clumps 8192
+  }
+  create_terrain DLC_WATER5 {
+    base_terrain MED_WATER
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* DLC_CRACKED masking near the top of the hill. */
+create_terrain DLC_CRACKED {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 2
+  height_limits 5 10
+}
+
+/* Player Island Generation */
+#FOR($i, 0, 2)
+  create_terrain DLC_RAINFOREST {
+    base_terrain SPAWN$i
+    number_of_tiles 50
+    number_of_clumps 5
+    set_avoid_player_start_areas 7
+    spacing_to_other_terrain_types 2
+    clumping_factor 25
+  }
+
+  #REPEAT(8)
+    create_terrain RAINFOREST_GRASS {
+      base_terrain SPAWN$i
+      land_percent 100
+      number_of_clumps 8192
+      beach_terrain PLAYER_BEACH
+    }
+  #END_REPEAT
+#END_FOR
+
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain RAINFOREST_GRASS
+  number_of_tiles 128
+  number_of_clumps 4
+  beach_terrain PLAYER_BEACH
+}
+
+/* Beach Forests */
+create_terrain PALM_DESERT {
+  base_terrain DESERT
+  number_of_tiles 120
+  number_of_clumps 12
+  spacing_to_specific_terrain DLC_JUNGLEGRASS 4
+  spacing_to_specific_terrain DLC_WATER5 6
+}
+
+create_terrain DLC_RAINFOREST {
+  base_terrain PALM_DESERT
+  number_of_tiles 60
+  number_of_clumps 60
+  terrain_mask 2
+}
+
+#REPEAT(8)
+  create_terrain DLC_RAINFOREST {
+    base_terrain PALM_DESERT
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Beach Masking */
+#REPEAT(8)
+  create_terrain BEACH {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+    spacing_to_specific_terrain DLC_JUNGLEGRASS 9
+  }
+#END_REPEAT
+
+create_terrain BEACH {
+  base_terrain DESERT
+  land_percent 1
+  number_of_clumps 32
+  terrain_mask 1
+  spacing_to_specific_terrain DLC_JUNGLEGRASS 4
+}
+
+#REPEAT(8)
+  create_terrain DLC_QUICKSAND {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Jungle */
+create_terrain SOUTH_AMERICAN_FOREST {
+  base_terrain DLC_JUNGLEGRASS
+  height_limits 0 5
+  land_percent 4
+  number_of_clumps 16
+  spacing_to_other_terrain_types 2
+}
+
+create_terrain DLC_RAINFOREST {
+  base_terrain SOUTH_AMERICAN_FOREST
+  land_percent 2
+  number_of_clumps 8196
+  terrain_mask 2
+}
+
+#REPEAT(8)
+  create_terrain DLC_RAINFOREST {
+    base_terrain SOUTH_AMERICAN_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Jungle Masking */
+create_terrain DLC_JUNGLEROAD {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 1
+  number_of_clumps 8
+  terrain_mask 1
+}
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 2
+  number_of_clumps 6
+  terrain_mask 1
+}
+
+/* Mountain Top Masking */
+create_terrain DLC_DESERTGRAVEL {
+  base_terrain DLC_CRACKED
+  height_limits 10 10
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 1
+}
+
+create_terrain DESERT {
+  base_terrain DLC_CRACKED
+  height_limits 9 10
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 1
+}
+
+create_terrain DIRT {
+  base_terrain DLC_CRACKED
+  height_limits 8 10
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 1
+}
+
+/* Islands */
+create_terrain DLC_DESERTGRAVEL {
+  base_terrain DLC_WATER5
+  spacing_to_other_terrain_types 9
+  land_percent 5
+  number_of_clumps 7
+}
+
+create_terrain JUNGLE {
+  base_terrain DLC_DESERTGRAVEL
+  spacing_to_other_terrain_types 1
+  number_of_tiles 36
+  number_of_clumps 9
+}
+
+#REPEAT(8)
+  create_terrain PALM_DESERT {
+    base_terrain JUNGLE
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+create_terrain DLC_WETBEACH {
+  base_terrain DLC_DESERTGRAVEL
+  number_of_tiles 128
+  number_of_clumps 128
+  terrain_mask 1
+  beach_terrain DLC_WETBEACH
+}
+
+create_terrain BEACH {
+  base_terrain DLC_DESERTGRAVEL
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 1
+  beach_terrain DLC_WETBEACH
+}
+
+/* Water Masking */
+create_terrain WATER {
+  base_terrain DLC_WATER5
+  land_percent 18
+  number_of_clumps 12
+  spacing_to_other_terrain_types 2
+}
+
+create_terrain WATER {
+  base_terrain DLC_WATER5
+  land_percent 2
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain MED_WATER {
+  base_terrain WATER
+  spacing_to_other_terrain_types 3
+  land_percent 3
+  number_of_clumps 6
+}
+
+create_terrain DLC_WATER5 {
+  base_terrain WATER
+  land_percent 1
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain MED_WATER {
+  base_terrain WATER
+  land_percent 1
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain DEEP_WATER {
+  base_terrain MED_WATER
+  land_percent 1
+  number_of_clumps 16
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+
+create_terrain WATER {
+  base_terrain MED_WATER
+  land_percent 1
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+<OBJECTS_GENERATION>
+/* Big fish appropriate for the coast of Brazil. */
+create_object_group CAPTAIN_FIN {
+  add_object TUNA 34
+  add_object SNAPPER 33
+  add_object DORADO 33
+}
+
+/* Birds */
+create_object MACAW {
+  number_of_objects 7
+}
+
+/* Beach Placeholders */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on BEACH
+  actor_area beach8
+  actor_area_radius 8
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DESERT
+  actor_area desert_area
+  actor_area_radius 5
+}
+
+/* Jungle Top Transition Placeholder */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_CRACKED
+  layer_to_place_on DLC_JUNGLEGRASS
+  actor_area cracked_edge
+  actor_area_radius 3
+}
+
+/* Cracked Placeholders */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_CRACKED
+  actor_area cracked_small
+  actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_CRACKED
+  actor_area cracked_large
+  actor_area_radius 12
+}
+
+/* Player Objects */
+create_object PHONA {
+  set_place_for_every_player
+  number_of_objects 1024
+  terrain_to_place_on PLAYER_BEACH
+  set_gaia_object_only
+  actor_area player_beach1
+  actor_area_radius 1
+}
+
+create_object TRANSPORT_SHIP {
+  set_place_for_every_player
+  find_closest
+  min_distance_to_map_edge 22
+  avoid_actor_area player_beach1
+  /* Requires `ignore_terrain_restrictions` to spawn consistently. */
+  terrain_to_place_on DLC_WATER5
+  ignore_terrain_restrictions
+}
+
+create_object LUMBER_CAMP {
+  set_place_for_every_player
+  place_on_forest_zone
+  find_closest
+  min_distance_to_players 3
+  actor_area lumber_camp_area
+  actor_area_radius 5
+}
+
+create_object HOUSE {
+  set_place_for_every_player
+  min_distance_to_players 4
+  avoid_forest_zone 2
+  max_distance_to_other_zones 2
+  find_closest_to_map_edge
+  avoid_actor_area lumber_camp_area
+  actor_area house2
+  actor_area_radius 2
+}
+
+create_object VILLAGER {
+  number_of_objects 9
+  set_place_for_every_player
+  max_distance_to_other_zones 2
+}
+
+create_object PHONL {
+  number_of_objects 2
+  avoid_forest_zone 2
+  max_distance_to_other_zones 2
+  temp_min_distance_group_placement 6
+  set_place_for_every_player
+  actor_area sheep_area
+  actor_area_radius 1
+  set_gaia_object_only
+}
+
+#REPEAT(3)
+  create_object SHEEP {
+    number_of_objects 2
+    set_place_for_every_player
+    temp_min_distance_group_placement 4
+    actor_area_to_place_in sheep_area
+  }
+#END_REPEAT
+
+/* Rugs */
+create_object RUGS {
+  number_of_objects 4
+  group_variance 1
+  temp_min_distance_group_placement 1
+  avoid_forest_zone 1
+  set_place_for_every_player
+  set_gaia_object_only
+  avoid_actor_area house2
+}
+
+/* Scout Herdables on the Mainland */
+create_object CAPYBARA {
+  number_of_objects 2
+  set_tight_grouping
+  set_place_for_every_player
+  ignore_terrain_restrictions
+  terrain_to_place_on DESERT
+  max_distance_to_other_zones 2
+  find_closest
+}
+
+/* Map Shore Fish */
+create_object SHORE_FISH {
+  number_of_objects 14400
+  temp_min_distance_group_placement 7
+}
+
+/* Whales */
+create_object WHALE {
+  number_of_objects 32
+  max_distance_to_other_zones 6
+  temp_min_distance_group_placement 12
+  min_distance_group_placement 4
+  avoid_actor_area beach8
+}
+
+/* Big Fish */
+create_object CAPTAIN_FIN {
+  number_of_objects 128
+  temp_min_distance_group_placement 8
+  max_distance_to_other_zones 4
+}
+
+/* Island Resources */
+create_object STONE {
+  number_of_objects 3
+  set_tight_grouping
+  group_placement_radius 1
+  max_distance_to_other_zones 1
+  avoid_forest_zone 1
+  number_of_groups 32
+  temp_min_distance_group_placement 16
+  terrain_to_place_on DLC_DESERTGRAVEL
+  min_distance_group_placement 4
+}
+
+create_object DLC_ORANGEBUSH {
+  number_of_objects 3
+  group_variance 1
+  set_tight_grouping
+  group_placement_radius 1
+  max_distance_to_other_zones 1
+  avoid_forest_zone 1
+  number_of_groups 32
+  temp_min_distance_group_placement 16
+  terrain_to_place_on DLC_DESERTGRAVEL
+  actor_area orange_bush_1
+  actor_area_radius 1
+}
+
+/* Beach Objects */
+create_object GOLD {
+  number_of_objects 2
+  set_tight_grouping
+  group_placement_radius 1
+  number_of_groups 16
+  max_distance_to_other_zones 7
+  avoid_forest_zone 2
+  min_distance_to_map_edge 2
+  temp_min_distance_group_placement 16
+  terrain_to_place_on DESERT
+  min_distance_group_placement 4
+  actor_area beach_gold
+  actor_area_radius 6
+}
+
+create_object PINEAPPLE_BUSH {
+  number_of_objects 6
+  number_of_groups 32
+  temp_min_distance_group_placement 16
+  terrain_to_place_on DESERT
+  avoid_forest_zone 4
+  max_distance_to_other_zones 7
+  set_tight_grouping
+  group_placement_radius 2
+  min_distance_to_map_edge 4
+  avoid_actor_area beach_gold
+}
+
+create_object RELIC {
+  number_of_objects 5
+  terrain_to_place_on DESERT
+  avoid_forest_zone 1
+  min_distance_to_map_edge 1
+  max_distance_to_other_zones 6
+  temp_min_distance_group_placement 16
+  min_distance_group_placement 4
+}
+
+/* Forest Objects */
+create_object JAVELINA {
+  number_of_objects 2
+  number_of_groups 6
+  set_loose_grouping
+  terrain_to_place_on DLC_JUNGLEGRASS
+  temp_min_distance_group_placement 12
+  avoid_forest_zone 1
+  min_distance_to_map_edge 1
+  min_distance_group_placement 2
+  avoid_actor_area cracked_large
+  avoid_actor_area desert_area
+}
+
+create_object CAPYBARA {
+  number_of_objects 3
+  group_variance 1
+  set_loose_grouping
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_groups 16
+  temp_min_distance_group_placement 16
+  avoid_actor_area cracked_small
+  avoid_actor_area desert_area
+}
+
+create_object JUNGLETREE {
+  number_of_objects 12
+  avoid_forest_zone 2
+  temp_min_distance_group_placement 4
+  terrain_to_place_on DLC_JUNGLEGRASS
+  min_distance_group_placement 3
+}
+
+/* Top Objects */
+create_object GOLD {
+  number_of_objects 4
+  group_variance 1
+  number_of_groups 16
+  temp_min_distance_group_placement 9
+  terrain_to_place_on DLC_CRACKED
+  set_tight_grouping
+  group_placement_radius 2
+  min_distance_to_map_edge 2
+  avoid_actor_area cracked_edge
+  actor_area top_gold
+  actor_area_radius 4
+}
+
+create_object STONE {
+  number_of_objects 4
+  group_variance 1
+  number_of_groups 16
+  temp_min_distance_group_placement 11
+  terrain_to_place_on DLC_CRACKED
+  set_tight_grouping
+  group_placement_radius 2
+  min_distance_to_map_edge 2
+  avoid_actor_area cracked_edge
+  avoid_actor_area top_gold
+}
+
+create_object JAGUAR {
+  terrain_to_place_on DLC_CRACKED
+  number_of_objects 12
+}
+
+create_object BLACK_PANTHER {
+  terrain_to_place_on DLC_CRACKED
+  number_of_objects 4
+}
+
+/* Scenery */
+create_object PHONL {
+  number_of_objects 4
+  group_variance 2
+  number_of_groups 3
+  temp_min_distance_group_placement 8
+  min_distance_group_placement 4
+  set_loose_grouping
+  terrain_to_place_on DLC_DESERTGRAVEL
+  min_distance_to_map_edge 1
+  avoid_actor_area orange_bush_1
+  avoid_forest_zone 1
+  second_object PLANT_RAINFOREST
+}
+
+create_object PHONL {
+  number_of_objects 4
+  group_variance 2
+  number_of_groups 3
+  temp_min_distance_group_placement 8
+  set_loose_grouping
+  terrain_to_place_on DLC_DESERTGRAVEL
+  min_distance_to_map_edge 1
+  avoid_actor_area orange_bush_1
+  avoid_forest_zone 1
+  second_object PLANT_JUNGLE
+}

@@ -1,0 +1,1003 @@
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+
+#const BUILDING 199
+#const DEAD_BUILDING 278
+
+#const HERDABLE_A CAPYBARA
+#const STRAGGLER JUNGLETREE
+
+#MKCONSTS
+
+/* Bridges */
+#const BRIDGE_A_TOP 605
+#const BRIDGE_A_MIDDLE 606
+#const BRIDGE_A_BOTTOM 607
+#const BRIDGE_B_TOP 608
+#const BRIDGE_B_MIDDLE 609
+#const BRIDGE_B_BOTTOM 610
+
+/* Terrains */
+#const MUD 76
+#const RAINFOREST_GRASS 83
+
+#const BASE0 GRASS2
+#const BASE1 GRASS3
+
+#const SPAWN0 DIRT2
+#const SPAWN1 DIRT3
+
+#const RIVER_WATER WEEDS_WATER
+#const PLAYER_BEACH DLC_BEACH3
+#const EDGE_BEACH DLC_BEACH2
+
+/* Determines the orientation that the river runs. */
+/* #define TB */
+/* #define LR */
+start_random
+  percent_chance 50 #define TB
+  percent_chance 50 #define LR
+end_random
+
+if TB
+  #const BRIDGE_TOP BRIDGE_A_TOP
+  #const BRIDGE_MIDDLE BRIDGE_A_MIDDLE
+  #const BRIDGE_BOTTOM BRIDGE_A_BOTTOM
+elseif LR
+  #const BRIDGE_TOP BRIDGE_B_BOTTOM
+  #const BRIDGE_MIDDLE BRIDGE_B_MIDDLE
+  #const BRIDGE_BOTTOM BRIDGE_B_TOP
+endif
+
+<PLAYER_SETUP>
+direct_placement
+behavior_version 2
+ai_info_map_type RIVERS 0 0 0
+
+#SETPHATTR
+
+/* Ensure certain objects only spawn on their own side. */
+effect_amount SET_ATTRIBUTE CAPYBARA ATTR_TERRAIN_ID 8
+effect_amount SET_ATTRIBUTE GUANACO ATTR_TERRAIN_ID 8
+effect_amount SET_ATTRIBUTE JAVELINA ATTR_TERRAIN_ID 8
+effect_amount SET_ATTRIBUTE RELIC ATTR_TERRAIN_ID 8
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE CONDOR ATTR_LINE_OF_SIGHT 0
+effect_amount SET_ATTRIBUTE FLAMINGO ATTR_LINE_OF_SIGHT 0
+
+/* Hack to make dead fish traps spawn the forest. */
+effect_percent GAIA_SET_ATTRIBUTE BUILDING ATTR_RADIUS_1 50
+effect_percent GAIA_SET_ATTRIBUTE BUILDING ATTR_RADIUS_2 50
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_FOUNDATION_TERRAIN SOUTH_AMERICAN_FOREST
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_TERRAIN_ID 11
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_HITPOINTS 0
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_STANDING_GRAPHIC 0
+effect_amount GAIA_SET_ATTRIBUTE DEAD_BUILDING ATTR_STORAGE_VALUE 0
+
+<LAND_GENERATION>
+enable_waves 0
+base_terrain RIVER_WATER
+
+create_land {
+  terrain_type SPAWN0
+  if TB
+    land_position rnd(48,52) 17
+    top_border 5
+    right_border 41
+    bottom_border 69
+    left_border 42
+  elseif LR
+    land_position 17 rnd(48,52)
+    top_border 41
+    right_border 69
+    bottom_border 42
+    left_border 5
+  endif
+
+  base_size 7
+  set_circular_base
+  assign_to AT_TEAM -10 0 0
+  land_id 1
+  zone 1
+  border_fuzziness 25
+  other_zone_avoidance_distance 4
+}
+
+create_land {
+  terrain_type SPAWN1
+  if TB
+    land_position rnd(48,52) 83
+    top_border 69
+    right_border 41
+    bottom_border 6
+    left_border 42
+  elseif LR
+    land_position 83 rnd(48,52)
+    top_border 41
+    right_border 6
+    bottom_border 42
+    left_border 69
+  endif
+
+  base_size 7
+  set_circular_base
+  assign_to AT_TEAM -10 0 0
+  land_id 2
+  zone 2
+  border_fuzziness 25
+  other_zone_avoidance_distance 4
+}
+
+create_land {
+  terrain_type BASE0
+  if TB
+    land_position 0 50
+    top_border -20
+    right_border 70
+    bottom_border -20
+  elseif LR
+    land_position 50 0
+    bottom_border 70
+  endif
+  border_fuzziness 30
+  land_id 10
+  zone 10
+  other_zone_avoidance_distance 4
+}
+
+create_land {
+  terrain_type BASE1
+  if TB
+    land_position 99 50
+    top_border -20
+    bottom_border -20
+    left_border 70
+  elseif LR
+    land_position 50 99
+    top_border 70
+  endif
+  border_fuzziness 30
+  land_id 11
+  zone 11
+  other_zone_avoidance_distance 4
+}
+
+create_land {
+  terrain_type DLC_MANGROVESHALLOW
+  land_position 50 50
+  number_of_tiles 0
+  set_circular_base
+  base_size 17
+  land_id 20
+  zone 20
+  other_zone_avoidance_distance 3
+}
+
+<ELEVATION_GENERATION>
+#FOR($i, 0, 3)
+  create_elevation 2 {
+    base_terrain BASE$i
+    enable_balanced_elevation
+    number_of_tiles 600
+    number_of_clumps 8
+  }
+#END_FOR
+
+<TERRAIN_GENERATION>
+/* Balance Forests on each side of the river. */
+#FOR($i, 0, 2)
+  /* Back Forests */
+  #REPEAT(8)
+    create_terrain SOUTH_AMERICAN_FOREST {
+      base_terrain BASE$i
+      spacing_to_other_terrain_types 30
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+
+  /* Small Forests */
+  create_terrain JUNGLE {
+    base_terrain BASE$i
+    land_percent 2
+    number_of_clumps 8
+    spacing_to_other_terrain_types 5
+  }
+#END_FOR
+
+/* Makes the River thinner. */
+#REPEAT(8)
+  create_terrain WATER {
+    base_terrain WEEDS_WATER
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_MANGROVESHALLOW 1
+    spacing_to_specific_terrain MUD 2
+    spacing_to_specific_terrain BASE0 4
+    spacing_to_specific_terrain BASE1 4
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain BASE0 {
+    base_terrain WEEDS_WATER
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain BASE1 10
+    spacing_to_specific_terrain DLC_MANGROVESHALLOW 1
+    spacing_to_specific_terrain MUD 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain BASE1 {
+    base_terrain WEEDS_WATER
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain BASE0 10
+    spacing_to_specific_terrain DLC_MANGROVESHALLOW 2
+    spacing_to_specific_terrain MUD 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain WEEDS_WATER {
+    base_terrain WATER
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Adjusts the edges of the Mangrove Circle */
+#REPEAT(8)
+  create_terrain WATER {
+    base_terrain DLC_MANGROVESHALLOW
+    land_percent 100
+    spacing_to_other_terrain_types 3
+  }
+#END_REPEAT
+
+create_terrain WEEDS_WATER {
+  base_terrain DLC_MANGROVESHALLOW
+  number_of_tiles 128
+  number_of_clumps 8
+}
+
+#REPEAT(8)
+  create_terrain DLC_MANGROVESHALLOW {
+    base_terrain WATER
+    land_percent 100
+  }
+#END_REPEAT
+
+/* Place Forests in the middle shallows. */
+create_terrain DLC_MANGROVEFOREST {
+  base_terrain DLC_MANGROVESHALLOW
+  number_of_tiles 30
+  number_of_clumps 5
+  spacing_to_other_terrain_types 2
+}
+
+/* Blending in the middle Shallows */
+create_terrain RAINFOREST_GRASS {
+  base_terrain DLC_MANGROVESHALLOW
+  number_of_tiles 150
+  number_of_clumps 4
+  terrain_mask 1
+  spacing_to_specific_terrain WEEDS_WATER 1
+}
+
+create_terrain GRASS2 {
+  base_terrain DLC_MANGROVESHALLOW
+  number_of_tiles 100
+  number_of_clumps 4
+  terrain_mask 1
+  spacing_to_specific_terrain WEEDS_WATER 1
+}
+
+/* Player Island Terrain Replacement */
+#FOR($i, 0, 2)
+  create_terrain MUD {
+    base_terrain SPAWN$i
+    land_percent 100
+    number_of_clumps 8192
+    beach_terrain PLAYER_BEACH
+  }
+#END_FOR
+
+/* Player Island Terrain Masking */
+#FOR($i, 0, 2)
+  create_terrain LEAVES {
+    base_terrain MUD
+    number_of_tiles 45
+    number_of_clumps 3
+    terrain_mask 1
+    beach_terrain PLAYER_BEACH
+  }
+#END_FOR
+
+#FOR($i, 0, 2)
+  create_terrain DLC_DRYGRASS {
+    base_terrain MUD
+    number_of_tiles 60
+    number_of_clumps 3
+    terrain_mask 1
+    beach_terrain PLAYER_BEACH
+  }
+#END_FOR
+
+/* Edge Terrain Replacement */
+#FOR($i, 0, 2)
+  #REPEAT(8)
+    create_terrain DLC_JUNGLEGRASS {
+      base_terrain BASE$i
+      land_percent 100
+      number_of_clumps 8192
+      beach_terrain EDGE_BEACH
+    }
+  #END_REPEAT
+#END_FOR
+
+create_terrain DLC_JUNGLELEAVES {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 12
+  number_of_clumps 16
+  beach_terrain EDGE_BEACH
+  terrain_mask 1
+}
+
+/* Water Masking */
+create_terrain DEEP_WATER {
+  base_terrain WEEDS_WATER
+  land_percent 3
+  number_of_clumps 8
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+
+create_terrain DLC_WATER4 {
+  base_terrain WEEDS_WATER
+  land_percent 3
+  number_of_clumps 8
+  spacing_to_other_terrain_types 1
+  terrain_mask 1
+}
+
+<CONNECTION_GENERATION>
+/* Replace terrain after connections. Without it, only replace prior terrain. */
+/* accumulate_connections */
+
+#FOR($i, 10, 12)
+  /* Connects the central mangrove to the edges. */
+  create_connect_land_zones 20 $i {
+    replace_terrain RIVER_WATER DLC_NEWSHALLOW
+    replace_terrain DEEP_WATER DLC_NEWSHALLOW
+    replace_terrain DLC_WATER4 DLC_NEWSHALLOW
+    replace_terrain EDGE_BEACH EDGE_BEACH
+    replace_terrain JUNGLE JUNGLE
+    replace_terrain DLC_MANGROVEFOREST DLC_MANGROVEFOREST
+    replace_terrain DLC_MANGROVESHALLOW DLC_MANGROVESHALLOW
+    replace_terrain SOUTH_AMERICAN_FOREST SOUTH_AMERICAN_FOREST
+    replace_terrain GRASS GRASS
+    replace_terrain GRASS2 GRASS2
+    terrain_cost RIVER_WATER 1
+    terrain_cost EDGE_BEACH 1
+    terrain_cost DEEP_WATER 1
+    terrain_cost DLC_WATER4 1
+    terrain_cost DLC_MANGROVESHALLOW 2
+    terrain_cost DLC_MANGROVEFOREST 2
+    terrain_cost SOUTH_AMERICAN_FOREST 5
+    terrain_cost JUNGLE 5
+    terrain_cost GRASS 5
+    terrain_cost GRASS2 5
+    terrain_size DLC_MANGROVEFOREST 0 0
+    terrain_size DLC_MANGROVESHALLOW 0 0
+    terrain_size EDGE_BEACH 0 0
+    terrain_size RIVER_WATER 7 2
+    terrain_size DEEP_WATER 7 2
+    terrain_size DLC_WATER4 7 2
+    terrain_size SOUTH_AMERICAN_FOREST 0 0
+    terrain_size JUNGLE 0 0
+    terrain_size GRASS 0 0
+    terrain_size GRASS2 0 0
+  }
+#END_FOR
+
+<OBJECTS_GENERATION>
+if TB
+  create_actor_area 20 20 left_blocker 40
+  create_actor_area 20 99 left_blocker 40
+  create_actor_area 99 20 right_blocker 40
+  create_actor_area 99 99 right_blocker 40
+
+  create_actor_area 20 2 top_blocker_1 23
+  create_actor_area 60 2 top_blocker_1 23
+  create_actor_area 100 2 top_blocker_1 23
+  create_actor_area 40 80 bottom_blocker_1 53
+  create_actor_area 80 80 bottom_blocker_1 53
+
+  create_actor_area 40 39 top_blocker_2 53
+  create_actor_area 80 39 top_blocker_2 53
+  create_actor_area 20 117 bottom_blocker_2 23
+  create_actor_area 60 117 bottom_blocker_2 23
+  create_actor_area 100 117 bottom_blocker_2 23
+
+  create_actor_area 59 59 fish_avoider 44
+  create_actor_area 60 60 fish_avoider 44
+
+  create_actor_area 0 0 edge_border0 80
+  create_actor_area 119 0 edge_border0 80
+  create_actor_area 0 119 edge_border1 80
+  create_actor_area 119 119 edge_border1 80
+
+  create_actor_area 20 0 top_bottom_border 50
+  create_actor_area 20 119 top_bottom_border 50
+  create_actor_area 99 0 top_bottom_border 50
+  create_actor_area 99 119 top_bottom_border 50
+
+  create_actor_area 59 0 middle_fish_edge_avoider 38
+  create_actor_area 60 119 middle_fish_edge_avoider 38
+  create_actor_area 59 0 middle_fish_edge_avoider 38
+  create_actor_area 60 119 middle_fish_edge_avoider 38
+elseif LR
+  create_actor_area 20 20 left_blocker 40
+  create_actor_area 99 20 left_blocker 40
+  create_actor_area 20 99 right_blocker 40
+  create_actor_area 99 99 right_blocker 40
+
+  create_actor_area 2 20 top_blocker_1 23
+  create_actor_area 2 60 top_blocker_1 23
+  create_actor_area 2 100 top_blocker_1 23
+  create_actor_area 80 40 bottom_blocker_1 53
+  create_actor_area 80 80 bottom_blocker_1 53
+
+  create_actor_area 39 40 top_blocker_2 53
+  create_actor_area 39 80 top_blocker_2 53
+  create_actor_area 117 20 bottom_blocker_2 23
+  create_actor_area 117 60 bottom_blocker_2 23
+  create_actor_area 117 100 bottom_blocker_2 23
+
+  create_actor_area 59 59 fish_avoider 44
+  create_actor_area 60 60 fish_avoider 44
+
+  create_actor_area 0 0 edge_border0 80
+  create_actor_area 0 119 edge_border0 80
+  create_actor_area 119 0 edge_border1 80
+  create_actor_area 119 119 edge_border1 80
+
+  create_actor_area 0 20 top_bottom_border 50
+  create_actor_area 119 20 top_bottom_border 50
+  create_actor_area 0 99 top_bottom_border 50
+  create_actor_area 119 99 top_bottom_border 50
+
+  create_actor_area 0 59 middle_fish_edge_avoider 38
+  create_actor_area 119 60 middle_fish_edge_avoider 38
+  create_actor_area 0 59 middle_fish_edge_avoider 38
+  create_actor_area 119 60 middle_fish_edge_avoider 38
+endif
+
+/* create_object FLAG_B {
+  number_of_objects 14400
+  actor_area_to_place_in left_blocker
+} */
+/* create_object FLAG_B {
+  number_of_objects 14400
+  actor_area_to_place_in right_blocker
+} */
+/* create_object FLAG_B {
+  number_of_objects 14400
+  actor_area_to_place_in top_blocker_1
+} */
+/* create_object FLAG_C {
+  number_of_objects 14400
+  actor_area_to_place_in bottom_blocker_1
+} */
+/* create_object FLAG_B {
+  number_of_objects 14400
+  actor_area_to_place_in top_blocker_2
+} */
+/* create_object FLAG_C {
+  number_of_objects 14400
+  actor_area_to_place_in bottom_blocker_2
+} */
+/* create_object FLAG_A {
+  number_of_objects 14400
+  actor_area_to_place_in fish_avoider
+} */
+/* create_object FLAG_B {
+  number_of_objects 14400
+  actor_area_to_place_in edge_border0
+} */
+/* create_object FLAG_C {
+  number_of_objects 14400
+  actor_area_to_place_in edge_border1
+} */
+/* create_object FLAG_C {
+  number_of_objects 14400
+  actor_area_to_place_in top_bottom_border
+} */
+/* create_object FLAG_C {
+  number_of_objects 14400
+  actor_area_to_place_in middle_fish_edge_avoider
+} */
+
+/* Bridges */
+#FOR($i, 1, 3)
+  /* Land bridge blockers. */
+  create_object PHONL {
+    number_of_objects 14400
+    place_on_specific_land_id $i
+    max_distance_to_other_zones 1
+    set_gaia_object_only
+    actor_area mid_bridge_avoider
+    actor_area_radius 0
+  }
+
+  /* Top Right Bridge */
+  create_object PHON {
+    place_on_specific_land_id $i
+    terrain_to_place_on PLAYER_BEACH
+    set_gaia_object_only
+    find_closest
+    avoid_actor_area left_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+    actor_area bridge_top_right_start
+    actor_area_radius 1
+  }
+
+  create_object BRIDGE_BOTTOM {
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    actor_area_to_place_in bridge_top_right_start
+    avoid_actor_area left_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+    actor_area bridge_end
+    actor_area_radius 5
+  }
+
+  create_object BRIDGE_MIDDLE {
+    number_of_objects 4
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area left_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+  }
+
+  create_object BRIDGE_MIDDLE {
+    set_gaia_object_only
+    number_of_objects 8
+    place_on_specific_land_id $i
+    terrain_to_place_on RIVER_WATER
+    find_closest
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area left_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+  }
+
+  create_object BRIDGE_MIDDLE {
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    min_distance_to_players 10
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area left_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+  }
+
+  create_object BRIDGE_TOP {
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    min_distance_to_players 10
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area left_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+    actor_area bridge_end
+    actor_area_radius 5
+  }
+
+  /* Top Left Bridge */
+  create_object PHON {
+    place_on_specific_land_id $i
+    terrain_to_place_on PLAYER_BEACH
+    set_gaia_object_only
+    find_closest
+    avoid_actor_area right_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+    actor_area bridge_top_left_start
+    actor_area_radius 2
+  }
+
+  create_object BRIDGE_TOP {
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    actor_area_to_place_in bridge_top_left_start
+    avoid_actor_area right_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+    actor_area bridge_end
+    actor_area_radius 5
+  }
+
+  create_object BRIDGE_MIDDLE {
+    number_of_objects 4
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area right_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+  }
+
+  create_object BRIDGE_MIDDLE {
+    set_gaia_object_only
+    number_of_objects 8
+    place_on_specific_land_id $i
+    terrain_to_place_on RIVER_WATER
+    find_closest
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area right_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+  }
+
+  /* create_object BRIDGE_A_MIDDLE {
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    min_distance_to_players 10
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area right_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+  } */
+
+  create_object BRIDGE_BOTTOM {
+    set_gaia_object_only
+    place_on_specific_land_id $i
+    find_closest
+    min_distance_to_players 10
+    avoid_actor_area mid_bridge_avoider
+    avoid_actor_area right_blocker
+    avoid_actor_area top_blocker_$i
+    avoid_actor_area bottom_blocker_$i
+    actor_area bridge_end
+    actor_area_radius 5
+  }
+#END_FOR
+
+/* Birds */
+create_object FLAMINGO {
+  number_of_objects 3
+}
+
+create_object CONDOR {
+  number_of_objects 3
+}
+
+
+/* Player Objects */
+#OBJECTS9VILSZEWALL
+
+/* Player Oysters */
+create_object OYSTERS {
+  number_of_objects 3
+  set_gaia_object_only
+  #SET_PLACE_FOR_EVERY_PLAYER
+  terrain_to_place_on PLAYER_BEACH
+  temp_min_distance_group_placement 6
+  find_closest_to_map_center
+  set_circular_placement
+  max_distance_to_players 25
+  min_distance_group_placement 1
+}
+
+/* Map Shore Fish */
+create_object SHORE_FISH {
+  number_of_objects 256
+  temp_min_distance_group_placement 6
+  avoid_actor_area bridge_end
+  min_distance_group_placement 3
+}
+
+/* Back Fish */
+/* #REPEAT(6)
+  create_object DORADO {
+    number_of_objects 2
+    temp_min_distance_group_placement 60
+    actor_area big_fish
+    actor_area_radius 6
+    avoid_actor_area big_fish
+    avoid_actor_area fish_avoider
+    max_distance_to_other_zones 2
+  }
+#END_REPEAT */
+
+/* Forward Fish */
+create_object DORADO {
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  max_distance_to_players 20
+  ignore_terrain_restrictions
+  terrain_to_place_on WEEDS_WATER
+  max_distance_to_other_zones 3
+  avoid_actor_area middle_fish_edge_avoider
+  avoid_actor_area right_blocker
+  actor_area front_fish
+  actor_area_radius 8
+}
+
+create_object DORADO {
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  max_distance_to_players 20
+  ignore_terrain_restrictions
+  terrain_to_place_on WEEDS_WATER
+  max_distance_to_other_zones 3
+  avoid_actor_area middle_fish_edge_avoider
+  avoid_actor_area left_blocker
+  avoid_actor_area front_fish
+}
+
+/* Player Trees */
+create_object BUILDING {
+  number_of_objects 15
+  number_of_groups 3
+  set_tight_grouping
+  group_placement_radius 2
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  set_gaia_unconvertible
+  avoid_actor_area bridge_end
+  max_distance_to_other_zones 3
+  avoid_actor_area box7
+  temp_min_distance_group_placement 6
+  avoid_forest_zone 3
+  actor_area player_forest2
+  actor_area_radius 2
+  second_object DLC_RAINTREE
+}
+
+create_object CAPYBARA {
+  #SET_PLACE_FOR_EVERY_PLAYER
+  number_of_objects 3
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_loose_grouping
+}
+
+create_object SCOUT {
+  #SET_PLACE_FOR_EVERY_PLAYER
+  avoid_actor_area box4
+  actor_area_to_place_in box5
+  max_distance_to_players 10
+  avoid_forest_zone 1
+}
+
+create_object PHONL {
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  min_distance_to_players 8
+  set_circular_placement
+  enable_tile_shuffling
+  require_path 0
+  avoid_actor_area player_forest2
+  max_distance_to_other_zones 3
+  avoid_actor_area house2
+  actor_area rhea_area
+  actor_area_radius 2
+}
+
+create_object RHEA {
+  number_of_objects 4
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  actor_area_to_place_in rhea_area
+}
+
+/* Javelina for player across the bridge. */
+create_object JAVELINA {
+  avoid_actor_area right_blocker
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  temp_min_distance_group_placement 80
+  terrain_to_place_on DLC_JUNGLEGRASS
+  ignore_terrain_restrictions
+  find_closest
+  avoid_actor_area bridge_end
+  max_distance_to_other_zones 4
+  min_distance_group_placement 3
+  actor_area javelina
+  actor_area_radius 8
+}
+
+create_object JAVELINA {
+  avoid_actor_area left_blocker
+  #SET_PLACE_FOR_EVERY_PLAYER
+  set_gaia_object_only
+  temp_min_distance_group_placement 80
+  terrain_to_place_on DLC_JUNGLEGRASS
+  ignore_terrain_restrictions
+  find_closest
+  avoid_actor_area bridge_end
+  max_distance_to_other_zones 4
+  min_distance_group_placement 3
+  actor_area javelina
+  actor_area_radius 8
+}
+
+/* Mangrove Objects */
+create_object RELIC {
+  place_on_specific_land_id 20
+  set_circular_placement
+  max_distance_to_players 5
+  min_distance_group_placement 3
+  avoid_forest_zone 1
+}
+
+create_object GOLD {
+  number_of_objects 3
+  number_of_groups 6
+  temp_min_distance_group_placement 4
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_forest_zone 2
+  max_distance_to_other_zones 3
+  min_distance_group_placement 2
+  terrain_to_place_on DLC_MANGROVESHALLOW
+}
+
+create_object CAIMAN {
+  number_of_objects 12
+  terrain_to_place_on DLC_MANGROVESHALLOW
+  temp_min_distance_group_placement 3
+}
+
+#FOR($i, 10, 12)
+  /* Edge Corner Objects */
+  #FOR($j, 0, 2)
+    create_object STONE {
+      place_on_specific_land_id $i
+      avoid_actor_area edge_border$j
+      avoid_actor_area bridge_end
+
+      number_of_objects 3
+      number_of_groups 2
+      set_tight_grouping
+      group_placement_radius 1
+      min_distance_group_placement 3
+      temp_min_distance_group_placement 10
+      avoid_forest_zone 3
+      min_distance_to_map_edge 3
+      max_distance_to_other_zones 5
+      actor_area edge_stone
+      actor_area_radius 6
+    }
+
+    create_object GOLD {
+      place_on_specific_land_id $i
+      avoid_actor_area edge_border$j
+      avoid_actor_area bridge_end
+
+      number_of_objects 2
+      number_of_groups 2
+      temp_min_distance_group_placement 10
+      set_tight_grouping
+      group_placement_radius 1
+      min_distance_group_placement 3
+      avoid_forest_zone 3
+      min_distance_to_map_edge 3
+      max_distance_to_other_zones 5
+      avoid_actor_area edge_stone
+      actor_area edge_gold
+      actor_area_radius 6
+    }
+
+    create_object PAPAYA_TREE {
+      place_on_specific_land_id $i
+      avoid_actor_area edge_border$j
+      avoid_actor_area bridge_end
+
+      number_of_objects 6
+      number_of_groups 4
+      set_tight_grouping
+      group_placement_radius 2
+      min_distance_group_placement 3
+      temp_min_distance_group_placement 6
+      avoid_forest_zone 3
+      min_distance_to_map_edge 3
+      max_distance_to_other_zones 3
+      avoid_actor_area edge_stone
+    }
+
+    create_object GUANACO {
+      place_on_specific_land_id $i
+      avoid_actor_area edge_border$j
+      avoid_actor_area bridge_end
+
+      avoid_actor_area javelina
+      avoid_forest_zone 3
+      max_distance_to_other_zones 3
+      min_distance_to_map_edge 3
+
+      number_of_objects 4
+      number_of_groups 3
+      set_tight_grouping
+      group_placement_radius 3
+      temp_min_distance_group_placement 12
+    }
+  #END_FOR
+
+  /* Edge Middle Objects */
+  create_object GOLD {
+    place_on_specific_land_id $i
+    avoid_actor_area top_bottom_border
+
+    number_of_objects 4
+    number_of_groups 2
+    set_tight_grouping
+    group_placement_radius 2
+    avoid_forest_zone 3
+    max_distance_to_other_zones 5
+    min_distance_group_placement 3
+    temp_min_distance_group_placement 12
+  }
+
+  create_object JAVELINA {
+    place_on_specific_land_id $i
+    avoid_actor_area top_bottom_border
+
+    number_of_objects 2
+    /* number_of_groups 3 */
+    avoid_forest_zone 2
+    max_distance_to_other_zones 5
+    min_distance_group_placement 1
+    temp_min_distance_group_placement 6
+  }
+
+  create_object RELIC {
+    place_on_specific_land_id $i
+    avoid_actor_area top_bottom_border
+    number_of_objects 2
+    avoid_forest_zone 2
+    max_distance_to_other_zones 5
+    temp_min_distance_group_placement 12
+    min_distance_group_placement 1
+  }
+
+  /* Capybaras */
+  create_object CAPYBARA {
+    place_on_specific_land_id $i
+    number_of_objects 3
+    number_of_groups 16
+    group_variance 1
+    temp_min_distance_group_placement 16
+    avoid_forest_zone 2
+    min_distance_group_placement 3
+    max_distance_to_other_zones 8
+    avoid_actor_area bridge_end
+  }
+#END_FOR
+
+/* Stragglers */
+create_object JUNGLETREE {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 24
+  avoid_forest_zone 2
+  max_distance_to_other_zones 4
+  temp_min_distance_group_placement 6
+}
