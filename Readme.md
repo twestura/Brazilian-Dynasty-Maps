@@ -1,7 +1,7 @@
-# Brazilian Dynasties Maps
+# Brazilian Dynasty Maps
 
-Map pack for the [Brazilian Dynasties](https://liquipedia.net/ageofempires/Brazilian_Dynasty) tournament, hosted by [Onimaru Esports](https://teamonimaru.com/).
-Install the mod by searching for "Brazilian Dynasties Maps" in the in-game mod center, or by using the following link:
+Map pack for the [Brazilian Dynasty](https://liquipedia.net/ageofempires/Brazilian_Dynasty) tournament, hosted by [Onimaru Esports](https://teamonimaru.com/).
+Install the mod by searching for "Brazilian Dynasty Maps" in the in-game mod center, or by using the following link:
 
 [https://www.ageofempires.com/mods/details/469602/](https://www.ageofempires.com/mods/details/469602/)
 
