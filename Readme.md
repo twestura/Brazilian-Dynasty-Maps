@@ -27,6 +27,4 @@ Lençóis Maranhenses is an original map and should not be confused with the [3v
 ## Build Process
 
 These files are the source files, not the final map scripts included in the mod.
-The maps require a preprocessor in order to be built.
-
-<!-- TODO link the preprocessor when it is uploaded -->
+The maps require [T-West's preprocessor](https://github.com/twestura/RMS-Preprocessor) in order to be built.
