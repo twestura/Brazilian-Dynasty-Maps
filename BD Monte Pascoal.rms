@@ -960,7 +960,6 @@ create_object PHON {
   terrain_to_place_on DLC_CRACKED
   layer_to_place_on DLC_DESERTGRAVEL
   number_of_objects 3
-  min_distance_group_placement 1
   temp_min_distance_group_placement 2
   second_object DLC_ANIMALSKELETON
 }
@@ -973,11 +972,10 @@ create_object PHON {
 }
 
 create_object BLACK_PANTHER {
-  number_of_objects 4
-  set_loose_grouping
+  number_of_objects 7
   terrain_to_place_on DLC_CRACKED
   layer_to_place_on DLC_DESERTGRAVEL
-  min_distance_group_placement 2
+  min_distance_group_placement 1
   actor_area top_panthers
   actor_area_radius 7
 }
@@ -1013,13 +1011,7 @@ create_object STONE {
 
 create_object JAGUAR {
   terrain_to_place_on DLC_CRACKED
-  number_of_objects 12
-  avoid_actor_area top_panthers
-}
-
-create_object BLACK_PANTHER {
-  terrain_to_place_on DLC_CRACKED
-  number_of_objects 4
+  number_of_objects 16
   avoid_actor_area top_panthers
 }
 
