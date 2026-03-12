@@ -167,7 +167,7 @@ create_land {
   elseif SOUTH
     land_position rnd(85,90) rnd(35,70)
   elseif WEST
-    land_position rnd(30,65) rnd(85,90) 
+    land_position rnd(30,65) rnd(85,90)
   endif
   terrain_type SPAWN0
   number_of_tiles 500

@@ -11,7 +11,7 @@
 /* Changes from 2.0: Added pine variation, player gold/stone now two piles */
 /* Changes from 2.1: More terrain variety */
 /* Rbase: Changes for onimaru LAN: South american theme */
-#HEADER_END	
+#HEADER_END
 
 /* Flag for testing rock vs no-rock gaps between levels. */
 /* #define ROCK_VERSION */

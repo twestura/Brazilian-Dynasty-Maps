@@ -1745,7 +1745,7 @@ create_object CAPYBARA {
     actor_area neutral_gold
     actor_area_radius 4
   }
-  
+
   create_object PHON {
     place_on_specific_land_id $i
     number_of_objects 128
@@ -1791,7 +1791,7 @@ create_object CAPYBARA {
     actor_area neutral_stone
     actor_area_radius 4
   }
-  
+
   create_object PHON {
     place_on_specific_land_id $i
     number_of_objects 128

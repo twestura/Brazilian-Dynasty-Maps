@@ -968,7 +968,7 @@ enable_waves 0
     assign_to_player $i
     land_id (L1 + $i)
   }
-  
+
   create_land {
     terrain_type DLC_JUNGLEGRASS
     land_position C$i D$i
@@ -1186,7 +1186,7 @@ create_terrain DIRT3 {
     create_actor_area (P$i - 16) (Q$i - 1) gate_hole 0
     create_actor_area (P$i - 16) Q$i gate_hole 0
     create_actor_area (P$i - 16) (Q$i + 1) gate_hole 0
-    
+
     create_actor_area (P$i + 16) (Q$i - 2) gate_hole 0
     create_actor_area (P$i + 16) (Q$i - 1) gate_hole 0
     create_actor_area (P$i + 16) Q$i gate_hole 0
@@ -1198,7 +1198,7 @@ create_terrain DIRT3 {
     create_actor_area (P$i - 13) (Q$i - 10) gate_hole 0
     create_actor_area (P$i - 12) (Q$i - 11) gate_hole 0
     create_actor_area (P$i - 11) (Q$i - 12) gate_hole 0
-    
+
     create_actor_area (P$i + 10) (Q$i + 13) gate_hole 0
     create_actor_area (P$i + 11) (Q$i + 12) gate_hole 0
     create_actor_area (P$i + 12) (Q$i + 11) gate_hole 0
@@ -1224,7 +1224,7 @@ create_terrain DIRT3 {
     create_actor_area (P$i - 12) (Q$i + 11) gate_hole 0
     create_actor_area (P$i - 11) (Q$i + 12) gate_hole 0
     create_actor_area (P$i - 10) (Q$i + 13) gate_hole 0
-    
+
     create_actor_area (P$i + 10) (Q$i - 13) gate_hole 0
     create_actor_area (P$i + 11) (Q$i - 12) gate_hole 0
     create_actor_area (P$i + 12) (Q$i - 11) gate_hole 0
@@ -1682,7 +1682,7 @@ create_object TOWN_CENTER {
     min_distance_to_players 8
     max_distance_to_players 10
   }
-  
+
   /* Mining Camp Objects */
   create_object TEMPORARY_REVEALER_SMALL {
     place_on_specific_land_id 2$i
@@ -1795,7 +1795,7 @@ create_object WILD_MONKEY {
     avoid_actor_area monkey_rock4
     avoid_actor_area mid_gold_distance_10
     avoid_actor_area mid_stone_distance_5
-    
+
     actor_area mid_gold_$i_1
     actor_area_radius 1
   }
@@ -1839,7 +1839,7 @@ create_object WILD_MONKEY {
     avoid_actor_area monkey_rock4
     avoid_actor_area mid_gold_distance_5
     avoid_actor_area mid_stone_distance_10
-    
+
     actor_area mid_stone_$i_1
     actor_area_radius 1
   }
