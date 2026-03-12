@@ -129,14 +129,14 @@ create_land {
   if TB
     land_position rnd(48,52) 17
     top_border 5
-    right_border 41
+    right_border 40
     bottom_border 69
-    left_border 42
+    left_border 41
   elseif LR
     land_position 17 rnd(48,52)
-    top_border 41
+    top_border 40
     right_border 69
-    bottom_border 42
+    bottom_border 41
     left_border 5
   endif
 
@@ -154,14 +154,14 @@ create_land {
   if TB
     land_position rnd(48,52) 83
     top_border 69
-    right_border 41
+    right_border 40
     bottom_border 6
-    left_border 42
+    left_border 41
   elseif LR
     land_position 83 rnd(48,52)
-    top_border 41
+    top_border 40
     right_border 6
-    bottom_border 42
+    bottom_border 41
     left_border 69
   endif
 
@@ -476,6 +476,11 @@ if TB
   create_actor_area 0 119 edge_border1 80
   create_actor_area 119 119 edge_border1 80
 
+  create_actor_area 0 0 edge_border_large0 100
+  create_actor_area 119 0 edge_border_large0 100
+  create_actor_area 0 119 edge_border_large1 100
+  create_actor_area 119 119 edge_border_large1 100
+
   create_actor_area 20 0 top_bottom_border 50
   create_actor_area 20 119 top_bottom_border 50
   create_actor_area 99 0 top_bottom_border 50
@@ -510,6 +515,11 @@ elseif LR
   create_actor_area 0 119 edge_border0 80
   create_actor_area 119 0 edge_border1 80
   create_actor_area 119 119 edge_border1 80
+
+  create_actor_area 0 0 edge_border_large0 100
+  create_actor_area 0 119 edge_border_large0 100
+  create_actor_area 119 0 edge_border_large1 100
+  create_actor_area 119 119 edge_border_large1 100
 
   create_actor_area 0 20 top_bottom_border 50
   create_actor_area 119 20 top_bottom_border 50
@@ -557,6 +567,14 @@ endif
 /* create_object FLAG_C {
   number_of_objects 14400
   actor_area_to_place_in edge_border1
+} */
+/* create_object FLAG_B {
+  number_of_objects 14400
+  actor_area_to_place_in edge_border_large0
+} */
+/* create_object FLAG_C {
+  number_of_objects 14400
+  actor_area_to_place_in edge_border_large1
 } */
 /* create_object FLAG_C {
   number_of_objects 14400
@@ -613,6 +631,8 @@ endif
     avoid_actor_area left_blocker
     avoid_actor_area top_blocker_$i
     avoid_actor_area bottom_blocker_$i
+    actor_area bridge_middle
+    actor_area_radius 4
   }
 
   create_object BRIDGE_MIDDLE {
@@ -625,6 +645,8 @@ endif
     avoid_actor_area left_blocker
     avoid_actor_area top_blocker_$i
     avoid_actor_area bottom_blocker_$i
+    actor_area bridge_middle
+    actor_area_radius 4
   }
 
   create_object BRIDGE_MIDDLE {
@@ -636,6 +658,8 @@ endif
     avoid_actor_area left_blocker
     avoid_actor_area top_blocker_$i
     avoid_actor_area bottom_blocker_$i
+    actor_area bridge_middle
+    actor_area_radius 4
   }
 
   create_object BRIDGE_TOP {
@@ -685,6 +709,8 @@ endif
     avoid_actor_area right_blocker
     avoid_actor_area top_blocker_$i
     avoid_actor_area bottom_blocker_$i
+    actor_area bridge_middle
+    actor_area_radius 4
   }
 
   create_object BRIDGE_MIDDLE {
@@ -697,6 +723,8 @@ endif
     avoid_actor_area right_blocker
     avoid_actor_area top_blocker_$i
     avoid_actor_area bottom_blocker_$i
+    actor_area bridge_middle
+    actor_area_radius 4
   }
 
   /* create_object BRIDGE_A_MIDDLE {
@@ -733,7 +761,6 @@ create_object CONDOR {
   number_of_objects 3
 }
 
-
 /* Player Objects */
 #OBJECTS9VILSZEWALL
 
@@ -755,6 +782,7 @@ create_object SHORE_FISH {
   number_of_objects 256
   temp_min_distance_group_placement 6
   avoid_actor_area bridge_end
+  avoid_actor_area bridge_middle
   min_distance_group_placement 3
 }
 
@@ -798,23 +826,137 @@ create_object DORADO {
 }
 
 /* Player Trees */
-create_object BUILDING {
-  number_of_objects 15
-  number_of_groups 3
-  set_tight_grouping
-  group_placement_radius 2
-  #SET_PLACE_FOR_EVERY_PLAYER
-  set_gaia_object_only
-  set_gaia_unconvertible
-  avoid_actor_area bridge_end
-  max_distance_to_other_zones 3
-  avoid_actor_area box7
-  temp_min_distance_group_placement 6
-  avoid_forest_zone 3
-  actor_area player_forest2
-  actor_area_radius 2
-  second_object DLC_RAINTREE
-}
+/* Attempt several times to place trees. */
+#FOR($i, 1, 3)
+  #FOR($iter, 0, 5)
+    /* Initial 2 tree spots, assume guaranteed to spawn. */
+    create_object PHONL {
+      avoid_actor_area tree_success_$i
+
+      number_of_objects 2
+      place_on_specific_land_id $i
+      set_gaia_object_only
+
+      avoid_actor_area bridge_end
+      max_distance_to_other_zones 3
+      avoid_actor_area box7
+      avoid_forest_zone 3
+
+      temp_min_distance_group_placement 8
+      actor_area tree_spot_0_$i_$iter
+      actor_area_radius 0
+    }
+
+    /* Radius around the intial spots for the 3rd spot to avoid. */
+    create_object PHONL {
+      avoid_actor_area tree_success_$i
+      number_of_objects 2
+      place_on_specific_land_id $i
+      set_gaia_object_only
+      temp_min_distance_group_placement 2
+      actor_area_to_place_in tree_spot_0_$i_$iter
+      actor_area tree_spacing_$i_$iter
+      actor_area_radius 8
+    }
+
+    /* 3rd tree spot. */
+    create_object PHONL {
+      avoid_actor_area tree_success_$i
+
+      place_on_specific_land_id $i
+      set_gaia_object_only
+
+      avoid_actor_area bridge_end
+      max_distance_to_other_zones 3
+      avoid_actor_area box7
+      avoid_forest_zone 3
+      avoid_actor_area tree_spacing_$i_$iter
+
+      actor_area tree_final_0_$i_$iter
+      actor_area_radius 0
+    }
+
+    /* Successful case of the 3rd placeholder appearing. */
+    create_object BUILDING {
+      avoid_actor_area tree_success_$i
+
+      place_on_specific_land_id $i
+      set_gaia_object_only
+      set_gaia_unconvertible
+
+      number_of_objects 15
+      set_tight_grouping
+      group_placement_radius 2
+
+      second_object DLC_RAINTREE
+      actor_area_to_place_in tree_final_0_$i_$iter
+
+      actor_area tree_success_$i_$iter
+      actor_area_radius 8192
+    }
+
+    /* Failure object when the 3rd placeholder doesn't appear. */
+    create_object PHON {
+      avoid_actor_area tree_success_$i
+      place_on_specific_land_id $i
+      set_gaia_object_only
+      avoid_actor_area tree_success_$i_$iter
+      actor_area tree_failure_$i_$iter
+      actor_area_radius 8192
+    }
+
+    /* Place the first two forests on success. */
+    create_object BUILDING {
+      avoid_actor_area tree_success_$i
+      avoid_actor_area tree_failure_$i_$iter
+
+      place_on_specific_land_id $i
+      set_gaia_object_only
+      set_gaia_unconvertible
+
+      number_of_objects 15
+      number_of_groups 2
+      temp_min_distance_group_placement 1
+      set_tight_grouping
+      group_placement_radius 2
+
+      second_object DLC_RAINTREE
+      actor_area_to_place_in tree_spot_0_$i_$iter
+    }
+
+    /* Overall success object. */
+    create_object PHON {
+      avoid_actor_area tree_success_$i
+      place_on_specific_land_id $i
+      set_gaia_object_only
+      avoid_actor_area tree_failure_$i_$iter
+      actor_area tree_success_$i
+      actor_area_radius 8192
+    }
+  #END_FOR
+
+
+  /* Backup case when trees cannot be placed. */
+  create_object BUILDING {
+    place_on_specific_land_id $i
+    number_of_objects 15
+    number_of_groups 3
+    set_tight_grouping
+    group_placement_radius 2
+    set_gaia_object_only
+    set_gaia_unconvertible
+    avoid_actor_area bridge_end
+    max_distance_to_other_zones 2
+    avoid_actor_area box7
+    temp_min_distance_group_placement 5
+    avoid_forest_zone 3
+    actor_area player_forest2
+    actor_area_radius 2
+    second_object DLC_RAINTREE
+    /* second_object KING */
+    avoid_actor_area tree_success_$i
+  }
+#END_FOR
 
 create_object CAPYBARA {
   #SET_PLACE_FOR_EVERY_PLAYER
@@ -858,12 +1000,11 @@ create_object JAVELINA {
   avoid_actor_area right_blocker
   #SET_PLACE_FOR_EVERY_PLAYER
   set_gaia_object_only
-  temp_min_distance_group_placement 80
+  temp_min_distance_group_placement 40
   terrain_to_place_on DLC_JUNGLEGRASS
   ignore_terrain_restrictions
-  find_closest
-  avoid_actor_area bridge_end
-  max_distance_to_other_zones 4
+  actor_area_to_place_in bridge_end
+  max_distance_to_other_zones 5
   min_distance_group_placement 3
   actor_area javelina
   actor_area_radius 8
@@ -873,12 +1014,11 @@ create_object JAVELINA {
   avoid_actor_area left_blocker
   #SET_PLACE_FOR_EVERY_PLAYER
   set_gaia_object_only
-  temp_min_distance_group_placement 80
+  temp_min_distance_group_placement 40
   terrain_to_place_on DLC_JUNGLEGRASS
   ignore_terrain_restrictions
-  find_closest
-  avoid_actor_area bridge_end
-  max_distance_to_other_zones 4
+  actor_area_to_place_in bridge_end
+  max_distance_to_other_zones 5
   min_distance_group_placement 3
   actor_area javelina
   actor_area_radius 8
@@ -914,6 +1054,26 @@ create_object CAIMAN {
 #FOR($i, 10, 12)
   /* Edge Corner Objects */
   #FOR($j, 0, 2)
+    /* Keep one gold in the corner. */
+    create_object GOLD {
+      place_on_specific_land_id $i
+      avoid_actor_area edge_border_large$j
+      avoid_actor_area bridge_end
+
+      number_of_objects 2
+      temp_min_distance_group_placement 10
+      set_tight_grouping
+      group_placement_radius 1
+      min_distance_group_placement 3
+      avoid_forest_zone 3
+      min_distance_to_map_edge 3
+      max_distance_to_other_zones 5
+      avoid_actor_area edge_stone
+      actor_area edge_gold
+      actor_area_radius 6
+    }
+
+    /* Stones in the corners, not as restricted as the first gold. */
     create_object STONE {
       place_on_specific_land_id $i
       avoid_actor_area edge_border$j
@@ -928,17 +1088,18 @@ create_object CAIMAN {
       avoid_forest_zone 3
       min_distance_to_map_edge 3
       max_distance_to_other_zones 5
+      avoid_actor_area edge_gold
       actor_area edge_stone
       actor_area_radius 6
     }
 
+    /* Second Gold, not restricted as much to the corner. */
     create_object GOLD {
       place_on_specific_land_id $i
       avoid_actor_area edge_border$j
       avoid_actor_area bridge_end
 
       number_of_objects 2
-      number_of_groups 2
       temp_min_distance_group_placement 10
       set_tight_grouping
       group_placement_radius 1
@@ -947,6 +1108,7 @@ create_object CAIMAN {
       min_distance_to_map_edge 3
       max_distance_to_other_zones 5
       avoid_actor_area edge_stone
+      avoid_actor_area edge_gold
       actor_area edge_gold
       actor_area_radius 6
     }
