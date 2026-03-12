@@ -45,7 +45,7 @@ if ADMIN_RESTART
   guard_state SABOTEUR AMOUNT_GOLD 0 1
 endif
 
-/* Comment Start and End Tokens (not removed by the preprocess) */
+/* Comment Start and End Tokens (not removed by the preprocessor). */
 #const [ 69
 #const ] 70
 
