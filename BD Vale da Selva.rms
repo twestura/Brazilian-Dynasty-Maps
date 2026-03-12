@@ -43,9 +43,16 @@ if ADMIN_RESTART
 endif
 
 /* Objects */
-#const ROCK2 1323
 #const HERDABLE_A DLC_GOOSE
 #const STRAGGLER JUNGLETREE
+#const BUILDING 199
+#const DEAD_BUILDING 278
+
+/* Guy Josselyne (Dead) */
+#const PH_NON_ROCK 649
+
+#const ROCK2 1323
+#const PLANT_FLOWERS 1366
 
 #MKCONSTS
 
@@ -55,7 +62,6 @@ start_random
   percent_chance 50 #define LR
 end_random
 
-#const PLANT_FLOWERS 1366
 
 /* Player Positions */
 #const POS1 rnd(40,60)
@@ -74,6 +80,18 @@ ai_info_map_type ARABIA 0 0 0
 effect_amount SET_ATTRIBUTE CONDOR ATTR_LINE_OF_SIGHT 0
 effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
 
+/* Changes the placeholder attributes to avoid Rock. */
+effect_amount SET_ATTRIBUTE PH_NON_ROCK ATTR_TERRAIN_ID 4
+
+/* Hack to make dead fish traps thin the Rock connection. */
+effect_percent GAIA_SET_ATTRIBUTE BUILDING ATTR_RADIUS_1 50
+effect_percent GAIA_SET_ATTRIBUTE BUILDING ATTR_RADIUS_2 50
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_FOUNDATION_TERRAIN DLC_ROCK
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_TERRAIN_ID 0
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_HITPOINTS 0
+effect_amount GAIA_SET_ATTRIBUTE DEAD_BUILDING ATTR_STORAGE_VALUE 0
+effect_amount GAIA_SET_ATTRIBUTE BUILDING ATTR_STANDING_GRAPHIC 0
+
 <LAND_GENERATION>
 base_terrain DLC_JUNGLEGRASS
 enable_waves 0
@@ -86,13 +104,13 @@ create_land {
   border_fuzziness 8
 
   if TB
-    land_position POS1 37
+    land_position POS1 34
     top_border 30
     right_border -20
     bottom_border 30
     left_border -20
   elseif LR
-    land_position 37 POS1
+    land_position 34 POS1
     top_border -20
     right_border 30
     bottom_border -20
@@ -107,13 +125,13 @@ create_land {
   border_fuzziness 8
 
   if TB
-    land_position POS2 63
+    land_position POS2 66
     top_border 30
     right_border -20
     bottom_border 30
     left_border -20
   elseif LR
-    land_position 63 POS2
+    land_position 66 POS2
     top_border -20
     right_border 30
     bottom_border -20
@@ -145,6 +163,19 @@ create_land {
     land_position 50 99
   elseif LR
     land_position 99 50
+  endif
+}
+
+/* Placeholder Lands */
+create_land {
+  terrain_type DIRT
+  number_of_tiles 0
+  base_size 1
+  land_id 10
+  if TB
+    land_position 99 50
+  elseif LR
+    land_position 50 99
   endif
 }
 
@@ -189,6 +220,24 @@ create_terrain DLC_JUNGLELEAVES {
     land_percent 100
     number_of_clumps 8192
     height_limits 3 7
+  }
+#END_REPEAT
+
+/*
+ * Use terrain masking to support placing trees in objects generation.
+ * This technique ensures there are not "holes" in the rock terrain as
+ * it stretches across the map. The terrain restriction objects then can be
+ * kept on one side of the connection and used to position the Fish Traps
+ * for filling in the diagonals along the sides of the connection to prevent
+ * walling.
+ */
+#REPEAT(8)
+  create_terrain DLC_ROCK {
+    base_terrain DLC_RAINFOREST
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 3 7
+    terrain_mask 2
   }
 #END_REPEAT
 
@@ -403,11 +452,52 @@ create_object MACAW {
 create_object PHON {
   number_of_objects 14400
   terrain_to_place_on DLC_ROCK
+  actor_area rock0
+  actor_area_radius 0
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_ROCK
   actor_area rock2
   actor_area_radius 2
 }
 
-/* Outside Rocks */
+/*
+ * Ensures the rock terrain cannot be walled by covering the diagonal tiles
+ * that would otherwise have allowed walling.
+ */
+create_object PH_NON_ROCK {
+  place_on_specific_land_id 10
+  number_of_objects 14400
+  actor_area rock_outside_0
+  actor_area_radius 0
+}
+
+create_object PH_NON_ROCK {
+  place_on_specific_land_id 10
+  number_of_objects 14400
+  actor_area rock_outside_1
+  actor_area_radius 1
+}
+
+create_object PHON {
+  place_on_specific_land_id 10
+  number_of_objects 14400
+  second_object BUILDING
+  actor_area_to_place_in rock_outside_1
+  avoid_actor_area rock_outside_0
+  avoid_actor_area rock0
+}
+
+/* Outside Trees and Rocks */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_ROCK
+  layer_to_place_on DLC_RAINFOREST
+  second_object DLC_RAINTREE
+}
+
 create_object ROCK {
   number_of_objects 32
   min_distance_to_players 30
