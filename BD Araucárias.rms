@@ -495,7 +495,18 @@ create_object DLC_VULTURE {
   number_of_objects 4
 }
 
-#OBJECTS9VILS
+/* Player start objects. */
+create_object TOWN_CENTER {
+  set_place_for_every_player
+  max_distance_to_players 0
+}
+
+#TCCENTER
+#TCBOXES
+#VISION
+#TC9VILS
+#HOUSEGAP3
+#STRAGGLER9VILSSOCOTRA
 
 /* Captain Fin */
 #FOR($i, 20, 24)
@@ -513,6 +524,15 @@ create_object PHON {
   set_circular_placement
   max_distance_to_players 20
   actor_area mid_avoider
+  actor_area_radius 0
+}
+
+create_object PHON {
+  place_on_specific_land_id 10
+  number_of_objects 14400
+  set_circular_placement
+  max_distance_to_players 32
+  actor_area big_mid_avoider
   actor_area_radius 0
 }
 
@@ -571,8 +591,47 @@ create_object FORAGE {
   actor_area_radius 7
 }
 
+/* One Gold farther to the back. */
 create_object GOLD {
   number_of_objects 4
+  set_place_for_every_player
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 2
+  avoid_forest_zone 3
+  max_distance_to_other_zones 4
+  avoid_actor_area box12
+  actor_area_to_place_in box18
+  avoid_actor_area forage
+  min_distance_group_placement 3
+  avoid_actor_area big_mid_avoider
+  actor_area player_gold
+  actor_area_radius 7
+}
+
+/* One Stone farther to the back. */
+create_object STONE {
+  number_of_objects 4
+  set_place_for_every_player
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 2
+  avoid_forest_zone 3
+  max_distance_to_other_zones 4
+  avoid_actor_area box12
+  actor_area_to_place_in box18
+  avoid_actor_area big_mid_avoider
+  min_distance_group_placement 3
+  avoid_actor_area forage
+  avoid_actor_area player_gold
+  actor_area player_stone
+  actor_area_radius 7
+}
+
+/* The other two Golds and the other Stone are less restricted from the front. */
+create_object GOLD {
+  number_of_objects 4
+  number_of_groups 2
   set_place_for_every_player
   set_gaia_object_only
   set_tight_grouping
@@ -583,9 +642,10 @@ create_object GOLD {
   actor_area_to_place_in box18
   avoid_actor_area mid_avoider
   temp_min_distance_group_placement 9
-  number_of_groups 3
   min_distance_group_placement 3
   avoid_actor_area forage
+  avoid_actor_area player_gold
+  avoid_actor_area player_stone
   actor_area player_gold
   actor_area_radius 7
 }
@@ -601,11 +661,10 @@ create_object STONE {
   avoid_actor_area box12
   actor_area_to_place_in box18
   avoid_actor_area mid_avoider
-  temp_min_distance_group_placement 9
-  number_of_groups 2
   min_distance_group_placement 3
   avoid_actor_area forage
   avoid_actor_area player_gold
+  avoid_actor_area player_stone
   /* actor_area player_gold */
   /* actor_area_radius 7 */
 }
@@ -646,6 +705,20 @@ create_object DEER {
   actor_area_radius 3
 }
 
+create_object JAVELINA {
+  set_place_for_every_player
+  set_gaia_object_only
+  min_distance_to_players 16
+  max_distance_to_players 18
+  set_circular_placement
+  avoid_forest_zone 2
+  max_distance_to_other_zones 4
+  avoid_actor_area big_mid_avoider
+  avoid_actor_area deer
+  actor_area player_javelina
+  actor_area_radius 4
+}
+
 create_object PHONL {
   set_place_for_every_player
   set_gaia_object_only
@@ -658,6 +731,7 @@ create_object PHONL {
   avoid_actor_area forage
   avoid_actor_area deer_area
   avoid_actor_area deer
+  avoid_actor_area player_javelina
   actor_area capybara_area
   actor_area_radius 2
 }
@@ -685,6 +759,7 @@ create_object SCOUT {
   min_distance_to_players 7
   max_distance_to_players 9
   avoid_actor_area villager2
+  find_closest_to_map_center
 }
 
 /* Map Objects */
