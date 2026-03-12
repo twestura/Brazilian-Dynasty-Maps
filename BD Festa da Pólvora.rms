@@ -210,6 +210,7 @@ endif
   #const WOOD_Y$i2 (BIG_R * SIN_WOOD_T$i2 + 50)
 #END_FOR
 
+/* Relic Positions, one on each side in between players. */
 #const RELIC_R (R + 20)
 #const T_PERP0 (T1 + 90)
 #const T_PERP1 (T1 + 270)
@@ -219,16 +220,11 @@ endif
   #const RELIC_Y$i (RELIC_R * SIN_T_PERP$i + 50)
 #END_FOR
 
-#const OUT_R (R + 20)
-#const T_OUT0 (T1 + 40)
-#const T_OUT1 (T1 - 40)
-#const T_OUT2 (T2 + 40)
-#const T_OUT3 (T2 - 40)
-#FOR($i, 0, 4)
-  #TRIG(T_OUT$i)
-  #const OUT_X$i (OUT_R * COS_T_OUT$i + 50)
-  #const OUT_Y$i (OUT_R * SIN_T_OUT$i + 50)
-#END_FOR
+/* Outside Gold and Stone Positions, one in each corner. */
+#const OUT_X0 0 #const OUT_Y0 0
+#const OUT_X1 99 #const OUT_Y1 0
+#const OUT_X2 0 #const OUT_Y2 99
+#const OUT_X3 99 #const OUT_Y3 99
 
 /* Start Position Calculation */
 #const D1_0 (T1 - 0) #const B1_0 (D1_0 / D1_0 - 1 * -70) [ B1_0 #const P1 92 #const Q1 60 ]
@@ -960,6 +956,9 @@ behavior_version 2
 
 #SETPHATTR
 
+/* Lowers the HP of the Gunpowder kegs. */
+/* effect_amount SET_ATTRIBUTE GUNPOWDER_KEG ATTR_HITPOINTS 50 */
+
 /* Sets the Fort Walls to have 1000 HP. */
 #FOR($gate_id, 2679, 2695)
   effect_amount ADD_ATTRIBUTE FORT_GATE_$gate_id ATTR_HITPOINTS -2250
@@ -1287,6 +1286,13 @@ create_terrain DIRT3 {
   create_actor_area (P$i + 12) (Q$i - 12) wall_avoider 0
 #END_FOR
 
+create_object_group FLOWERS_GROUP {
+  add_object FLOWERS_1 25
+  add_object FLOWERS_2 25
+  add_object FLOWERS_3 25
+  add_object FLOWERS_4 25
+}
+
 /* Debugging positioning flags. */
 /* create_object FLAG_A {
   actor_area_to_place_in center1
@@ -1335,13 +1341,6 @@ create_object PHON {
   terrain_to_place_on SOUTH_AMERICAN_FOREST
   actor_area ring_forest_4
   actor_area_radius 4
-}
-
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on DLC_ROCK
-  actor_area rock3
-  actor_area_radius 3
 }
 
 /* Player Objects */
@@ -1651,7 +1650,30 @@ create_object TOWN_CENTER {
     max_distance_to_players 13
     set_circular_placement
     avoid_forest_zone 2
-    temp_min_distance_group_placement 9
+    temp_min_distance_group_placement 8
+    min_distance_group_placement 1
+  }
+
+  create_object CAPYBARA {
+    number_of_objects 2
+    set_loose_grouping
+    place_on_specific_land_id $i
+    set_circular_placement
+    min_distance_to_players 12
+    max_distance_to_players 14
+    set_gaia_object_only
+    group_placement_radius 2
+    min_distance_group_placement 3
+  }
+
+  create_object FLOWERS_GROUP {
+    number_of_objects 5
+    place_on_specific_land_id $i
+    set_circular_placement
+    min_distance_to_players 7
+    max_distance_to_players 12
+    set_gaia_object_only
+    temp_min_distance_group_placement 7
   }
 
   /* Mill Objects */
@@ -1967,49 +1989,39 @@ create_object RELIC {
 }
 
 /* Outside Resources */
-/* create_object KING {
-  place_on_specific_land_id 70
-  max_distance_to_players 0
-} */
-
+/* Corner Mines */
 create_object GOLD {
   place_on_specific_land_id 70
-  number_of_objects 2
+  number_of_objects 3
   set_tight_grouping
   group_placement_radius 1
   set_circular_placement
-  min_distance_to_players 22
-  find_closest
-  enable_tile_shuffling
+  min_distance_to_players 20
+  max_distance_to_players 50
+  max_distance_to_other_zones 4
 
-  ignore_terrain_restrictions
-  terrain_to_place_on DLC_JUNGLEGRASS
   min_distance_group_placement 3
 
   avoid_forest_zone 2
-  place_on_specific_land_id 70
-  avoid_actor_area rock3
+  min_distance_to_map_edge 2
   actor_area outside_gold
   actor_area_radius 6
 }
 
 create_object STONE {
   place_on_specific_land_id 70
-  number_of_objects 2
+  number_of_objects 3
   set_tight_grouping
   group_placement_radius 1
   set_circular_placement
-  min_distance_to_players 22
-  find_closest
-  enable_tile_shuffling
+  min_distance_to_players 20
+  max_distance_to_players 50
+  max_distance_to_other_zones 4
 
-  ignore_terrain_restrictions
-  terrain_to_place_on DLC_JUNGLEGRASS
   min_distance_group_placement 3
 
   avoid_forest_zone 2
-  place_on_specific_land_id 70
-  avoid_actor_area rock3
+  min_distance_to_map_edge 2
   avoid_actor_area outside_gold
 }
 
