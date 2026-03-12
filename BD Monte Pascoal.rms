@@ -55,14 +55,14 @@ endif
 #const SPAWN0 GRASS2
 #const SPAWN1 DLC_DRYGRASS
 
-/* Units */
-#const WHALE 2625
-
+/* Objects */
 #const PLANT_JUNGLE 1351
 #const PLANT_UNDERBRUSH_TROPICAL 1352
 #const PLANT_UNDERBRUSH 1353
 #const PLANT_RAINFOREST 1354
 #const PLANT_UNDERBRUSH_RAINFOREST 1355
+#const BEACHED_WHALE 2457
+#const WHALE 2625
 
 /* Determines the orientation of the mountain. */
 /*
@@ -73,7 +73,6 @@ endif
  * - West: (y, 100 - x)
  * Take care that 0 is allowed as a land position but 100 is not (use 99).
  */
-/* TODO */
 /* #define NORTH */
 /* #define EAST */
 /* #define SOUTH */
@@ -695,6 +694,20 @@ create_object MACAW {
 create_object PHON {
   number_of_objects 14400
   terrain_to_place_on BEACH
+  actor_area beach2
+  actor_area_radius 2
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on BEACH
+  actor_area beach4
+  actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on BEACH
   actor_area beach8
   actor_area_radius 8
 }
@@ -894,6 +907,9 @@ create_object PINEAPPLE_BUSH {
   group_placement_radius 2
   min_distance_to_map_edge 4
   avoid_actor_area beach_gold
+  min_distance_group_placement 4
+  actor_area beach_bushes
+  actor_area_radius 6
 }
 
 create_object RELIC {
@@ -940,6 +956,32 @@ create_object JUNGLETREE {
 }
 
 /* Top Objects */
+create_object PHON {
+  terrain_to_place_on DLC_CRACKED
+  layer_to_place_on DLC_DESERTGRAVEL
+  number_of_objects 3
+  min_distance_group_placement 1
+  temp_min_distance_group_placement 2
+  second_object DLC_ANIMALSKELETON
+}
+
+create_object PHON {
+  terrain_to_place_on DLC_CRACKED
+  layer_to_place_on DLC_DESERTGRAVEL
+  number_of_objects 4
+  second_object SKELETON
+}
+
+create_object BLACK_PANTHER {
+  number_of_objects 4
+  set_loose_grouping
+  terrain_to_place_on DLC_CRACKED
+  layer_to_place_on DLC_DESERTGRAVEL
+  min_distance_group_placement 2
+  actor_area top_panthers
+  actor_area_radius 7
+}
+
 create_object GOLD {
   number_of_objects 4
   group_variance 1
@@ -950,7 +992,7 @@ create_object GOLD {
   group_placement_radius 2
   min_distance_to_map_edge 2
   avoid_actor_area cracked_edge
-  actor_area top_gold
+  actor_area top_mine
   actor_area_radius 4
 }
 
@@ -964,17 +1006,30 @@ create_object STONE {
   group_placement_radius 2
   min_distance_to_map_edge 2
   avoid_actor_area cracked_edge
-  avoid_actor_area top_gold
+  avoid_actor_area top_mine
+  actor_area top_mine
+  actor_area_radius 4
 }
 
 create_object JAGUAR {
   terrain_to_place_on DLC_CRACKED
   number_of_objects 12
+  avoid_actor_area top_panthers
 }
 
 create_object BLACK_PANTHER {
   terrain_to_place_on DLC_CRACKED
   number_of_objects 4
+  avoid_actor_area top_panthers
+}
+
+create_object DLC_DEADTREE {
+  terrain_to_place_on DLC_CRACKED
+  number_of_objects 3
+  avoid_actor_area top_mine
+  avoid_forest_zone 6
+  temp_min_distance_group_placement 4
+  min_distance_group_placement 1
 }
 
 /* Scenery */
@@ -1003,4 +1058,18 @@ create_object PHONL {
   avoid_actor_area orange_bush_1
   avoid_forest_zone 1
   second_object PLANT_JUNGLE
+}
+
+/* Beached Whale scenery. */
+create_object BEACHED_WHALE {
+  number_of_objects 2
+  temp_min_distance_group_placement 50
+  avoid_actor_area beach2
+  actor_area_to_place_in beach4
+  terrain_to_place_on DESERT
+  avoid_forest_zone 4
+  set_circular_placement
+  min_distance_to_players 40
+  min_distance_to_map_edge 3
+  avoid_actor_area beach_bushes
 }
