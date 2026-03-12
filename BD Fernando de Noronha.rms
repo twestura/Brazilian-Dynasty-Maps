@@ -63,24 +63,24 @@ endif
 
 #MKCONSTS
 
-#const PLAYER_TILES 720
+#const PLAYER_TILES 860
 
 /* Player Island Constants */
 #const R 34
 #const T1 rnd(0,359)
-#const OFFSET rnd(145,215)
+#const OFFSET rnd(155,205)
 #const T2 (T1 + OFFSET)
 #FOR($i, 1, 3)
   #TRIG(T$i)
   #const X$i (R * COS_T$i + 50)
   #const Y$i (R * SIN_T$i + 50)
 
-  #const U$i (T$i - 25)
+  #const U$i (T$i - 28)
   #TRIG(U$i)
   #const X1$i (R * COS_U$i + 50)
   #const Y1$i (R * SIN_U$i + 50)
 
-  #const V$i (T$i + 25)
+  #const V$i (T$i + 28)
   #TRIG(V$i)
   #const X2$i (R * COS_V$i + 50)
   #const Y2$i (R * SIN_V$i + 50)
@@ -93,7 +93,7 @@ endif
 #const CX (CR * COS_C + 50)
 #const CY (CR * SIN_C + 50)
 
-#const RND_ANGLEA rnd(-10,10)
+#const RND_ANGLEA rnd(-5,5)
 #const A (C + RND_ANGLEA)
 #const OFF1 rnd(-5,5)
 #const AR (35 + OFF1)
@@ -101,7 +101,7 @@ endif
 #const AX (AR * COS_A + 50)
 #const AY (AR * SIN_A + 50)
 
-#const RND_ANGLEB rnd(-10,10)
+#const RND_ANGLEB rnd(-5,5)
 #const B (C + 180 + RND_ANGLEB)
 #const OFF2 rnd(-5,5)
 #const BR (35 + OFF2)
@@ -179,7 +179,7 @@ enable_waves 1
 create_land {
   land_position AX AY
   base_size 8
-  number_of_tiles rnd(500,650)
+  number_of_tiles rnd(400,500)
   top_border 7
   right_border 8
   bottom_border 8
@@ -194,7 +194,7 @@ create_land {
 create_land {
   land_position BX BY
   base_size 8
-  number_of_tiles rnd(500,650)
+  number_of_tiles rnd(400,500)
   top_border 7
   right_border 8
   bottom_border 8
@@ -209,7 +209,7 @@ create_land {
 create_land {
   land_position CX CY
   base_size 8
-  number_of_tiles rnd(500,650)
+  number_of_tiles rnd(400,500)
   top_border 7
   right_border 8
   bottom_border 8
@@ -362,8 +362,8 @@ create_terrain DLC_WETROCKBEACH {
 #FOR($i, 1, 3)
   create_terrain JUNGLE {
     base_terrain SPAWN$i
-    number_of_tiles 256
-    number_of_clumps 6
+    number_of_tiles 300
+    number_of_clumps 7
     spacing_to_other_terrain_types 3
     set_avoid_player_start_areas
   }
