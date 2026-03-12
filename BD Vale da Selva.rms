@@ -62,7 +62,6 @@ start_random
   percent_chance 50 #define LR
 end_random
 
-
 /* Player Positions */
 #const POS1 rnd(40,60)
 #const POS2 rnd(40,60)
@@ -147,9 +146,9 @@ create_land {
   base_elevation 3
   zone 3
   if TB
-    land_position 50 0
+    land_position 50 1
   elseif LR
-    land_position 0 50
+    land_position 1 50
   endif
 }
 
@@ -160,9 +159,44 @@ create_land {
   base_elevation 3
   zone 4
   if TB
+    land_position 50 98
+  elseif LR
+    land_position 98 50
+  endif
+}
+
+/*
+ * Extra land for an extra wide connection at the edge.
+ * These lands ensure that a width 1 connection can be made over a short
+ * distance at the edge of the map, ensuring the rock terrain runs all the way
+ * to the edge and completely cuts the map in half.
+ *
+ * The map needs to be cut in half for the placeholder floodfill to be stopped
+ * by the rock's terrain restriction.
+ */
+create_land {
+  terrain_type DLC_JUNGLEGRASS
+  number_of_tiles 0
+  base_size 1
+  base_elevation 3
+  zone 5
+  if TB
     land_position 50 99
   elseif LR
     land_position 99 50
+  endif
+}
+
+create_land {
+  terrain_type DLC_JUNGLEGRASS
+  number_of_tiles 0
+  base_size 1
+  base_elevation 3
+  zone 6
+  if TB
+    land_position 50 2
+  elseif LR
+    land_position 2 50
   endif
 }
 
@@ -220,24 +254,6 @@ create_terrain DLC_JUNGLELEAVES {
     land_percent 100
     number_of_clumps 8192
     height_limits 3 7
-  }
-#END_REPEAT
-
-/*
- * Use terrain masking to support placing trees in objects generation.
- * This technique ensures there are not "holes" in the rock terrain as
- * it stretches across the map. The terrain restriction objects then can be
- * kept on one side of the connection and used to position the Fish Traps
- * for filling in the diagonals along the sides of the connection to prevent
- * walling.
- */
-#REPEAT(8)
-  create_terrain DLC_ROCK {
-    base_terrain DLC_RAINFOREST
-    land_percent 100
-    number_of_clumps 8192
-    height_limits 3 7
-    terrain_mask 2
   }
 #END_REPEAT
 
@@ -321,20 +337,22 @@ create_terrain GRASS_FLOWERS_2 {
 <CONNECTION_GENERATION>
 accumulate_connections
 
+/* Basic connection path, quicksand to be replaced with rock later on the edges. */
 create_connect_land_zones 3 1 {
-  replace_terrain DLC_JUNGLEGRASS DLC_ROCK
-  replace_terrain DLC_JUNGLELEAVES DLC_ROCK
-  replace_terrain GRASS_FLOWERS_1 DLC_ROCK
-  replace_terrain GRASS_FLOWERS_2 DLC_ROCK
-  replace_terrain DLC_ROCK DLC_ROCK
-  replace_terrain DLC_RAINFOREST DLC_ROCK
-  replace_terrain JUNGLE DLC_ROCK
-  replace_terrain DLC_JUNGLEROAD DLC_ROCK
+  replace_terrain DLC_JUNGLEGRASS DLC_QUICKSAND
+  replace_terrain DLC_JUNGLELEAVES DLC_QUICKSAND
+  replace_terrain GRASS_FLOWERS_1 DLC_QUICKSAND
+  replace_terrain GRASS_FLOWERS_2 DLC_QUICKSAND
+  replace_terrain DLC_ROCK DLC_QUICKSAND
+  replace_terrain DLC_RAINFOREST DLC_QUICKSAND
+  replace_terrain JUNGLE DLC_QUICKSAND
+  replace_terrain DLC_JUNGLEROAD DLC_QUICKSAND
   terrain_cost DLC_JUNGLEGRASS 1
   terrain_cost GRASS_FLOWERS_1 2
   terrain_cost GRASS_FLOWERS_2 2
   terrain_cost DLC_JUNGLELEAVES 4
   terrain_cost DLC_ROCK 1
+  terrain_cost DLC_QUICKSAND 1
   terrain_cost DLC_RAINFOREST 2
   terrain_cost JUNGLE 2
   terrain_cost DLC_JUNGLEROAD 4
@@ -343,8 +361,9 @@ create_connect_land_zones 3 1 {
   terrain_size GRASS_FLOWERS_1 0 0
   terrain_size GRASS_FLOWERS_2 0 0
   terrain_size DLC_ROCK 0 0
-  terrain_size DLC_RAINFOREST 0 0
-  terrain_size JUNGLE 0 0
+  terrain_size DLC_QUICKSAND 0 0
+  terrain_size DLC_RAINFOREST 1 0
+  terrain_size JUNGLE 1 0
   terrain_size DLC_JUNGLEROAD 0 0
 }
 
@@ -370,12 +389,98 @@ create_connect_land_zones 1 2 {
   terrain_size GRASS_FLOWERS_1 0 0
   terrain_size GRASS_FLOWERS_2 0 0
   terrain_size DLC_ROCK 0 0
+  terrain_size DLC_QUICKSAND 0 0
   terrain_size DLC_RAINFOREST 0 0
   terrain_size JUNGLE 0 0
   terrain_size DLC_JUNGLEROAD 0 0
 }
 
 create_connect_land_zones 2 4 {
+  replace_terrain DLC_JUNGLEGRASS DLC_QUICKSAND
+  replace_terrain DLC_JUNGLELEAVES DLC_QUICKSAND
+  replace_terrain GRASS_FLOWERS_1 DLC_QUICKSAND
+  replace_terrain GRASS_FLOWERS_2 DLC_QUICKSAND
+  replace_terrain DLC_ROCK DLC_QUICKSAND
+  replace_terrain DLC_RAINFOREST DLC_QUICKSAND
+  replace_terrain JUNGLE DLC_QUICKSAND
+  replace_terrain DLC_JUNGLEROAD DLC_QUICKSAND
+  terrain_cost DLC_JUNGLEGRASS 1
+  terrain_cost GRASS_FLOWERS_1 2
+  terrain_cost GRASS_FLOWERS_2 2
+  terrain_cost DLC_JUNGLELEAVES 4
+  terrain_cost DLC_ROCK 1
+  terrain_cost DLC_QUICKSAND 1
+  terrain_cost DLC_RAINFOREST 2
+  terrain_cost JUNGLE 2
+  terrain_cost DLC_JUNGLEROAD 4
+  terrain_size DLC_JUNGLEGRASS 0 0
+  terrain_size DLC_JUNGLELEAVES 0 0
+  terrain_size GRASS_FLOWERS_1 0 0
+  terrain_size GRASS_FLOWERS_2 0 0
+  terrain_size DLC_ROCK 0 0
+  terrain_size DLC_QUICKSAND 0 0
+  terrain_size DLC_RAINFOREST 1 0
+  terrain_size JUNGLE 1 0
+  terrain_size DLC_JUNGLEROAD 0 0
+}
+
+/* Ensures the rock is not cut off by the forest too close to players. */
+create_connect_land_zones 1 3 {
+  replace_terrain DLC_QUICKSAND DLC_ROCK
+  replace_terrain DLC_ROCK DLC_ROCK
+  terrain_cost DLC_JUNGLEGRASS 99
+  terrain_cost GRASS_FLOWERS_1 99
+  terrain_cost GRASS_FLOWERS_2 99
+  terrain_cost DLC_JUNGLELEAVES 99
+  terrain_cost DLC_ROCK 1
+  terrain_cost DLC_RAINFOREST 99
+  terrain_cost JUNGLE 99
+  terrain_cost DLC_JUNGLEROAD 99
+  terrain_cost DLC_QUICKSAND 1
+  terrain_size DLC_QUICKSAND 0 0
+}
+
+create_connect_land_zones 2 4 {
+  replace_terrain DLC_QUICKSAND DLC_ROCK
+  replace_terrain DLC_ROCK DLC_ROCK
+  terrain_cost DLC_JUNGLEGRASS 99
+  terrain_cost GRASS_FLOWERS_1 99
+  terrain_cost GRASS_FLOWERS_2 99
+  terrain_cost DLC_JUNGLELEAVES 99
+  terrain_cost DLC_ROCK 1
+  terrain_cost DLC_RAINFOREST 99
+  terrain_cost JUNGLE 99
+  terrain_cost DLC_JUNGLEROAD 99
+  terrain_cost DLC_QUICKSAND 1
+  terrain_size DLC_QUICKSAND 0 0
+}
+
+create_connect_land_zones 1 3 {
+  replace_terrain DLC_QUICKSAND DLC_JUNGLELEAVES
+  terrain_size DLC_JUNGLEGRASS 999 0
+  terrain_size DLC_JUNGLELEAVES 999 0
+  terrain_size GRASS_FLOWERS_1 999 0
+  terrain_size GRASS_FLOWERS_2 999 0
+  terrain_size DLC_ROCK 999 0
+  terrain_size DLC_RAINFOREST 999 0
+  terrain_size JUNGLE 999 0
+  terrain_size DLC_JUNGLEROAD 999 0
+}
+
+create_connect_land_zones 2 4 {
+  replace_terrain DLC_QUICKSAND DLC_JUNGLELEAVES
+  terrain_size DLC_JUNGLEGRASS 999 0
+  terrain_size DLC_JUNGLELEAVES 999 0
+  terrain_size GRASS_FLOWERS_1 999 0
+  terrain_size GRASS_FLOWERS_2 999 0
+  terrain_size DLC_ROCK 999 0
+  terrain_size DLC_RAINFOREST 999 0
+  terrain_size JUNGLE 999 0
+  terrain_size DLC_JUNGLEROAD 999 0
+}
+
+/* Ensures the connection reaches the edge of the map again. */
+create_connect_land_zones 4 5 {
   replace_terrain DLC_JUNGLEGRASS DLC_ROCK
   replace_terrain DLC_JUNGLELEAVES DLC_ROCK
   replace_terrain GRASS_FLOWERS_1 DLC_ROCK
@@ -392,14 +497,41 @@ create_connect_land_zones 2 4 {
   terrain_cost DLC_RAINFOREST 2
   terrain_cost JUNGLE 2
   terrain_cost DLC_JUNGLEROAD 4
-  terrain_size DLC_JUNGLEGRASS 0 0
-  terrain_size DLC_JUNGLELEAVES 0 0
-  terrain_size GRASS_FLOWERS_1 0 0
-  terrain_size GRASS_FLOWERS_2 0 0
-  terrain_size DLC_ROCK 0 0
-  terrain_size DLC_RAINFOREST 0 0
-  terrain_size JUNGLE 0 0
-  terrain_size DLC_JUNGLEROAD 0 0
+  terrain_size DLC_JUNGLEGRASS 1 0
+  terrain_size DLC_JUNGLELEAVES 1 0
+  terrain_size GRASS_FLOWERS_1 1 0
+  terrain_size GRASS_FLOWERS_2 1 0
+  terrain_size DLC_ROCK 1 0
+  terrain_size DLC_RAINFOREST 1 0
+  terrain_size JUNGLE 1 0
+  terrain_size DLC_JUNGLEROAD 1 0
+}
+
+create_connect_land_zones 3 6 {
+  replace_terrain DLC_JUNGLEGRASS DLC_ROCK
+  replace_terrain DLC_JUNGLELEAVES DLC_ROCK
+  replace_terrain GRASS_FLOWERS_1 DLC_ROCK
+  replace_terrain GRASS_FLOWERS_2 DLC_ROCK
+  replace_terrain DLC_ROCK DLC_ROCK
+  replace_terrain DLC_RAINFOREST DLC_ROCK
+  replace_terrain JUNGLE DLC_ROCK
+  replace_terrain DLC_JUNGLEROAD DLC_ROCK
+  terrain_cost DLC_JUNGLEGRASS 1
+  terrain_cost GRASS_FLOWERS_1 2
+  terrain_cost GRASS_FLOWERS_2 2
+  terrain_cost DLC_JUNGLELEAVES 4
+  terrain_cost DLC_ROCK 1
+  terrain_cost DLC_RAINFOREST 2
+  terrain_cost JUNGLE 2
+  terrain_cost DLC_JUNGLEROAD 4
+  terrain_size DLC_JUNGLEGRASS 1 0
+  terrain_size DLC_JUNGLELEAVES 1 0
+  terrain_size GRASS_FLOWERS_1 1 0
+  terrain_size GRASS_FLOWERS_2 1 0
+  terrain_size DLC_ROCK 1 0
+  terrain_size DLC_RAINFOREST 1 0
+  terrain_size JUNGLE 1 0
+  terrain_size DLC_JUNGLEROAD 1 0
 }
 
 <OBJECTS_GENERATION>
@@ -491,13 +623,6 @@ create_object PHON {
 }
 
 /* Outside Trees and Rocks */
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on DLC_ROCK
-  layer_to_place_on DLC_RAINFOREST
-  second_object DLC_RAINTREE
-}
-
 create_object ROCK {
   number_of_objects 32
   min_distance_to_players 30
