@@ -124,13 +124,13 @@ create_land {
   border_fuzziness 8
 
   if TB
-    land_position POS2 66
+    land_position POS2 67
     top_border 30
     right_border -20
     bottom_border 30
     left_border -20
   elseif LR
-    land_position 66 POS2
+    land_position 67 POS2
     top_border -20
     right_border 30
     bottom_border -20
@@ -595,6 +595,14 @@ create_object PHON {
   actor_area_radius 2
 }
 
+/* Place the Deer in the created actor area before anything else. */
+create_object DEER {
+  number_of_objects 6
+  actor_area_to_place_in map_center
+  actor_area center_deer
+  actor_area_radius 16
+}
+
 /*
  * Ensures the rock terrain cannot be walled by covering the diagonal tiles
  * that would otherwise have allowed walling.
@@ -646,14 +654,6 @@ create_object DLC_ROCKBEACH {
   number_of_objects 14400
   min_distance_to_players 30
   terrain_to_place_on DLC_ROCK
-}
-
-/* Place the Deer in the created actor area before anything else. */
-create_object DEER {
-  number_of_objects 6
-  actor_area_to_place_in map_center
-  actor_area center_deer
-  actor_area_radius 16
 }
 
 /* Player Objects */
