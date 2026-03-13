@@ -257,6 +257,7 @@ create_elevation 4 {
 cliff_type CT_DESERT
 min_length_of_cliff 3
 max_length_of_cliff 4
+min_distance_cliffs 5
 cliff_curliness 75
 
 <TERRAIN_GENERATION>
@@ -269,8 +270,6 @@ cliff_curliness 75
     height_limits 2 7
   }
 #END_REPEAT
-
-
 
 /* Per-player Forests */
 #REPEAT(8)
@@ -469,6 +468,29 @@ create_terrain DLC_SAVANNAH {
 }
 
 <OBJECTS_GENERATION>
+/* Middle map areas to place objects around the edges. */
+create_actor_area 59 59 middle 58
+create_actor_area 59 60 middle 58
+create_actor_area 60 59 middle 58
+create_actor_area 60 60 middle 58
+
+/* Corner Actor Areas for Relics to avoid. */
+create_actor_area 0 0 corner_a 20
+create_actor_area 26 0 corner_b 10
+create_actor_area 0 26 corner_b 10
+
+create_actor_area 119 0 corner_a 20
+create_actor_area 93 0 corner_b 10
+create_actor_area 119 26 corner_b 10
+
+create_actor_area 0 119 corner_a 20
+create_actor_area 26 119 corner_b 10
+create_actor_area 0 93 corner_b 10
+
+create_actor_area 119 119 corner_a 20
+create_actor_area 93 119 corner_b 10
+create_actor_area 119 93 corner_b 10
+
 /* Birds */
 create_object DLC_VULTURE {
   number_of_objects 4
@@ -484,6 +506,17 @@ create_object PHON {
   terrain_to_place_on DLC_CRACKED
   actor_area crater4
   actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  set_gaia_object_only
+  set_place_for_every_player
+  set_circular_placement
+  max_distance_to_players 40
+  avoid_actor_area middle
+  actor_area edge_behind_players
+  actor_area_radius 15
 }
 
 #OBJECTS9VILS
@@ -552,20 +585,6 @@ create_object GOLD {
   avoid_actor_area gold1
   avoid_actor_area stone1
 }
-
-/* create_object STONE {
-  terrain_to_place_on DIRT
-  set_place_for_every_player
-  avoid_actor_area box22
-  actor_area_to_place_in box26
-  set_gaia_object_only
-  number_of_objects 4
-  set_tight_grouping
-  group_placement_radius 1
-  min_distance_group_placement 7
-  avoid_forest_zone 2
-  avoid_actor_area crater4
-} */
 
 create_object RHEA {
   number_of_objects 4
@@ -636,12 +655,108 @@ create_object STONE {
 
 /* Relics */
 create_object RELIC {
-  number_of_objects 5
-  temp_min_distance_group_placement 35
+  number_of_objects 4
+  temp_min_distance_group_placement 40
   set_circular_placement
   min_distance_to_players 35
   avoid_forest_zone 1
   avoid_cliff_zone 3
+  avoid_actor_area corner_a
+  avoid_actor_area corner_b
+  avoid_actor_area edge_behind_players
+  actor_area relic0
+  actor_area_radius 0
+}
+
+create_object PHON {
+  number_of_objects 4
+  temp_min_distance_group_placement 30
+  actor_area_to_place_in relic0
+  actor_area relic16
+  actor_area_radius 16
+}
+
+create_object PHON {
+  number_of_objects 4
+  temp_min_distance_group_placement 30
+  actor_area_to_place_in relic0
+  actor_area relic32
+  actor_area_radius 32
+}
+
+create_object PHON {
+  number_of_objects 4
+  temp_min_distance_group_placement 30
+  actor_area_to_place_in relic0
+  actor_area relic36
+  actor_area_radius 36
+}
+
+create_object PHON {
+  number_of_objects 4
+  temp_min_distance_group_placement 30
+  actor_area_to_place_in relic0
+  actor_area relic40
+  actor_area_radius 40
+  min_distance_group_placement 1
+}
+
+/* Fifth Relic */
+create_object RELIC {
+  min_distance_group_placement 1
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+  avoid_cliff_zone 3
+  avoid_actor_area corner_a
+  avoid_actor_area corner_b
+  avoid_actor_area edge_behind_players
+
+  avoid_actor_area relic40
+  actor_area fifth_relic
+  actor_area_radius 8192
+}
+
+create_object RELIC {
+  min_distance_group_placement 1
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+  avoid_cliff_zone 3
+  avoid_actor_area corner_a
+  avoid_actor_area corner_b
+  avoid_actor_area edge_behind_players
+
+  avoid_actor_area relic36
+  avoid_actor_area fifth_relic
+  actor_area fifth_relic
+  actor_area_radius 8192
+}
+
+create_object RELIC {
+  min_distance_group_placement 1
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+  avoid_cliff_zone 3
+  avoid_actor_area corner_a
+  avoid_actor_area corner_b
+  avoid_actor_area edge_behind_players
+
+  avoid_actor_area relic32
+  avoid_actor_area fifth_relic
+  actor_area fifth_relic
+  actor_area_radius 8192
+}
+
+/* Final backup case, directly in the middle. */
+create_object RELIC {
+  set_place_for_every_player
+  set_gaia_object_only
+  generate_for_first_land_only
+  find_closest_to_map_center
+  avoid_actor_area fifth_relic
+  avoid_actor_area relic16
   min_distance_group_placement 1
 }
 
