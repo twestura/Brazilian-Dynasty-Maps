@@ -58,9 +58,9 @@ endif
 #const HERDABLE_A CAPYBARA
 #const PREDATOR JAGUAR
 #const STRAGGLER DLC_AFRICANBUSH
-#const OTHERTHING ROCK
 
 #const FOREST_OAK_BUSH 20
+#const ROAD_SNOW 38
 #const GRAVEL 70
 #const MUD 76
 
@@ -261,8 +261,66 @@ enable_waves 0
   }
 #END_REPEAT */
 
-/* Places forests around the map, avoiding the very bottom. */
+/* 5 forests per player */
+/* Original: 15%, 24 clumps, scale by groups */
+/* Reduced to 10% */
+/* 24 clumps: 24 * 1.4 == 33.6 -> 34 */
+/* 5 clumps per player: 34 - 2 * 5 == 24 global clumps */
+/* 15% wood: 120 * 120 * 0.15 == 2160 tiles */
+/* 2160 tiles / 34 clumps == 63.5 tiles per clump */
+/* 10% wood: 120 * 120 * 0.10 == 1440 tiles */
+/* 10% wood: 1440 tiles / 34 clumps == 42.4 tiles per clump */
+
+/* Individually covers each segment at elevation 1. */
+create_terrain ROAD2 {
+  base_terrain ROAD
+  land_percent 100
+  height_limits 1 1
+}
+
+create_terrain ROAD_SNOW {
+  base_terrain ROAD
+  land_percent 100
+  height_limits 1 1
+}
+
+create_terrain FOREST_OAK_BUSH {
+  base_terrain ROAD2
+  number_of_tiles 215 /* 43 * 5 */
+  number_of_clumps 5
+}
+
+create_terrain FOREST_OAK_BUSH {
+  base_terrain ROAD_SNOW
+  number_of_tiles 215 /* 43 * 5 */
+  number_of_clumps 5
+}
+
 create_terrain SOUTH_AMERICAN_FOREST {
+  base_terrain GROUND
+  number_of_tiles 1010 /* 1440 - 215 - 215 */
+  number_of_clumps 24
+  height_limits 2 7
+  spacing_to_specific_terrain FOREST_OAK_BUSH 5
+}
+
+/* Restore ground before remaining terrain replacements. */
+#REPEAT(8)
+  create_terrain GROUND {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+  create_terrain GROUND {
+    base_terrain ROAD_SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Original forest placement: */
+/* Places forests around the map, avoiding the very bottom. */
+/* create_terrain SOUTH_AMERICAN_FOREST {
   base_terrain GROUND
   /* land_percent 15 */
   land_percent 10
@@ -270,17 +328,17 @@ create_terrain SOUTH_AMERICAN_FOREST {
   set_scale_by_groups
   set_avoid_player_start_areas
   height_limits 1 7
-}
+} */
 
 /* Replaces the bottom forests. */
-#REPEAT(8)
+/* #REPEAT(8)
   create_terrain FOREST_OAK_BUSH {
     base_terrain SOUTH_AMERICAN_FOREST
     land_percent 100
     number_of_clumps 8192
     height_limits 0 1
   }
-#END_REPEAT
+#END_REPEAT */
 
 /* Replaces the top forests. */
 #REPEAT(8)
