@@ -44,8 +44,10 @@ endif
 
 /* Objects */
 #const PHON 1543
+#const PHONA 1546
 #const HERDABLE_A CAPYBARA
 #const STRAGGLER PALMTREE
+#const PLANT_RAINFOREST 1354
 #const WHALE 2625
 
 #MKCONSTS
@@ -76,6 +78,21 @@ ai_info_map_type ARABIA 0 0 0
 effect_amount SET_ATTRIBUTE FLAMINGO ATTR_LINE_OF_SIGHT 0
 effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
 
+/* Keeps objects off of the ponds. */
+effect_amount GAIA_SET_ATTRIBUTE DLC_GOAT ATTR_TERRAIN_ID 4
+effect_amount GAIA_SET_ATTRIBUTE RELIC ATTR_TERRAIN_ID 4
+
+/* Changes attributes of the Docks used for positioning shore fish. */
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DEAD_ID -1
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_HITPOINTS 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_MAX_RANGE 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DYING_GRAPHIC 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_STANDING_GRAPHIC 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_STANDING2_GRAPHIC 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DESTRUCTION_GRAPHIC 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DESTRUCTION_RUBBLE_GRAPHIC 0
+effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DYING_SOUND -1
+
 <LAND_GENERATION>
 enable_waves 0
 
@@ -84,6 +101,7 @@ base_terrain DESERT
 /* Ocean */
 create_land {
   terrain_type MED_WATER
+  border_fuzziness 15
   if TOP
     land_position 50 0
     bottom_border 77
@@ -165,41 +183,41 @@ create_land {
 
 /* Ponds */
 if TOP
-  create_land { land_position rnd(45,55) rnd(45,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(5,15)  rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(48,52) rnd(65,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(85,95) rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(10,20) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(80,90) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(30,40) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(60,70) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
+  create_land { land_position rnd(45,55) rnd(45,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
+  create_land { land_position rnd(5,15)  rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
+  create_land { land_position rnd(48,52) rnd(65,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
+  create_land { land_position rnd(85,95) rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
+  create_land { land_position rnd(10,20) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
+  create_land { land_position rnd(80,90) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
+  create_land { land_position rnd(30,40) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
+  create_land { land_position rnd(60,70) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
 elseif RIGHT
-  create_land { land_position rnd(50,55) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(35,45) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(30,35) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(35,45) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(60,65) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(60,65) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(50,60) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(50,60) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
+  create_land { land_position rnd(50,55) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
+  create_land { land_position rnd(35,45) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
+  create_land { land_position rnd(30,35) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
+  create_land { land_position rnd(35,45) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
+  create_land { land_position rnd(60,65) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
+  create_land { land_position rnd(60,65) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
+  create_land { land_position rnd(50,60) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
+  create_land { land_position rnd(50,60) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
 elseif BOTTOM
-  create_land { land_position rnd(45,55) rnd(50,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(5,15)  rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(48,52) rnd(30,35) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(85,95) rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(10,20) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(80,90) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(30,40) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(60,70) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
+  create_land { land_position rnd(45,55) rnd(50,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
+  create_land { land_position rnd(5,15)  rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
+  create_land { land_position rnd(48,52) rnd(30,35) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
+  create_land { land_position rnd(85,95) rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
+  create_land { land_position rnd(10,20) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
+  create_land { land_position rnd(80,90) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
+  create_land { land_position rnd(30,40) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
+  create_land { land_position rnd(60,70) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
 elseif LEFT
-  create_land { land_position rnd(45,50) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(55,65) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(65,70) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(55,65) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(35,40) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(35,40) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(40,50) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
-  create_land { land_position rnd(40,50) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 }
+  create_land { land_position rnd(45,50) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
+  create_land { land_position rnd(55,65) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
+  create_land { land_position rnd(65,70) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
+  create_land { land_position rnd(55,65) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
+  create_land { land_position rnd(35,40) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
+  create_land { land_position rnd(35,40) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
+  create_land { land_position rnd(40,50) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
+  create_land { land_position rnd(40,50) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
 endif
 
 <ELEVATION_GENERATION>
@@ -513,27 +531,9 @@ create_terrain DLC_JUNGLEGRASS {
     base_terrain SNOW
     land_percent 100
     number_of_clumps 8192
+    beach_terrain DLC_BEACH4
   }
 #END_REPEAT
-
-/* Forest Mixing */
-/* create_terrain DLC_RAINFOREST {
-  base_terrain PALM_DESERT
-  number_of_tiles 32
-  number_of_clumps 32
-  terrain_mask 2
-  spacing_to_specific_terrain WATER 40
-}
-
-#REPEAT(8)
-  create_terrain DLC_RAINFOREST {
-    base_terrain PALM_DESERT
-    land_percent 100
-    number_of_clumps 8192
-    terrain_mask 1
-    spacing_to_specific_terrain WATER 40
-  }
-#END_REPEAT */
 
 /* Terrain Mixing */
 create_terrain DLC_JUNGLELEAVES {
@@ -543,23 +543,18 @@ create_terrain DLC_JUNGLELEAVES {
   terrain_mask 1
 }
 
-create_terrain DIRT {
-  base_terrain DESERT
-  number_of_tiles 512
-  number_of_clumps 32
-  spacing_to_other_terrain_types 1
-  terrain_mask 1
-}
-
-create_terrain DLC_QUICKSAND {
-  base_terrain DESERT
-  number_of_tiles 256
-  number_of_clumps 8
-  spacing_to_other_terrain_types 1
-  terrain_mask 1
-}
+#REPEAT(8)
+  create_terrain BEACH {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+    beach_terrain DLC_BEACH4
+  }
+#END_REPEAT
 
 <OBJECTS_GENERATION>
+/* Whale placement areas. */
 if TOP
   create_actor_area 15 10 whale_area_1 8
   create_actor_area 45 10 whale_area_2 8
@@ -582,6 +577,21 @@ elseif LEFT
   create_actor_area 10 104 whale_area_4 8
 endif
 
+/* Javelina avoidance areas. */
+if TOP
+  create_actor_area 49 82 middle 16
+  create_actor_area 70 82 middle 16
+elseif RIGHT
+  create_actor_area 37 49 middle 16
+  create_actor_area 37 70 middle 16
+elseif BOTTOM
+  create_actor_area 49 37 middle 16
+  create_actor_area 70 37 middle 16
+elseif LEFT
+  create_actor_area 82 49 middle 16
+  create_actor_area 82 70 middle 16
+endif
+
 /* Big fish appropriate for the coast of Brazil. */
 create_object_group CAPTAIN_FIN {
   add_object TUNA 34
@@ -599,6 +609,14 @@ create_object FLAMINGO {
 }
 
 /* Placeholders */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DESERT
+  layer_to_place_on DLC_JUNGLEGRASS
+  actor_area forest_edge
+  actor_area_radius 2
+}
+
 create_object PHON {
   number_of_objects 14400
   terrain_to_place_on DLC_JUNGLEGRASS
@@ -624,51 +642,47 @@ create_object PHON {
   }
 #END_FOR
 
-/* Pond Shore Fish */
-/*
- * Places Shore Fish around the boundaries of the ponds.
- * Note the box turtles are upgraded to shore fish.
- */
-/* TODO still room to improve shore fish placement */
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on DLC_NEWSHALLOW
-  actor_area pond1
-  actor_area_radius 1
-}
+/* Places 4 Shore Fish in each pond. */
+#FOR($i, 10, 18)
+  /* Ensures space is reserved for a Dock. */
+  create_object DOCK {
+    place_on_specific_land_id $i
+    find_closest
+    actor_area dock0_$i
+    actor_area_radius 0
+  }
 
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on BEACH
-  actor_area_to_place_in pond1
-  actor_area pond_beach
-  actor_area_radius 1
-}
-
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on DLC_NEWSHALLOW
-  actor_area_to_place_in pond_beach
-  temp_min_distance_group_placement 3
-  min_distance_group_placement 1
-  second_object SHORE_FISH
-}
-
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on BEACH
-  actor_area_to_place_in pond1
-  actor_area pond_beach2
-  actor_area_radius 2
-}
-
-create_object PHON {
-  number_of_objects 14400
-  terrain_to_place_on DLC_NEWSHALLOW
-  avoid_actor_area pond_beach2
-  temp_min_distance_group_placement 1
-  second_object SHORE_FISH
-}
+  create_object PHON {
+    place_on_specific_land_id $i
+    actor_area_to_place_in dock0_$i
+    actor_area dock1_$i
+    actor_area_radius 1
+  }
+  
+  create_object PHON {
+    place_on_specific_land_id $i
+    actor_area_to_place_in dock0_$i
+    actor_area dock2_$i
+    actor_area_radius 2
+  }
+  
+  create_object PHONA {
+    place_on_specific_land_id $i
+    avoid_actor_area dock1_$i
+    actor_area_to_place_in dock2_$i
+    second_object SHORE_FISH
+    terrain_to_place_on DLC_NEWSHALLOW
+    min_distance_group_placement 2
+  }
+  
+  create_object PHONA {
+    number_of_objects 3
+    place_on_specific_land_id $i
+    terrain_to_place_on DLC_NEWSHALLOW
+    min_distance_group_placement 2
+    second_object SHORE_FISH
+  }
+#END_FOR
 
 /* Places Shore Fish along the main coastline. */
 create_object SHORE_FISH {
@@ -685,21 +699,6 @@ create_object CAPTAIN_FIN {
 
 #OBJECTS9VILS
 
-create_object PINEAPPLE_BUSH {
-  set_place_for_every_player
-  number_of_objects 6
-  set_gaia_object_only
-  set_tight_grouping
-  group_placement_radius 2
-  avoid_forest_zone 3
-  avoid_actor_area box10
-  actor_area_to_place_in box12
-  terrain_to_place_on DESERT
-  max_distance_to_other_zones 4
-  actor_area bushes5
-  actor_area_radius 5
-}
-
 create_object GOLD {
   number_of_objects 2
   number_of_groups 2
@@ -712,7 +711,6 @@ create_object GOLD {
   max_distance_to_other_zones 3
   avoid_actor_area box10
   actor_area_to_place_in box12
-  avoid_actor_area bushes5
   actor_area player_mine6
   actor_area_radius 6
 }
@@ -727,7 +725,6 @@ create_object STONE {
   max_distance_to_other_zones 3
   avoid_actor_area box10
   actor_area_to_place_in box12
-  avoid_actor_area bushes5
   avoid_actor_area player_mine6
   actor_area player_mine6
   actor_area_radius 6
@@ -742,6 +739,7 @@ create_object JAVELINA {
   set_circular_placement
   avoid_forest_zone 1
   max_distance_to_other_zones 1
+  avoid_actor_area middle
 }
 
 create_object CAPYBARA {
@@ -775,6 +773,7 @@ create_object GOLD {
   min_distance_group_placement 5
   temp_min_distance_group_placement 20
   avoid_actor_area mine_avoider
+  avoid_actor_area player_mine6
 }
 
 create_object STONE {
@@ -790,16 +789,18 @@ create_object STONE {
   min_distance_group_placement 5
   temp_min_distance_group_placement 20
   avoid_actor_area mine_avoider
+  avoid_actor_area player_mine6
 }
 
 create_object DLC_GOAT {
   number_of_objects 3
   number_of_groups 24
   group_variance 1
-  set_tight_grouping
+  set_loose_grouping
+  group_placement_radius 2
   terrain_to_place_on DESERT
   avoid_forest_zone 4
-  max_distance_to_other_zones 2
+  max_distance_to_other_zones 3
   set_circular_placement
   min_distance_to_players 22
   min_distance_group_placement 5
@@ -823,4 +824,30 @@ create_object JUNGLETREE {
   number_of_objects 12
   avoid_forest_zone 2
   temp_min_distance_group_placement 4
+}
+
+/* Top of hill Monkeys. */
+create_object WILD_MONKEY {
+  number_of_objects 4
+  group_variance 1
+  number_of_groups 5
+  set_loose_grouping
+  temp_min_distance_group_placement 16
+  set_circular_placement
+  min_distance_to_players 35
+  terrain_to_place_on DLC_JUNGLEGRASS
+}
+
+/* Top of hill plants. */
+create_object PLANT_RAINFOREST {
+  number_of_objects 5
+  number_of_groups 12
+  temp_min_distance_group_placement 8
+  group_variance 2
+  set_loose_grouping
+  group_placement_radius 2
+  avoid_forest_zone 1
+  min_distance_to_map_edge 1
+  avoid_actor_area forest_edge
+  terrain_to_place_on DLC_JUNGLEGRASS
 }
