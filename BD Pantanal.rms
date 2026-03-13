@@ -56,8 +56,8 @@ endif
 #const T0 rnd(0,359)
 #const R 48
 #FOR($i, 0, 4)
-  #const OFFSET$i rnd(-15,15)
-  #const U$i ($i * 90 + T0 + OFFSET$i)
+  #const OFFSET$i rnd(0,30)
+  #const U$i ($i * 90 + T0 + OFFSET$i - 15)
   #TRIG(U$i)
   #const X$i (R * COS_U$i + 50)
   #const Y$i (R * SIN_U$i + 50)
@@ -69,12 +69,9 @@ endif
 #const PLACEHOLDER3 39 /* Road, Fungus */
 #const PLACEHOLDER4 DIRT
 
-#define ASSIGN1
-#define ASSIGN3
-
 <PLAYER_SETUP>
 nomad_resources
-random_placement
+direct_placement
 behavior_version 2
 ai_info_map_type NOMAD 1 0 0
 
@@ -94,19 +91,37 @@ base_terrain MUDDY_SHALLOW
 enable_waves 0
 
 /* Side lands. */
-#FOR($i, 0, 4)
-  create_land {
-    if ASSIGN$i
-      assign_to AT_TEAM -10 0 0
-      /* 1 + 1 / 2 => 2 / 2 => 1, 3 + 1 / 4 => 4 / 2 =? 2 */
-      land_id ($i + 1 / 2)
-    endif
-    zone 1$i
-    land_position X$i Y$i
-    terrain_type PLACEHOLDER$i
-    other_zone_avoidance_distance 5
-  }
-#END_FOR
+create_land {
+  land_position X0 Y0
+  zone 10
+  terrain_type PLACEHOLDER0
+  other_zone_avoidance_distance 5
+}
+
+create_land {
+  land_position X1 Y1
+  assign_to AT_TEAM -10 0 0
+  land_id 1
+  zone 11
+  terrain_type PLACEHOLDER1
+  other_zone_avoidance_distance 5
+}
+
+create_land {
+  land_position X2 Y2
+  zone 12
+  terrain_type PLACEHOLDER2
+  other_zone_avoidance_distance 5
+}
+
+create_land {
+  assign_to AT_TEAM -10 0 0
+  land_id 2
+  land_position X3 Y3
+  zone 13
+  terrain_type PLACEHOLDER3
+  other_zone_avoidance_distance 5
+}
 
 create_land {
   zone 20
@@ -195,7 +210,7 @@ create_land {
       base_terrain PLACEHOLDER$i
       land_percent 100
       number_of_clumps 8192
-      spacing_to_specific_terrain DIRT 18
+      spacing_to_specific_terrain DIRT 16
       beach_terrain DLC_WETROCKBEACH
     }
   #END_REPEAT
@@ -502,6 +517,8 @@ create_object JAVELINA {
   temp_min_distance_group_placement 14
   terrain_to_place_on MUDDY_SHALLOW
   avoid_actor_area beach2
+  avoid_actor_area capy_avoider /* Avoid the starting Villagers. */
+  avoid_actor_area map_middle
 }
 
 /* Outside Resources */
