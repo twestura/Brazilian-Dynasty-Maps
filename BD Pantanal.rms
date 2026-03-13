@@ -450,6 +450,15 @@ create_object FLOWERS_4 {
     actor_area_radius 2
   }
 
+  create_object PHON {
+    number_of_objects 14400
+    actor_area_to_place_in vil_area_$i
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    actor_area capy_avoider
+    actor_area_radius 6
+  }
+
   create_object VILLAGER {
     place_on_specific_land_id $i
     actor_area_to_place_in vil_area_$i
@@ -512,7 +521,7 @@ create_object STONE {
 
 create_object PAPAYA_TREE {
   terrain_to_place_on RAINFOREST_GRASS
-  number_of_objects 6
+  number_of_objects 4
   number_of_groups 32
   set_tight_grouping
   group_placement_radius 2
@@ -524,7 +533,7 @@ create_object PAPAYA_TREE {
 }
 
 create_object RHEA {
-  number_of_objects 4
+  number_of_objects 3
   number_of_groups 32
   temp_min_distance_group_placement 16
   set_loose_grouping
@@ -553,6 +562,7 @@ create_object CAPYBARA {
   set_loose_grouping
   temp_min_distance_group_placement 12
   terrain_to_place_on DLC_JUNGLEGRASS
+  avoid_actor_area capy_avoider
 }
 
 /* Randomly Spaces Relics */
