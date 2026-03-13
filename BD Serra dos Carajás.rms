@@ -800,11 +800,9 @@ create_object HERDABLE_A {
 /* Far Herdables */
 create_object DLC_GOOSE {
   number_of_objects 2
-  number_of_groups 2
   set_loose_grouping
   set_gaia_object_only
   set_place_for_every_player
-  temp_min_distance_group_placement 8
   min_distance_to_players 16
   max_distance_to_players 18
   set_circular_placement
