@@ -61,6 +61,7 @@ endif
 
 #const FOREST_OAK_BUSH 20
 #const ROAD_SNOW 38
+#const ROAD_FUNGUS 39
 #const GRAVEL 70
 #const MUD 76
 
@@ -83,12 +84,17 @@ endif
 #const T1 rnd(0,359)
 #const OFFSET rnd(145,215)
 #const T2 (T1 + OFFSET)
-#const R 35
+#const R 28
 #FOR($i, 1, 3)
   #TRIG(T$i)
-  #const X$i (R * COS_T$i + 50)
-  #const Y$i (R * SIN_T$i + 50)
+  #const ROFF$i rnd(0,5)
+  #const R$i (R + ROFF$i)
+  #const X$i (R$i * COS_T$i + 50)
+  #const Y$i (R$i * SIN_T$i + 50)
 #END_FOR
+
+#const TPERP (T1 + T2 / 2)
+#TRIG(TPERP)
 
 <PLAYER_SETUP>
 direct_placement
@@ -114,10 +120,11 @@ enable_waves 0
     land_position X$i Y$i
     terrain_type GROUND
     number_of_tiles 860
-    top_border 5
-    right_border 6
-    bottom_border 6
-    left_border 5
+    border_fuzziness 35
+    top_border 6
+    right_border 7
+    bottom_border 7
+    left_border 6
     base_size 9
     other_zone_avoidance_distance 16
     clumping_factor 20
@@ -226,8 +233,55 @@ create_terrain FOREST_OAK_BUSH {
   number_of_clumps 5
 }
 
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain ROAD_SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Select the small 2-tile areas to prevent forests. */
+#FOR($i, 2, 8)
+  #REPEAT(8)
+    create_terrain ROAD_SNOW {
+      base_terrain ROAD
+      land_percent 100
+      number_of_clumps 8192
+      height_limits $i $i
+      spacing_to_specific_terrain ROAD2 2
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain ROAD_FUNGUS {
+      base_terrain ROAD
+      land_percent 100
+      number_of_clumps 8192
+      height_limits $i $i
+      spacing_to_specific_terrain ROAD_SNOW 1
+    }
+  #END_REPEAT
+
+  #REPEAT(8)
+    create_terrain ROAD2 {
+      base_terrain ROAD
+      land_percent 100
+      number_of_clumps 8192
+      height_limits $i $i
+    }
+    create_terrain ROAD2 {
+      base_terrain ROAD_SNOW
+      land_percent 100
+      number_of_clumps 8192
+      height_limits $i $i
+    }
+  #END_REPEAT
+#END_FOR
+
+/* Global forests, avoiding the player forests. */
 create_terrain SOUTH_AMERICAN_FOREST {
-  base_terrain GROUND
+  base_terrain ROAD2
   number_of_tiles 1010 /* 1440 - 215 - 215 */
   number_of_clumps 24
   height_limits 2 7
@@ -242,7 +296,7 @@ create_terrain SOUTH_AMERICAN_FOREST {
     number_of_clumps 8192
   }
   create_terrain GROUND {
-    base_terrain ROAD_SNOW
+    base_terrain ROAD_FUNGUS
     land_percent 100
     number_of_clumps 8192
   }
@@ -472,6 +526,44 @@ create_terrain GRASS_FLOWERS_2 {
 #END_REPEAT
 
 <OBJECTS_GENERATION>
+/* Middle map areas to place objects around the edges. */
+create_actor_area 59 59 middle 58
+create_actor_area 59 60 middle 58
+create_actor_area 60 59 middle 58
+create_actor_area 60 60 middle 58
+
+/* Mid Small */
+create_actor_area 59 59 middle_small 3
+create_actor_area 59 60 middle_small 3
+create_actor_area 60 59 middle_small 3
+create_actor_area 60 60 middle_small 3
+
+/* Relic Area */
+create_actor_area 59 59 relic_area 25
+create_actor_area (10 * COS_TPERP + 59) (10 * SIN_TPERP + 59) relic_area 25
+create_actor_area (20 * COS_TPERP + 59) (20 * SIN_TPERP + 59) relic_area 25
+create_actor_area (30 * COS_TPERP + 59) (30 * SIN_TPERP + 59) relic_area 25
+create_actor_area (40 * COS_TPERP + 59) (40 * SIN_TPERP + 59) relic_area 25
+create_actor_area (50 * COS_TPERP + 59) (50 * SIN_TPERP + 59) relic_area 25
+create_actor_area (-10 * COS_TPERP + 59) (-10 * SIN_TPERP + 59) relic_area 25
+create_actor_area (-20 * COS_TPERP + 59) (-20 * SIN_TPERP + 59) relic_area 25
+create_actor_area (-30 * COS_TPERP + 59) (-30 * SIN_TPERP + 59) relic_area 25
+create_actor_area (-40 * COS_TPERP + 59) (-40 * SIN_TPERP + 59) relic_area 25
+create_actor_area (-50 * COS_TPERP + 59) (-50 * SIN_TPERP + 59) relic_area 25
+
+/* Mine Placement Area */
+create_actor_area 59 59 mine_area 35
+create_actor_area (10 * COS_TPERP + 59) (10 * SIN_TPERP + 59) mine_area 35
+create_actor_area (20 * COS_TPERP + 59) (20 * SIN_TPERP + 59) mine_area 35
+create_actor_area (30 * COS_TPERP + 59) (30 * SIN_TPERP + 59) mine_area 35
+create_actor_area (40 * COS_TPERP + 59) (40 * SIN_TPERP + 59) mine_area 35
+create_actor_area (50 * COS_TPERP + 59) (50 * SIN_TPERP + 59) mine_area 35
+create_actor_area (-10 * COS_TPERP + 59) (-10 * SIN_TPERP + 59) mine_area 35
+create_actor_area (-20 * COS_TPERP + 59) (-20 * SIN_TPERP + 59) mine_area 35
+create_actor_area (-30 * COS_TPERP + 59) (-30 * SIN_TPERP + 59) mine_area 35
+create_actor_area (-40 * COS_TPERP + 59) (-40 * SIN_TPERP + 59) mine_area 35
+create_actor_area (-50 * COS_TPERP + 59) (-50 * SIN_TPERP + 59) mine_area 35
+
 /* Birds */
 create_object CONDOR {
   number_of_objects 4
@@ -481,20 +573,94 @@ create_object MACAW {
   number_of_objects 4
 }
 
+/* Placeholders */
+/*
+ * Actor areas on the bottom two terrain levels.
+ * Note these terrains also spawn on some of the mixing rock terrain between
+ * levels, but it's ok to prohibit spawning there, as the terrain blockers
+ * placed later will prohibit spawning on those areas as anyway.
+ */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on LEVEL0
+  actor_area low_avoider
+  actor_area_radius 0
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on LEVEL1
+  actor_area low_avoider
+  actor_area_radius 0
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on LEVEL2
+  actor_area med_avoider
+  actor_area_radius 0
+}
+
+/* Placeholders along the map edges behind the players. */
+create_object PHON {
+  number_of_objects 14400
+  set_gaia_object_only
+  set_place_for_every_player
+  set_circular_placement
+  max_distance_to_players 40
+  avoid_actor_area middle
+  actor_area edge_behind_players
+  actor_area_radius 20
+}
+
 /* Relics */
 /* Place them before the terrain blockers so that require path works. */
 create_object RELIC {
-  number_of_objects 5
-  min_distance_to_players 30
+  min_distance_to_players 25
   set_circular_placement
-  temp_min_distance_group_placement 25
-  min_distance_group_placement 2
+  min_distance_group_placement 3
+  min_distance_to_map_edge 3
+  terrain_to_place_on LEVEL2
+  avoid_actor_area edge_behind_players
+  actor_area_to_place_in relic_area
+  find_closest_to_map_center
+  avoid_actor_area middle_small
 
   avoid_forest_zone 1
   set_place_for_every_player
   require_path 0
   generate_for_first_land_only
   set_gaia_object_only
+  actor_area first_relic
+  actor_area_radius 25
+}
+
+create_object RELIC {
+  number_of_objects 4
+  min_distance_to_players 35
+  set_circular_placement
+  temp_min_distance_group_placement 25
+  min_distance_group_placement 3
+  min_distance_to_map_edge 2
+  avoid_actor_area low_avoider
+  avoid_actor_area med_avoider
+  avoid_actor_area edge_behind_players
+  actor_area_to_place_in relic_area
+  avoid_actor_area first_relic
+
+  avoid_forest_zone 1
+  set_place_for_every_player
+  require_path 0
+  generate_for_first_land_only
+  set_gaia_object_only
+}
+
+/* Mine placeholder. */
+create_object PHON {
+  number_of_objects 14400
+  avoid_actor_area mine_area
+  actor_area mine_complement
+  actor_area_radius 0
 }
 
 /* Terrain Blockers to prevent objects from spawning on rocks. */
@@ -542,34 +708,6 @@ create_object STONE {
   avoid_actor_area rock1
 }
 
-/* Neutral Gold */
-create_object GOLD {
-  number_of_objects 4
-  number_of_groups 4
-  group_variance 1
-  set_tight_grouping
-  set_scaling_to_map_size
-  min_distance_group_placement 3
-  temp_min_distance_group_placement 20
-  set_circular_placement
-  min_distance_to_players 35
-  avoid_forest_zone 1
-}
-
-/* Neutral Stone */
-create_object STONE {
-  number_of_objects 4
-  number_of_groups 3
-  group_variance 1
-  set_tight_grouping
-  set_scaling_to_map_size
-  min_distance_group_placement 3
-  temp_min_distance_group_placement 20
-  set_circular_placement
-  min_distance_to_players 35
-  avoid_forest_zone 1
-}
-
 /* Player Forage */
 create_object DLC_ORANGEBUSH {
   number_of_objects 6
@@ -585,6 +723,46 @@ create_object DLC_ORANGEBUSH {
   avoid_actor_area rock1
 }
 
+/* Neutral Gold */
+create_object GOLD {
+  number_of_objects 4
+  number_of_groups 4
+  group_variance 1
+  set_tight_grouping
+  group_placement_radius 1
+  min_distance_to_map_edge 1
+  set_scaling_to_map_size
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 20
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+  avoid_actor_area low_avoider
+  avoid_actor_area mine_complement
+  actor_area neutral_gold
+  actor_area_radius 6
+}
+
+/* Neutral Stone */
+create_object STONE {
+  number_of_objects 4
+  number_of_groups 3
+  group_variance 1
+  set_tight_grouping
+  group_placement_radius 1
+  min_distance_to_map_edge 1
+  set_scaling_to_map_size
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 20
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+  avoid_actor_area low_avoider
+  avoid_actor_area mine_complement
+  avoid_actor_area neutral_gold
+}
+
+/* Player Animals */
 /* Lure */
 create_object TAPIR {
   number_of_objects 2
@@ -648,6 +826,7 @@ create_object JAGUAR {
   min_distance_to_players 30
   max_distance_to_players 40
   set_circular_placement
+  avoid_actor_area low_avoider
 }
 
 /* Neutral Forage */
