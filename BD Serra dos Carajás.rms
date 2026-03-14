@@ -53,19 +53,22 @@ endif
 /* Flag for testing rock vs no-rock gaps between levels. */
 /* #define ROCK_VERSION */
 
+/* Map constants */
 #const GROUND ROAD
 #const BASE_PLACEHOLDER ROAD2
 #const HERDABLE_A CAPYBARA
 #const PREDATOR JAGUAR
 #const STRAGGLER DLC_AFRICANBUSH
 
+/* Terrains */
 #const FOREST_OAK_BUSH 20
 #const ROAD_SNOW 38
 #const ROAD_FUNGUS 39
 #const GRAVEL 70
 #const MUD 76
 
-#const ROCKS 40
+/* Objects */
+#const ROCK_2 1323
 #const BUSH_A 302
 
 /* Base terrains for each height. */
@@ -760,6 +763,8 @@ create_object STONE {
   avoid_actor_area low_avoider
   avoid_actor_area mine_complement
   avoid_actor_area neutral_gold
+  actor_area neutral_stone
+  actor_area_radius 6
 }
 
 /* Player Animals */
@@ -838,14 +843,46 @@ create_object FORAGE {
   temp_min_distance_group_placement 20
   min_distance_group_placement 4
   avoid_forest_zone 1
+  avoid_actor_area neutral_gold
+  avoid_actor_area neutral_stone
 }
 
-/* Scenery */
-create_object ROCK {
-  number_of_objects 12
+/* Rocks at various height levels. */
+create_object PHON {
+  number_of_objects 16
   set_scaling_to_map_size
   min_distance_to_players 20
   set_circular_placement
   min_distance_to_map_edge 1
+  temp_min_distance_group_placement 8
   avoid_forest_zone 1
+  avoid_actor_area neutral_gold
+  avoid_actor_area neutral_stone
+  actor_area rock_placement_spot
+  actor_area_radius 0
 }
+
+#FOR($i, 0, 2)
+  create_object ROCK_2 {
+    number_of_objects 64
+    actor_area_to_place_in rock_placement_spot
+    terrain_to_place_on LEVEL$i
+  }
+#END_FOR
+
+#FOR($i, 2, 5)
+  create_object ROCK {
+    number_of_objects 64
+    actor_area_to_place_in rock_placement_spot
+    terrain_to_place_on LEVEL$i
+  }
+#END_FOR
+
+#FOR($i, 5, 8)
+  create_object DLC_ROCKJUNGLE {
+    number_of_objects 64
+    actor_area_to_place_in rock_placement_spot
+    terrain_to_place_on LEVEL$i
+  }
+#END_FOR
+
