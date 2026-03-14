@@ -271,6 +271,36 @@ create_land {
   }
 #END_REPEAT
 
+/* Remove thin stretches of island. */
+#FOR($i, 1, 3)
+  #REPEAT(8)
+    create_terrain SNOW {
+      base_terrain SPAWN$i
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_other_terrain_types 2
+    }
+  #END_REPEAT
+  
+  #REPEAT(8)
+    create_terrain DLC_WATER5 {
+      base_terrain SPAWN$i
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain SNOW 3
+    }
+  #END_REPEAT
+  
+  #REPEAT(8)
+    create_terrain SPAWN$i {
+      base_terrain SNOW
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_other_terrain_types 2
+    }
+  #END_REPEAT
+#END_FOR
+
 /* Create outlying shallows. */
 create_terrain DLC_MANGROVESHALLOW {
   base_terrain DLC_WATER5
