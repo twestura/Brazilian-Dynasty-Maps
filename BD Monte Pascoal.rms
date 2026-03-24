@@ -5,6 +5,8 @@
  */
 #HEADER_END
 
+/* TODO reduce the number of whales */
+
 /*
  * Defeat players if the game mode is not set to random map.
  * Includes a check for the secondary game mode checkboxes.
@@ -204,13 +206,13 @@ create_land {
 /* Islands */
 create_land {
   if NORTH
-    land_position rnd(10,15) rnd(30,65)
+    land_position rnd(10,15) rnd(35,60)
   elseif EAST
-    land_position rnd(35,70) rnd(10,15)
+    land_position rnd(40,65) rnd(10,15)
   elseif SOUTH
-    land_position rnd(85,90) rnd(35,70)
+    land_position rnd(85,90) rnd(40,65)
   elseif WEST
-    land_position rnd(30,65) rnd(85,90)
+    land_position rnd(35,60) rnd(85,90)
   endif
   terrain_type SPAWN0
   number_of_tiles 500
@@ -226,13 +228,13 @@ create_land {
 
 create_land {
   if NORTH
-    land_position rnd(35,70) rnd(85,90)
+    land_position rnd(40,65) rnd(85,90)
   elseif EAST
-    land_position rnd(10,15) rnd(35,70)
+    land_position rnd(10,15) rnd(40,65)
   elseif SOUTH
-    land_position rnd(30,65) rnd(10,15)
+    land_position rnd(35,60) rnd(10,15)
   elseif WEST
-    land_position rnd(85,90) rnd(30,65)
+    land_position rnd(85,90) rnd(35,60)
   endif
   terrain_type SPAWN1
   number_of_tiles 500
@@ -592,6 +594,7 @@ create_terrain DLC_DESERTGRAVEL {
   spacing_to_other_terrain_types 9
   land_percent 5
   number_of_clumps 7
+  beach_terrain DLC_WETBEACH
 }
 
 create_terrain JUNGLE {
@@ -708,8 +711,15 @@ create_object PHON {
 create_object PHON {
   number_of_objects 14400
   terrain_to_place_on BEACH
-  actor_area beach8
-  actor_area_radius 8
+  actor_area beach24
+  actor_area_radius 24
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_WETBEACH
+  actor_area wet_beach
+  actor_area_radius 4
 }
 
 create_object PHON {
@@ -741,6 +751,15 @@ create_object PHON {
   terrain_to_place_on DLC_CRACKED
   actor_area cracked_large
   actor_area_radius 12
+}
+
+/* Player Placeholders */
+create_object PHONL {
+  number_of_objects 14400
+  set_place_for_every_player
+  set_gaia_object_only
+  actor_area player_whale_avoider
+  actor_area_radius 11
 }
 
 /* Player Objects */
@@ -839,11 +858,14 @@ create_object SHORE_FISH {
 
 /* Whales */
 create_object WHALE {
-  number_of_objects 32
+  number_of_objects 4
   max_distance_to_other_zones 6
-  temp_min_distance_group_placement 12
+  temp_min_distance_group_placement 16
+  min_distance_to_map_edge 2
   min_distance_group_placement 4
-  avoid_actor_area beach8
+  avoid_actor_area wet_beach
+  avoid_actor_area beach24
+  avoid_actor_area player_whale_avoider
 }
 
 /* Big Fish */
