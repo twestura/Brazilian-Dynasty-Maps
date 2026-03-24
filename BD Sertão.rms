@@ -48,6 +48,11 @@ endif
 
 #const FOREST_OAK_BUSH 20
 #const BUSH_A 302
+#const DLC_BOULDER_A 1048
+#const ROCK_3 2515
+
+#const GRASS_DRY 1359
+#const PLANT_DEAD 1365
 
 /* Land IDs */
 #const GOLD_ID 10
@@ -220,8 +225,8 @@ base_terrain DLC_CRACKED
     land_id MID_ID_$i
     zone (10 + $i)
     terrain_type DLC_CRACKED
-    number_of_tiles 256
-    base_size 6
+    number_of_tiles 360
+    base_size 8
     set_circular_base
     clumping_factor 30
     other_zone_avoidance_distance 5
@@ -236,8 +241,8 @@ base_terrain DLC_CRACKED
       land_id PLAYER$i_ID_$j
       zone 20
       terrain_type DLC_CRACKED
-      number_of_tiles 256
-      base_size 6
+      number_of_tiles 360
+      base_size 8
       set_circular_base
       clumping_factor 30
       other_zone_avoidance_distance 5
@@ -525,8 +530,11 @@ create_object PHON {
 create_object PINEAPPLE_BUSH {
   set_place_for_every_player
   avoid_forest_zone 4
-  avoid_actor_area box13
-  actor_area_to_place_in box15
+  min_distance_to_players 13
+  max_distance_to_players 15
+  set_circular_placement
+  find_closest
+  enable_tile_shuffling
   set_gaia_object_only
   number_of_objects 6
   set_tight_grouping
@@ -643,6 +651,9 @@ create_object GOLD {
   find_closest
   set_tight_grouping
   avoid_cliff_zone 3
+  min_distance_group_placement 2
+  actor_area pit_mine
+  actor_area_radius 5
 }
 
 create_object STONE {
@@ -651,12 +662,23 @@ create_object STONE {
   find_closest
   set_tight_grouping
   avoid_cliff_zone 3
+  min_distance_group_placement 2
+  actor_area pit_mine
+  actor_area_radius 5
 }
 
 /* Relics */
 create_object RELIC {
   number_of_objects 4
-  temp_min_distance_group_placement 40
+  /*
+   * Using 40 produces a better Relic distribution in general.
+   * But the tradeoff is that occasionally only 3 of out the 4
+   * spawn, resulting in a missing Relic.
+   * For now we'll prefer having all 5 Relics, but this is an area
+   * for improvement with a more robust system for placing the
+   * inital 4 Relics.
+   */
+  temp_min_distance_group_placement 30
   set_circular_placement
   min_distance_to_players 35
   avoid_forest_zone 1
@@ -781,11 +803,12 @@ create_object DLC_ACACIATREE {
   set_circular_placement
   temp_min_distance_group_placement 4
   min_distance_group_placement 1
+  avoid_actor_area crater4
 }
 
 /* Cacti */
 create_object CACTUS {
-  number_of_objects 32
+  number_of_objects 64
   avoid_forest_zone 2
   avoid_cliff_zone 1
   set_circular_placement
@@ -793,3 +816,48 @@ create_object CACTUS {
   terrain_to_place_on DIRT
   temp_min_distance_group_placement 3
 }
+
+/* Pit Rocks */
+create_object ROCK_3 {
+  number_of_objects 16
+  terrain_to_place_on DLC_CRACKED
+  avoid_actor_area pit_mine
+  temp_min_distance_group_placement 4
+  min_distance_group_placement 1
+}
+
+/* Map Plants */
+create_object GRASS_DRY {
+  number_of_objects 5
+  group_variance 2
+  set_loose_grouping
+  number_of_groups 12
+  terrain_to_place_on DIRT
+  set_circular_placement
+  temp_min_distance_group_placement 10
+  min_distance_to_players 16
+  avoid_actor_area crater4
+  avoid_forest_zone 3
+  avoid_cliff_zone 5
+}
+
+create_object PLANT_DEAD {
+  number_of_objects 32
+  terrain_to_place_on DLC_CRACKED
+  temp_min_distance_group_placement 3
+}
+
+/*
+ * Check for TC spots in the pits.
+ * Note this requires the Gold, Stone, and Rock objects in the pits to have
+ * their min distance group placement commented out.
+ */
+/* create_object TOWN_CENTER {
+  place_on_specific_land_id GOLD_ID
+  find_closest
+}
+
+create_object TOWN_CENTER {
+  place_on_specific_land_id STONE_ID
+  find_closest
+} */
