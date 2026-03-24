@@ -5,6 +5,8 @@
  */
 #HEADER_END
 
+/* TODO move the forests back */
+
 /*
  * Defeat players if the game mode is not set to random map.
  * Includes a check for the secondary game mode checkboxes.
@@ -103,13 +105,13 @@ create_land {
   border_fuzziness 8
 
   if TB
-    land_position POS1 34
+    land_position POS1 30
     top_border 30
     right_border -20
     bottom_border 30
     left_border -20
   elseif LR
-    land_position 34 POS1
+    land_position 30 POS1
     top_border -20
     right_border 30
     bottom_border -20
@@ -124,13 +126,13 @@ create_land {
   border_fuzziness 8
 
   if TB
-    land_position POS2 67
+    land_position POS2 70
     top_border 30
     right_border -20
     bottom_border 30
     left_border -20
   elseif LR
-    land_position 67 POS2
+    land_position 70 POS2
     top_border -20
     right_border 30
     bottom_border -20
@@ -269,7 +271,7 @@ create_terrain DLC_RAINFOREST {
   base_terrain DLC_JUNGLEGRASS
   land_percent 100
   number_of_clumps 8192
-  height_limits 1 2
+  height_limits 2 2
 }
 
 create_terrain DLC_RAINFOREST {
@@ -282,16 +284,16 @@ create_terrain DLC_RAINFOREST {
 create_terrain DLC_RAINFOREST {
   base_terrain DLC_JUNGLELEAVES
   land_percent 2
-  number_of_clumps 128
+  number_of_clumps 32
   height_limits 1 1
 }
 
 /* Add small clumps of Jungle at the bottom. */
 create_terrain JUNGLE {
   base_terrain DLC_JUNGLEGRASS
-  land_percent 2
+  land_percent 3
   number_of_clumps 16
-  set_avoid_player_start_areas 22
+  set_avoid_player_start_areas 24
   height_limits 0 0
   set_flat_terrain_only
   spacing_to_specific_terrain DLC_RAINFOREST 7
@@ -382,7 +384,7 @@ create_connect_land_zones 1 2 {
   terrain_cost DLC_JUNGLELEAVES 4
   terrain_cost DLC_ROCK 1
   terrain_cost DLC_RAINFOREST 2
-  terrain_cost JUNGLE 2
+  terrain_cost JUNGLE 10
   terrain_cost DLC_JUNGLEROAD 4
   terrain_size DLC_JUNGLEGRASS 0 0
   terrain_size DLC_JUNGLELEAVES 0 0
@@ -797,6 +799,7 @@ create_object MAP_STRAGGLERS {
   number_of_objects 18
   avoid_actor_area box18
   avoid_forest_zone 2
+  avoid_actor_area rock2
   temp_min_distance_group_placement 4
   min_distance_group_placement 1
 }
