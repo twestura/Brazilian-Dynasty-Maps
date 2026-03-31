@@ -189,6 +189,10 @@ end_random
   end_random
 #END_FOR
 
+
+/* Oystering Ship constant for the Dock arrow bug fix. */
+#const OYSTERING_SHIP 2171
+
 <PLAYER_SETUP>
 direct_placement
 behavior_version 2
@@ -203,6 +207,10 @@ effect_amount SET_ATTRIBUTE HAWK ATTR_LINE_OF_SIGHT 0
 /* Makes the oak forest trees fit the theme. */
 effect_amount GAIA_UPGRADE_UNIT OAKTREE DLC_DEADTREE 0
 effect_amount GAIA_UPGRADE_UNIT BUSH_A DLC_AFRICANBUSH 0
+
+
+/* Ensure that Oystering Ships can attack. */
+effect_amount SET_ATTRIBUTE OYSTERING_SHIP ATTR_GARRISON_FIREPOWER -1
 
 <LAND_GENERATION>
 enable_waves 0

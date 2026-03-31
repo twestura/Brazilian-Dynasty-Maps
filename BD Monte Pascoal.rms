@@ -86,6 +86,10 @@ start_random
   percent_chance 25 #define WEST
 end_random
 
+
+/* Oystering Ship constant for the Dock arrow bug fix. */
+#const OYSTERING_SHIP 2171
+
 <PLAYER_SETUP>
 direct_placement
 nomad_resources
@@ -97,6 +101,10 @@ effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
 
 /* Makes Rugs spawn only on the Villager islands. */
 effect_amount SET_ATTRIBUTE RUGS ATTR_TERRAIN_ID 50
+
+
+/* Ensure that Oystering Ships can attack. */
+effect_amount SET_ATTRIBUTE OYSTERING_SHIP ATTR_GARRISON_FIREPOWER -1
 
 <LAND_GENERATION>
 enable_waves 1

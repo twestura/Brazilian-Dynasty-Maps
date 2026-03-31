@@ -107,6 +107,10 @@ endif
 #const POND_WATER2 DLC_WATER4
 #const POND_WATER3 DLC_WATER5
 
+
+/* Oystering Ship constant for the Dock arrow bug fix. */
+#const OYSTERING_SHIP 2171
+
 <PLAYER_SETUP>
 direct_placement
 ai_info_map_type BLACK_FOREST 0 0 0
@@ -120,6 +124,10 @@ effect_amount SET_ATTRIBUTE HAWK ATTR_LINE_OF_SIGHT 0
 
 /* Makes the oak forest trees fit the theme. */
 effect_amount GAIA_UPGRADE_UNIT BIRCH_TREE TREE_MONKEY_PUZZLE 0
+
+
+/* Ensure that Oystering Ships can attack. */
+effect_amount SET_ATTRIBUTE OYSTERING_SHIP ATTR_GARRISON_FIREPOWER -1
 
 <LAND_GENERATION>
 base_terrain DLC_ROCK
