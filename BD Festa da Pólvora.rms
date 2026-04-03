@@ -953,6 +953,10 @@ endif
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
 
+/* Constants for adjusting Gunpowder attack and armor values. */
+#const CLASS_MULTIPLIER 65536
+#const PIERCE_ARMOR_CLASS 3
+
 <PLAYER_SETUP>
 direct_placement
 ai_info_map_type ARENA 0 0 0
@@ -960,8 +964,12 @@ behavior_version 2
 
 #SETPHATTR
 
-/* Lowers the HP of the Gunpowder kegs. */
-/* effect_amount SET_ATTRIBUTE GUNPOWDER_KEG ATTR_HITPOINTS 50 */
+/* Make the Gunpowder Kegs more powerful and easier to destroy. */
+effect_amount SET_ATTRIBUTE GUNPOWDER_KEG ATTR_HITPOINTS 60
+effect_amount ADD_ATTRIBUTE GUNPOWDER_KEG ATTR_BLAST_RADIUS 0.5
+/* Multiply Class 3 (Pierce Armor) by 65536 and add 4 to get 4 armor. */
+/* effect_amount GAIA_SET_ATTRIBUTE GUNPOWDER_KEG ATTR_ARMOR (PIERCE_ARMOR_CLASS * CLASS_MULTIPLIER + 4) */
+/* effect_amount GAIA_ADD_ATTRIBUTE GUNPOWDER_KEG ATTR_ARMOR -722 /* -(256 * 3 + 4) */ */
 
 /* Sets the Fort Walls to have 1000 HP. */
 #FOR($gate_id, 2679, 2695)
@@ -1599,7 +1607,7 @@ create_object TOWN_CENTER {
   /* End Player TC Villagers */
 
   /* Player temporary revealers. */
-  create_object TEMPORARY_REVEALER {
+  create_object REVEAL3_TEMP {
     place_on_specific_land_id $i
     number_of_objects 4
     actor_area_to_place_in box0
