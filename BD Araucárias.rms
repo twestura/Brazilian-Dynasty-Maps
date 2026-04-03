@@ -489,11 +489,6 @@ accumulate_connections
 #END_FOR
 
 <OBJECTS_GENERATION>
-create_object_group LURE {
-  add_object JAVELINA 50
-  add_object TAPIR 50
-}
-
 /* Birds */
 create_object HAWK {
   number_of_objects 4
@@ -550,7 +545,7 @@ create_object RELIC {
   place_on_specific_land_id 10
 }
 
-create_object LURE {
+create_object JAVELINA {
   number_of_objects 3
   min_distance_group_placement 1
   find_closest
