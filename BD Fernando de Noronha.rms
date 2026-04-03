@@ -5,6 +5,8 @@
  */
 #HEADER_END
 
+/* TODO regulate the distance of player Gold */
+
 /*
  * Defeat players if the game mode is not set to random map.
  * Includes a check for the secondary game mode checkboxes.

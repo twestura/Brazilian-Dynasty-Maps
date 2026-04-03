@@ -5,6 +5,8 @@
  */
 #HEADER_END
 
+/* TODO better balance the sheep distrubution */
+
 /*
  * Defeat players if the game mode is not set to random map.
  * Includes a check for the secondary game mode checkboxes.

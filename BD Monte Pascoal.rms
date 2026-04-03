@@ -1,11 +1,11 @@
-#HEADER_START
+ #HEADER_START
 /*
  * Monte Pascoal for Brazilian Dyasty.
  * Edited by T-West, March 2026.
  */
 #HEADER_END
 
-/* TODO reduce the number of whales */
+/* TODO keep a consistent number of whales in the corner */
 
 /*
  * Defeat players if the game mode is not set to random map.
