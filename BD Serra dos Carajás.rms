@@ -87,7 +87,7 @@ endif
 #const T1 rnd(0,359)
 #const OFFSET rnd(145,215)
 #const T2 (T1 + OFFSET)
-#const R 29
+#const R 30
 #FOR($i, 1, 3)
   #TRIG(T$i)
   #const ROFF$i rnd(0,2)
