@@ -67,9 +67,10 @@ end_random
 /* Player Positions */
 #const POS1 rnd(40,60)
 #const POS2 rnd(40,60)
+/* Middle of the map in percent. */
+#const POS_MID_PERCENT (POS1 + POS2 / 2)
 /* Middle of the map, converted from percent to tiles. */
 #const POS_MID (POS1 + POS2 * 0.6)
-
 
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
@@ -223,6 +224,17 @@ create_land {
   endif
 }
 
+/* Center terrain for Forests to avoid. */
+create_land {
+  terrain_type DESERT
+  number_of_tiles 0
+  if TB
+    land_position POS_MID_PERCENT 50
+  elseif LR
+    land_position 50 POS_MID_PERCENT
+  endif
+}
+
 <ELEVATION_GENERATION>
 create_elevation 4 {
   base_terrain DLC_JUNGLEGRASS
@@ -304,8 +316,24 @@ create_terrain JUNGLE {
   set_avoid_player_start_areas 24
   height_limits 0 0
   set_flat_terrain_only
+  spacing_to_specific_terrain DESERT 5
   spacing_to_specific_terrain DLC_RAINFOREST 7
 }
+
+/* Cover the middle desert patch. */
+create_terrain DLC_JUNGLELEAVES {
+  base_terrain DESERT
+  number_of_tiles 12
+  number_of_clumps 12
+}
+
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
 
 /* Terrain Patches */
 create_terrain DLC_JUNGLEROAD {
@@ -611,6 +639,8 @@ create_object DEER {
   actor_area_to_place_in map_center
   actor_area center_deer
   actor_area_radius 16
+  actor_area deer4
+  actor_area_radius 4
 }
 
 /*
@@ -638,6 +668,8 @@ create_object PHON {
   actor_area_to_place_in rock_outside_1
   avoid_actor_area rock_outside_0
   avoid_actor_area rock0
+  actor_area replacement_rock_1
+  actor_area_radius 1
 }
 
 /* Outside Trees and Rocks */
@@ -720,11 +752,13 @@ create_object DLC_GOOSE {
   max_distance_to_players 9
 }
 
+/* TODO avoid being invisible */
 create_object SCOUT {
   set_place_for_every_player
   set_circular_placement
   actor_area_to_place_in box8
   find_closest_to_map_center
+  avoid_actor_area replacement_rock_1
 }
 
 /* Neutral Objects */
@@ -791,6 +825,7 @@ create_object CAPYBARA {
   avoid_actor_area box18
   temp_min_distance_group_placement 16
   avoid_forest_zone 3
+  min_distance_group_placement 4
 }
 
 /* Predators */
@@ -807,9 +842,10 @@ create_object MAP_STRAGGLERS {
   number_of_objects 18
   avoid_actor_area box18
   avoid_forest_zone 2
-  avoid_actor_area rock2
   temp_min_distance_group_placement 4
-  min_distance_group_placement 1
+  min_distance_group_placement 2
+  avoid_actor_area rock2
+  avoid_actor_area deer4
 }
 
 /* Middle Rocks */
@@ -821,6 +857,8 @@ create_object DLC_ROCKJUNGLE {
   min_distance_group_placement 2
   min_distance_to_map_edge 1
   avoid_actor_area box22
+  avoid_actor_area deer4
+  avoid_actor_area rock2
 }
 
 /* Flowers! <3 */
@@ -833,4 +871,5 @@ create_object PLANT_FLOWERS {
   terrain_to_place_on GRASS_FLOWERS_1
   min_distance_to_map_edge 4
   avoid_actor_area edge_area
+  avoid_actor_area rock2
 }
