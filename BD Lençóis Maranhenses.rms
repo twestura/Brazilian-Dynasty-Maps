@@ -6,7 +6,6 @@
 #HEADER_END
 
 /* TODO better balance the sheep distrubution */
-/* TODO better balance the Relic distrubution */
 
 /*
  * Defeat players if the game mode is not set to random map.
@@ -70,7 +69,6 @@ start_random
   percent_chance 25 #define LEFT
 end_random
 
-
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
 
@@ -99,7 +97,6 @@ effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_STANDING2_GRAPHIC 0
 effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DESTRUCTION_GRAPHIC 0
 effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DESTRUCTION_RUBBLE_GRAPHIC 0
 effect_amount GAIA_SET_ATTRIBUTE DOCK ATTR_DYING_SOUND -1
-
 
 /* Ensure that Oystering Ships can attack. */
 effect_amount SET_ATTRIBUTE OYSTERING_SHIP ATTR_GARRISON_FIREPOWER -1
@@ -603,6 +600,50 @@ elseif LEFT
   create_actor_area 82 70 middle 16
 endif
 
+/* Relic Complement Actor Areas */
+if TOP
+  #FOR($i, 1, 6)
+    create_actor_area 20 ($i * 20) side_relic_avoider_0 58
+    create_actor_area 20 ($i * 20) middle_relic_avoider 26
+    create_actor_area 99 ($i * 20) middle_relic_avoider 26
+    create_actor_area 99 ($i * 20) side_relic_avoider_1 58
+  #END_FOR
+elseif RIGHT
+  #FOR($i, 1, 6)
+    create_actor_area ($i * 20) 20 side_relic_avoider_0 58
+    create_actor_area ($i * 20) 20 middle_relic_avoider 26
+    create_actor_area ($i * 20) 99 middle_relic_avoider 26
+    create_actor_area ($i * 20) 99 side_relic_avoider_1 58
+  #END_FOR
+elseif BOTTOM
+  #FOR($i, 1, 6)
+    create_actor_area 20 ($i * 20) side_relic_avoider_0 58
+    create_actor_area 20 ($i * 20) middle_relic_avoider 26
+    create_actor_area 99 ($i * 20) middle_relic_avoider 26
+    create_actor_area 99 ($i * 20) side_relic_avoider_1 58
+  #END_FOR
+elseif LEFT
+  #FOR($i, 1, 6)
+    create_actor_area ($i * 20) 20 side_relic_avoider_0 58
+    create_actor_area ($i * 20) 20 middle_relic_avoider 26
+    create_actor_area ($i * 20) 99 middle_relic_avoider 26
+    create_actor_area ($i * 20) 99 side_relic_avoider_1 58
+  #END_FOR
+endif
+
+/* create_object FLAG_A {
+  number_of_objects 99999
+  actor_area_to_place_in middle_relic_avoider
+} */
+/* create_object FLAG_B {
+  number_of_objects 99999
+  actor_area_to_place_in side_relic_avoider_0
+} */
+/* create_object FLAG_C {
+  number_of_objects 99999
+  actor_area_to_place_in side_relic_avoider_1
+} */
+
 /* Big fish appropriate for the coast of Brazil. */
 create_object_group CAPTAIN_FIN {
   add_object TUNA 34
@@ -638,7 +679,7 @@ create_object PHON {
 create_object PHON {
   number_of_objects 14400
   terrain_to_place_on DLC_JUNGLEGRASS
-  actor_area relic_avoider
+  actor_area forest_relic_avoider
   actor_area_radius 40
 }
 
@@ -823,7 +864,159 @@ create_object DLC_GOAT {
   temp_min_distance_group_placement 16
 }
 
+/*
+ * Relics, spawning based on actor areas with backup cases for avoidance
+ * distances.
+ */
 create_object RELIC {
+  set_circular_placement
+  min_distance_to_players 35
+  avoid_forest_zone 1
+  max_distance_to_other_zones 3
+  terrain_to_place_on DESERT
+  avoid_actor_area forest_relic_avoider
+  avoid_actor_area middle_relic_avoider
+  actor_area relic_area_0
+  actor_area_radius 0
+}
+
+create_object PHON {
+  actor_area_to_place_in relic_area_0
+  actor_area relic_area_14
+  actor_area_radius 14
+}
+
+create_object PHON {
+  actor_area_to_place_in relic_area_0
+  actor_area relic_area_16
+  actor_area_radius 16
+}
+
+create_object PHON {
+  actor_area_to_place_in relic_area_0
+  actor_area relic_area_18
+  actor_area_radius 18
+}
+
+create_object PHON {
+  actor_area_to_place_in relic_area_0
+  actor_area relic_area_20
+  actor_area_radius 20
+}
+
+#FOR($i, 0, 2)
+  create_object RELIC {
+    set_circular_placement
+    min_distance_to_players 25
+    avoid_forest_zone 1
+    max_distance_to_other_zones 3
+    min_distance_to_map_edge 1
+    terrain_to_place_on DESERT
+    avoid_actor_area forest_relic_avoider
+    avoid_actor_area side_relic_avoider_$i
+    avoid_actor_area relic_area_20
+    actor_area relic_area_0
+    actor_area_radius 0
+  }
+
+  create_object PHON {
+    number_of_objects 14400
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in relic_area_0
+    actor_area relic_area_14
+    actor_area_radius 14
+  }
+
+  create_object PHON {
+    number_of_objects 14400
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in relic_area_0
+    actor_area relic_area_16
+    actor_area_radius 16
+  }
+
+  create_object PHON {
+    number_of_objects 14400
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in relic_area_0
+    actor_area relic_area_18
+    actor_area_radius 18
+  }
+
+  create_object PHON {
+    number_of_objects 14400
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in relic_area_0
+    actor_area relic_area_20
+    actor_area_radius 20
+  }
+
+  create_object RELIC {
+    set_circular_placement
+    min_distance_to_players 25
+    avoid_forest_zone 1
+    max_distance_to_other_zones 3
+    min_distance_to_map_edge 1
+    min_distance_group_placement 1
+    terrain_to_place_on DESERT
+    avoid_actor_area forest_relic_avoider
+    avoid_actor_area side_relic_avoider_$i
+    avoid_actor_area relic_area_20
+    actor_area relic_area_9999_$i
+    actor_area_radius 9999
+  }
+
+  create_object RELIC {
+    set_circular_placement
+    min_distance_to_players 25
+    avoid_forest_zone 1
+    max_distance_to_other_zones 3
+    min_distance_to_map_edge 1
+    min_distance_group_placement 1
+    terrain_to_place_on DESERT
+    avoid_actor_area forest_relic_avoider
+    avoid_actor_area side_relic_avoider_$i
+    avoid_actor_area relic_area_18
+    avoid_actor_area relic_area_9999_$i
+    actor_area relic_area_9999_$i
+    actor_area_radius 9999
+  }
+
+  create_object RELIC {
+    set_circular_placement
+    min_distance_to_players 25
+    avoid_forest_zone 1
+    max_distance_to_other_zones 3
+    min_distance_to_map_edge 1
+    min_distance_group_placement 1
+    terrain_to_place_on DESERT
+    avoid_actor_area forest_relic_avoider
+    avoid_actor_area side_relic_avoider_$i
+    avoid_actor_area relic_area_16
+    avoid_actor_area relic_area_9999_$i
+    actor_area relic_area_9999_$i
+    actor_area_radius 9999
+  }
+
+  create_object RELIC {
+    set_circular_placement
+    min_distance_to_players 25
+    avoid_forest_zone 1
+    max_distance_to_other_zones 3
+    min_distance_to_map_edge 1
+    min_distance_group_placement 1
+    terrain_to_place_on DESERT
+    avoid_actor_area forest_relic_avoider
+    avoid_actor_area side_relic_avoider_$i
+    avoid_actor_area relic_area_14
+    avoid_actor_area relic_area_9999_$i
+    actor_area relic_area_9999_$i
+    actor_area_radius 9999
+  }
+#END_FOR
+
+/* Original Relic Spawn */
+/* create_object RELIC {
   number_of_objects 5
   set_circular_placement
   min_distance_to_players 25
@@ -831,8 +1024,8 @@ create_object RELIC {
   max_distance_to_other_zones 3
   terrain_to_place_on DESERT
   temp_min_distance_group_placement 20
-  avoid_actor_area relic_avoider
-}
+  avoid_actor_area forest_relic_avoider
+} */
 
 /* Top of hill stragglers. */
 create_object JUNGLETREE {
