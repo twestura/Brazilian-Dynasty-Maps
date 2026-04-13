@@ -85,15 +85,13 @@ endif
 
 /* Land Positioning */
 #const T1 rnd(0,359)
-#const OFFSET rnd(145,215)
+#const OFFSET rnd(150,210)
 #const T2 (T1 + OFFSET)
-#const R 30
+#const R 31
 #FOR($i, 1, 3)
   #TRIG(T$i)
-  #const ROFF$i rnd(0,2)
-  #const R$i (R + ROFF$i)
-  #const X$i (R$i * COS_T$i + 50)
-  #const Y$i (R$i * SIN_T$i + 50)
+  #const X$i (R * COS_T$i + 50)
+  #const Y$i (R * SIN_T$i + 50)
 #END_FOR
 
 #const TPERP (T1 + T2 / 2)
@@ -137,7 +135,7 @@ enable_waves 0
     bottom_border 7
     left_border 6
     base_size 9
-    other_zone_avoidance_distance 16
+    other_zone_avoidance_distance 24
     clumping_factor 20
     assign_to AT_TEAM -10 0 0
     zone $i
@@ -893,4 +891,3 @@ create_object PHON {
     terrain_to_place_on LEVEL$i
   }
 #END_FOR
-
