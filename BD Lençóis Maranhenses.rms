@@ -6,6 +6,7 @@
 #HEADER_END
 
 /* TODO better balance the sheep distrubution */
+/* TODO better balance the Relic distrubution */
 
 /*
  * Defeat players if the game mode is not set to random map.
@@ -46,7 +47,7 @@ endif
 
 /* Objects */
 #const PHON 1543
-#const PHONA 1546
+#const PHONN 1546
 #const HERDABLE_A CAPYBARA
 #const STRAGGLER PALMTREE
 #const PLANT_RAINFOREST 1354
@@ -193,41 +194,41 @@ create_land {
 
 /* Ponds */
 if TOP
-  create_land { land_position rnd(45,55) rnd(45,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
-  create_land { land_position rnd(5,15)  rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
-  create_land { land_position rnd(48,52) rnd(65,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
-  create_land { land_position rnd(85,95) rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
-  create_land { land_position rnd(10,20) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
-  create_land { land_position rnd(80,90) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
-  create_land { land_position rnd(30,40) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
-  create_land { land_position rnd(60,70) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
+  create_land { land_position rnd(45,55) rnd(45,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 zone 10 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(5,15)  rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 zone 11 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(48,52) rnd(65,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 zone 12 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(85,95) rnd(55,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 zone 13 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(10,20) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 zone 14 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(80,90) rnd(35,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 zone 15 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(30,40) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 zone 16 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(60,70) rnd(40,50) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 zone 17 other_zone_avoidance_distance 1 }
 elseif RIGHT
-  create_land { land_position rnd(50,55) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
-  create_land { land_position rnd(35,45) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
-  create_land { land_position rnd(30,35) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
-  create_land { land_position rnd(35,45) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
-  create_land { land_position rnd(60,65) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
-  create_land { land_position rnd(60,65) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
-  create_land { land_position rnd(50,60) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
-  create_land { land_position rnd(50,60) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
+  create_land { land_position rnd(50,55) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 zone 10 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(35,45) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 zone 11 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(30,35) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 zone 12 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(35,45) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 zone 13 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(60,65) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 zone 14 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(60,65) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 zone 15 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(50,60) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 zone 16 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(50,60) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 zone 17 other_zone_avoidance_distance 1 }
 elseif BOTTOM
-  create_land { land_position rnd(45,55) rnd(50,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
-  create_land { land_position rnd(5,15)  rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
-  create_land { land_position rnd(48,52) rnd(30,35) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
-  create_land { land_position rnd(85,95) rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
-  create_land { land_position rnd(10,20) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
-  create_land { land_position rnd(80,90) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
-  create_land { land_position rnd(30,40) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
-  create_land { land_position rnd(60,70) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
+  create_land { land_position rnd(45,55) rnd(50,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 zone 10 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(5,15)  rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 zone 11 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(48,52) rnd(30,35) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 zone 12 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(85,95) rnd(35,45) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 zone 13 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(10,20) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 zone 14 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(80,90) rnd(60,65) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 zone 15 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(30,40) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 zone 16 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(60,70) rnd(50,60) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 zone 17 other_zone_avoidance_distance 1 }
 elseif LEFT
-  create_land { land_position rnd(45,50) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 }
-  create_land { land_position rnd(55,65) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 }
-  create_land { land_position rnd(65,70) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 }
-  create_land { land_position rnd(55,65) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 }
-  create_land { land_position rnd(35,40) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 }
-  create_land { land_position rnd(35,40) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 }
-  create_land { land_position rnd(40,50) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 }
-  create_land { land_position rnd(40,50) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 }
+  create_land { land_position rnd(45,50) rnd(45,55) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 10 zone 10 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(55,65) rnd(5,15)  terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 11 zone 11 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(65,70) rnd(48,52) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 12 zone 12 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(55,65) rnd(85,95) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 13 zone 13 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(35,40) rnd(10,20) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 14 zone 14 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(35,40) rnd(80,90) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 15 zone 15 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(40,50) rnd(30,40) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 16 zone 16 other_zone_avoidance_distance 1 }
+  create_land { land_position rnd(40,50) rnd(60,70) terrain_type DLC_NEWSHALLOW set_circular_base base_size 1 number_of_tiles rnd(45,55) clumping_factor 100 land_id 17 zone 17 other_zone_avoidance_distance 1 }
 endif
 
 <ELEVATION_GENERATION>
@@ -660,6 +661,7 @@ create_object PHON {
     find_closest
     actor_area dock0_$i
     actor_area_radius 0
+    avoid_other_land_zones 0
   }
 
   create_object PHON {
@@ -667,30 +669,34 @@ create_object PHON {
     actor_area_to_place_in dock0_$i
     actor_area dock1_$i
     actor_area_radius 1
+    avoid_other_land_zones 0
   }
-  
+
   create_object PHON {
     place_on_specific_land_id $i
     actor_area_to_place_in dock0_$i
     actor_area dock2_$i
     actor_area_radius 2
+    avoid_other_land_zones 0
   }
-  
-  create_object PHONA {
+
+  create_object PHONN {
     place_on_specific_land_id $i
     avoid_actor_area dock1_$i
     actor_area_to_place_in dock2_$i
     second_object SHORE_FISH
     terrain_to_place_on DLC_NEWSHALLOW
     min_distance_group_placement 2
+    avoid_other_land_zones 0
   }
-  
-  create_object PHONA {
+
+  create_object PHONN {
     number_of_objects 3
     place_on_specific_land_id $i
     terrain_to_place_on DLC_NEWSHALLOW
     min_distance_group_placement 2
     second_object SHORE_FISH
+    avoid_other_land_zones 0
   }
 #END_FOR
 
