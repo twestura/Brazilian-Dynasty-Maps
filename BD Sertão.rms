@@ -189,7 +189,6 @@ end_random
   end_random
 #END_FOR
 
-
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
 
@@ -504,6 +503,24 @@ create_actor_area 119 119 corner_a 20
 create_actor_area 93 119 corner_b 10
 create_actor_area 119 93 corner_b 10
 
+/* Middle actor area for main player gold to avoid. */
+create_actor_area 59 59 gold_middle_avoider 32
+create_actor_area 59 60 gold_middle_avoider 32
+create_actor_area 60 59 gold_middle_avoider 32
+create_actor_area 60 60 gold_middle_avoider 32
+
+/* Middle actor area for the player stone to avoid. */
+create_actor_area 59 59 stone_middle_avoider 20
+create_actor_area 59 60 stone_middle_avoider 20
+create_actor_area 60 59 stone_middle_avoider 20
+create_actor_area 60 60 stone_middle_avoider 20
+
+/* Middle actor area for second player gold to avoid. */
+create_actor_area 59 59 second_middle_avoider 16
+create_actor_area 59 60 second_middle_avoider 16
+create_actor_area 60 59 second_middle_avoider 16
+create_actor_area 60 60 second_middle_avoider 16
+
 /* Birds */
 create_object DLC_VULTURE {
   number_of_objects 4
@@ -546,17 +563,18 @@ create_object PINEAPPLE_BUSH {
   set_gaia_object_only
   number_of_objects 6
   set_tight_grouping
-  min_distance_group_placement 7
+  min_distance_group_placement 6
   avoid_forest_zone 2
   avoid_actor_area crater4
 }
 
+/* Player-specific Gold and Stone mines. */
 create_object GOLD {
   terrain_to_place_on DIRT
   set_place_for_every_player
   set_circular_placement
-  min_distance_to_players 16
-  max_distance_to_players 19
+  min_distance_to_players 17
+  find_closest
   set_gaia_object_only
   number_of_objects 3
   set_tight_grouping
@@ -566,6 +584,7 @@ create_object GOLD {
   avoid_actor_area crater4
   actor_area gold1
   actor_area_radius 12
+  avoid_actor_area gold_middle_avoider
 }
 
 create_object STONE {
@@ -583,6 +602,7 @@ create_object STONE {
   avoid_actor_area gold1
   actor_area stone1
   actor_area_radius 8
+  avoid_actor_area stone_middle_avoider
 }
 
 create_object GOLD {
@@ -600,7 +620,20 @@ create_object GOLD {
   avoid_actor_area crater4
   avoid_actor_area gold1
   avoid_actor_area stone1
+  avoid_actor_area second_middle_avoider
+  /* Debugging code to check for the extra gold. */
+  /* actor_area gold2 */
+  /* actor_area_radius 8 */
 }
+
+/* Debugging code to check for missing player mines. */
+/* create_object KING {
+  set_place_for_every_player
+  number_of_objects 14400
+  /* actor_area_to_place_in gold1 */
+  /* actor_area_to_place_in stone1 */
+  /* actor_area_to_place_in gold2 */
+} */
 
 create_object RHEA {
   number_of_objects 4
