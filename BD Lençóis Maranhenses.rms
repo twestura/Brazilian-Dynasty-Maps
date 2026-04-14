@@ -5,8 +5,6 @@
  */
 #HEADER_END
 
-/* TODO better balance the sheep distrubution */
-
 /*
  * Defeat players if the game mode is not set to random map.
  * Includes a check for the secondary game mode checkboxes.
@@ -46,6 +44,7 @@ endif
 
 /* Objects */
 #const PHON 1543
+#const PHONL 1544
 #const PHONN 1546
 #const HERDABLE_A CAPYBARA
 #const STRAGGLER PALMTREE
@@ -631,18 +630,36 @@ elseif LEFT
   #END_FOR
 endif
 
-/* create_object FLAG_A {
-  number_of_objects 99999
-  actor_area_to_place_in middle_relic_avoider
-} */
-/* create_object FLAG_B {
-  number_of_objects 99999
-  actor_area_to_place_in side_relic_avoider_0
-} */
-/* create_object FLAG_C {
-  number_of_objects 99999
-  actor_area_to_place_in side_relic_avoider_1
-} */
+/* Goat Complement Actor Areas */
+if TOP
+  #FOR($i, 1, 6)
+    create_actor_area 20 ($i * 20) side_goat_avoider_0 56
+    create_actor_area 20 ($i * 20) middle_goat_avoider 24
+    create_actor_area 99 ($i * 20) middle_goat_avoider 24
+    create_actor_area 99 ($i * 20) side_goat_avoider_1 56
+  #END_FOR
+elseif RIGHT
+  #FOR($i, 1, 6)
+    create_actor_area ($i * 20) 20 side_goat_avoider_0 56
+    create_actor_area ($i * 20) 20 middle_goat_avoider 24
+    create_actor_area ($i * 20) 99 middle_goat_avoider 24
+    create_actor_area ($i * 20) 99 side_goat_avoider_1 56
+  #END_FOR
+elseif BOTTOM
+  #FOR($i, 1, 6)
+    create_actor_area 20 ($i * 20) side_goat_avoider_0 56
+    create_actor_area 20 ($i * 20) middle_goat_avoider 24
+    create_actor_area 99 ($i * 20) middle_goat_avoider 24
+    create_actor_area 99 ($i * 20) side_goat_avoider_1 56
+  #END_FOR
+elseif LEFT
+  #FOR($i, 1, 6)
+    create_actor_area ($i * 20) 20 side_goat_avoider_0 56
+    create_actor_area ($i * 20) 20 middle_goat_avoider 24
+    create_actor_area ($i * 20) 99 middle_goat_avoider 24
+    create_actor_area ($i * 20) 99 side_goat_avoider_1 56
+  #END_FOR
+endif
 
 /* Big fish appropriate for the coast of Brazil. */
 create_object_group CAPTAIN_FIN {
@@ -849,9 +866,58 @@ create_object STONE {
   avoid_actor_area player_mine6
 }
 
+/* Spread out herdables, balanced roughly on both sides of the map. */
+#FOR($i, 0, 2)
+  create_object PHONL {
+    number_of_objects 4
+    terrain_to_place_on DESERT
+    avoid_forest_zone 4
+    max_distance_to_other_zones 3
+    set_circular_placement
+    min_distance_to_players 22
+    temp_min_distance_group_placement 20
+    avoid_actor_area side_goat_avoider_$i
+    actor_area goat_0_$i
+    actor_area_radius 0
+  }
+
+  create_object PHON {
+    number_of_objects 4
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in goat_0_$i
+    actor_area goat_2_$i
+    actor_area_radius 2
+  }
+  
+  create_object PHON {
+    number_of_objects 4
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in goat_0_$i
+    actor_area goat_20_$i
+    actor_area_radius 20
+  }
+  
+  create_object DLC_GOAT {
+    number_of_objects 4
+    temp_min_distance_group_placement 4
+    actor_area_to_place_in goat_2_$i
+  }
+  create_object DLC_GOAT {
+    number_of_objects 4
+    temp_min_distance_group_placement 4
+    actor_area_to_place_in goat_2_$i
+  }
+  create_object DLC_GOAT {
+    number_of_objects 2
+    temp_min_distance_group_placement 4
+    actor_area_to_place_in goat_2_$i
+  }
+#END_FOR
+
+/* Add additional Goats to the middle. */
 create_object DLC_GOAT {
   number_of_objects 3
-  number_of_groups 24
+  number_of_groups 4
   group_variance 1
   set_loose_grouping
   group_placement_radius 2
@@ -862,6 +928,9 @@ create_object DLC_GOAT {
   min_distance_to_players 22
   min_distance_group_placement 5
   temp_min_distance_group_placement 16
+  avoid_actor_area goat_20_0
+  avoid_actor_area goat_20_1
+  avoid_actor_area middle_goat_avoider
 }
 
 /*
@@ -1014,18 +1083,6 @@ create_object PHON {
     actor_area_radius 9999
   }
 #END_FOR
-
-/* Original Relic Spawn */
-/* create_object RELIC {
-  number_of_objects 5
-  set_circular_placement
-  min_distance_to_players 25
-  avoid_forest_zone 2
-  max_distance_to_other_zones 3
-  terrain_to_place_on DESERT
-  temp_min_distance_group_placement 20
-  avoid_actor_area forest_relic_avoider
-} */
 
 /* Top of hill stragglers. */
 create_object JUNGLETREE {
