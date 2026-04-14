@@ -44,6 +44,7 @@ endif
 
 /* Placeholder */
 #const PHON 1543
+#const PHOL 1544
 
 /* Terrains */
 #const MUD 76
@@ -53,6 +54,7 @@ endif
 /* Constant used to prevent Harbors from being constructed. */
 #const HARBOR 1189
 
+/* Side land positions. */
 #const T0 rnd(0,359)
 #const R 48
 #FOR($i, 0, 4)
@@ -63,12 +65,48 @@ endif
   #const Y$i (R * SIN_U$i + 50)
 #END_FOR
 
+
 #const PLACEHOLDER0 ROAD
 #const PLACEHOLDER1 ROAD2
 #const PLACEHOLDER2 38 /* Road, Snow */
 #const PLACEHOLDER3 39 /* Road, Fungus */
 #const PLACEHOLDER4 DIRT
 
+/* Middle island positions. */
+/* #const U rnd(0,359)
+#const MID_R 10
+#TRIG(U)
+#const A0 (MID_R * COS_U + 50)
+#const B0 (MID_R * SIN_U + 50)
+#const A1 (MID_R * -1 * COS_U + 50)
+#const B1 (MID_R * -1 * SIN_U + 50) */
+
+/* Fun Newton's method experiment. */
+/* X0 is in 0..=99 */
+/* Midpoints need to be in 0..=119 */
+/* #const MID_X (X0 + X2 * 0.6) */
+/* #const MID_Y (Y0 + Y2 * 0.6) */
+
+/* #const DX (X2 - X0) */
+/* #const DX_SQUARED (DX * DX) */
+/* #const DY (Y2 - Y0) */
+/* #const DY_SQUARED (DY * DY) */
+/* #const DIST_SQUARED (DX_SQUARED + DY_SQUARED) */
+/* Hard code a few iterations of Newton's method. */
+/* x_{n+1} = (1/2) (x_n + x_0 / x_n) */
+/* #const A (DIST_SQUARED + 1 / 2) */
+/* #const B (DIST_SQUARED / A + A / 2) */
+/* #const C (DIST_SQUARED / B + B / 2) */
+/* #const D (DIST_SQUARED / C + C / 2) */
+/* #const E (DIST_SQUARED / D + D / 2) */
+/* #const F (DIST_SQUARED / E + E / 2) */
+/* #const G (DIST_SQUARED / F + F / 2) */
+/* #const H (DIST_SQUARED / G + G / 2) */
+/* #const I (DIST_SQUARED / H + H / 2) */
+/* #const J (DIST_SQUARED / I + I / 2) */
+/* #const DIST (J * 0.325) */
+
+/* (11, 78) (82, 14) */
 
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
@@ -90,7 +128,6 @@ effect_amount SET_ATTRIBUTE DOCK_C ATTR_TERRAIN_ID DLC_BLACK
 effect_amount SET_ATTRIBUTE DOCK_I ATTR_TERRAIN_ID DLC_BLACK
 effect_amount SET_ATTRIBUTE HARBOR ATTR_TERRAIN_ID DLC_BLACK
 
-
 /* Ensure that Oystering Ships can attack. */
 effect_amount SET_ATTRIBUTE OYSTERING_SHIP ATTR_GARRISON_FIREPOWER -1
 
@@ -101,6 +138,7 @@ enable_waves 0
 /* Side lands. */
 create_land {
   land_position X0 Y0
+  base_size 1
   zone 10
   terrain_type PLACEHOLDER0
   other_zone_avoidance_distance 5
@@ -108,6 +146,7 @@ create_land {
 
 create_land {
   land_position X1 Y1
+  base_size 1
   assign_to AT_TEAM -10 0 0
   land_id 1
   zone 11
@@ -117,20 +156,23 @@ create_land {
 
 create_land {
   land_position X2 Y2
+  base_size 1
   zone 12
   terrain_type PLACEHOLDER2
   other_zone_avoidance_distance 5
 }
 
 create_land {
+  land_position X3 Y3
+  base_size 1
   assign_to AT_TEAM -10 0 0
   land_id 2
-  land_position X3 Y3
   zone 13
   terrain_type PLACEHOLDER3
   other_zone_avoidance_distance 5
 }
 
+/* Middle Land */
 create_land {
   zone 20
   land_position 50 50
@@ -230,7 +272,101 @@ create_land {
     base_terrain DIRT
     land_percent 100
     number_of_clumps 8192
+    spacing_to_specific_terrain PLACEHOLDER0 32
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain PLACEHOLDER2 32
+  }
+#END_REPEAT
+
+/* Merge the Desert and the Grass together, 1 tile at a time. */
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 20 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 19 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 18 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 17 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 16 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 15 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 14 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 13 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 12 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 11 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 10 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 9 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 8 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 7 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 6 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 5 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 4 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 3 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 2 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain GRASS { spacing_to_specific_terrain DESERT 1 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+#REPEAT(8)
+  create_terrain DESERT { spacing_to_specific_terrain GRASS 0 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Create two clumps of land in the middle. */
+#REPEAT(8)
+  create_terrain GRASS {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    /* TODO */
     spacing_to_specific_terrain ROAD 30
+    /* spacing_to_specific_terrain ROAD DIST */
   }
 #END_REPEAT
 
@@ -415,6 +551,16 @@ create_object PHON {
   actor_area_radius 3
 }
 
+/* Flood fill actor areas for determining Gold Spawns. */
+/* TODO */
+/* create_object PHON {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 99999
+  set_loose_grouping
+  group_placement_radius 999
+  second_object FLAG_A
+} */
+
 /* Middle Scenery */
 create_object FLOWERS_1 {
   terrain_to_place_on MUDDY_SHALLOW
@@ -568,14 +714,13 @@ create_object RHEA {
 
 /* Middle Gold */
 create_object GOLD {
-  number_of_objects 4
-  group_variance 1
+  number_of_objects 3
   number_of_groups 32
   terrain_to_place_on DLC_JUNGLEGRASS
   set_tight_grouping
   group_placement_radius 1
-  avoid_forest_zone 3
-  max_distance_to_other_zones 5
+  avoid_forest_zone 2
+  max_distance_to_other_zones 4
   min_distance_group_placement 2
   temp_min_distance_group_placement 12
 }
