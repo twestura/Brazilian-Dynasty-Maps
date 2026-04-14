@@ -363,7 +363,6 @@ create_land {
     base_terrain DIRT
     land_percent 100
     number_of_clumps 8192
-    /* TODO */
     spacing_to_specific_terrain ROAD 30
     /* spacing_to_specific_terrain ROAD DIST */
   }
@@ -551,7 +550,6 @@ create_object PHON {
 }
 
 /* Flood fill actor areas for determining Gold Spawns. */
-/* TODO */
 /* create_object PHON {
   terrain_to_place_on DLC_JUNGLEGRASS
   number_of_objects 99999
