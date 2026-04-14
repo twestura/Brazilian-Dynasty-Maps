@@ -321,8 +321,8 @@ create_terrain PALM_DESERT {
   base_terrain DIRT
   number_of_tiles 150
   number_of_clumps 3
-  spacing_to_specific_terrain ROCK1 5
-  spacing_to_specific_terrain DLC_CRACKED 5
+  spacing_to_specific_terrain ROCK1 4
+  spacing_to_specific_terrain DLC_CRACKED 4
 }
 
 #REPEAT(8)
@@ -355,8 +355,8 @@ create_terrain FOREST {
   base_terrain DIRT
   number_of_tiles 150
   number_of_clumps 3
-  spacing_to_specific_terrain ROCK1 5
-  spacing_to_specific_terrain DLC_CRACKED 5
+  spacing_to_specific_terrain ROCK1 4
+  spacing_to_specific_terrain DLC_CRACKED 4
   spacing_to_specific_terrain PALM_DESERT 5
 }
 
@@ -607,10 +607,12 @@ create_object RHEA {
   set_place_for_every_player
   set_gaia_object_only
   min_distance_to_players 16
-  max_distance_to_players 22
+  max_distance_to_players 19
   set_loose_grouping
   set_circular_placement
   avoid_forest_zone 2
+  actor_area player_deer
+  actor_area_radius 6
 }
 
 create_object DLC_GOAT {
@@ -633,6 +635,7 @@ create_object JAVELINA {
   min_distance_to_players 14
   max_distance_to_players 16
   set_circular_placement
+  avoid_actor_area player_deer
   avoid_forest_zone 2
 }
 
