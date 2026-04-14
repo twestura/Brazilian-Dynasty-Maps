@@ -44,7 +44,7 @@ endif
 
 /* Placeholder */
 #const PHON 1543
-#const PHOL 1544
+#const PHONL 1544
 
 /* Terrains */
 #const MUD 76
@@ -271,7 +271,7 @@ create_land {
     base_terrain DIRT
     land_percent 100
     number_of_clumps 8192
-    spacing_to_specific_terrain PLACEHOLDER0 32
+    spacing_to_specific_terrain PLACEHOLDER0 34
   }
 #END_REPEAT
 
@@ -280,7 +280,7 @@ create_land {
     base_terrain DIRT
     land_percent 100
     number_of_clumps 8192
-    spacing_to_specific_terrain PLACEHOLDER2 32
+    spacing_to_specific_terrain PLACEHOLDER2 30
   }
 #END_REPEAT
 
@@ -349,6 +349,7 @@ create_land {
   create_terrain DESERT { spacing_to_specific_terrain GRASS 0 base_terrain DIRT land_percent 100 number_of_clumps 8192 }
 #END_REPEAT
 
+/* Replace the desert with the original dirt placeholder. */
 #REPEAT(8)
   create_terrain DIRT {
     base_terrain DESERT
@@ -357,17 +358,7 @@ create_land {
   }
 #END_REPEAT
 
-/* Create two clumps of land in the middle. */
-/* #REPEAT(8)
-  create_terrain GRASS {
-    base_terrain DIRT
-    land_percent 100
-    number_of_clumps 8192
-    spacing_to_specific_terrain ROAD 30
-    /* spacing_to_specific_terrain ROAD DIST */
-  }
-#END_REPEAT */
-
+/* Create the river through the middle. */
 #REPEAT(8)
   create_terrain DLC_JUNGLEGRASS {
     base_terrain DIRT
@@ -550,13 +541,164 @@ create_object PHON {
 }
 
 /* Flood fill actor areas for determining Gold Spawns. */
-/* create_object PHON {
+create_object PHONL {
   terrain_to_place_on DLC_JUNGLEGRASS
-  number_of_objects 99999
-  set_loose_grouping
-  group_placement_radius 999
-  second_object FLAG_A
-} */
+  max_distance_to_other_zones 5
+  actor_area flood_fill_0
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_0
+  actor_area flood_fill_1
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_1
+  actor_area flood_fill_2
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_2
+  actor_area flood_fill_3
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_3
+  actor_area flood_fill_4
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_4
+  actor_area flood_fill_5
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_5
+  actor_area flood_fill_6
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_6
+  actor_area flood_fill_7
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_7
+  actor_area flood_fill_8
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_8
+  actor_area flood_fill_9
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_9
+  actor_area flood_fill_10
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_10
+  actor_area flood_fill_11
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_11
+  actor_area flood_fill_12
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_12
+  actor_area flood_fill_13
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_13
+  actor_area flood_fill_14
+  actor_area_radius 5
+}
+
+create_object PHONL {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  number_of_objects 14400
+  max_distance_to_other_zones 5
+  actor_area_to_place_in flood_fill_14
+  actor_area flood_fill_15
+  actor_area_radius 5
+}
+
+/* Actor areas to separate Gold Placement spots. */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_JUNGLEGRASS
+  avoid_actor_area flood_fill_15
+  actor_area island_0
+  actor_area_radius 0
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_JUNGLEGRASS
+  avoid_actor_area island_0
+  actor_area island_1
+  actor_area_radius 1
+}
 
 /* Middle Scenery */
 create_object FLOWERS_1 {
@@ -649,19 +791,6 @@ create_object FLOWERS_4 {
   }
 #END_FOR
 
-/* create_object VILLAGER {
-  number_of_objects 3
-  number_of_groups 3
-  set_place_for_every_player
-  temp_min_distance_group_placement 30
-  actor_area villager
-  actor_area_radius 20
-  avoid_actor_area villager
-  min_distance_to_map_edge 20
-  terrain_to_place_on MUDDY_SHALLOW
-  min_distance_group_placement 8
-} */
-
 /* Javelinas */
 create_object JAVELINA {
   number_of_objects 64
@@ -710,17 +839,202 @@ create_object RHEA {
 }
 
 /* Middle Gold */
-create_object GOLD {
-  number_of_objects 3
-  number_of_groups 32
-  terrain_to_place_on DLC_JUNGLEGRASS
-  set_tight_grouping
-  group_placement_radius 1
-  avoid_forest_zone 2
-  max_distance_to_other_zones 4
-  min_distance_group_placement 2
-  temp_min_distance_group_placement 12
-}
+#FOR($i, 0, 2)
+  /* Place an initial 3 placeholders, assuming they all spawn. */
+  create_object PHONL {
+    avoid_actor_area island_$i
+    
+    number_of_objects 3
+    terrain_to_place_on DLC_JUNGLEGRASS
+    avoid_forest_zone 2
+    max_distance_to_other_zones 4
+    temp_min_distance_group_placement 10
+    actor_area $i_initial_3_0
+    actor_area_radius 0
+  }
+  
+  create_object PHON {
+    avoid_actor_area island_$i
+    number_of_objects 32
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in $i_initial_3_0
+    actor_area $i_initial_3_8
+    actor_area_radius 8
+  }
+  
+  create_object PHON {
+    avoid_actor_area island_$i
+    number_of_objects 32
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in $i_initial_3_0
+    actor_area $i_initial_3_10
+    actor_area_radius 10
+  }
+  
+  create_object PHON {
+    avoid_actor_area island_$i
+    number_of_objects 32
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in $i_initial_3_0
+    actor_area $i_initial_3_12
+    actor_area_radius 12
+  }
+  
+  create_object PHON {
+    avoid_actor_area island_$i
+    number_of_objects 32
+    temp_min_distance_group_placement 1
+    actor_area_to_place_in $i_initial_3_0
+    actor_area $i_initial_3_14
+    actor_area_radius 14
+  }
+  
+  /* Place a 4th, 5th, and 6th placeholder. */
+  #FOR($j, 4, 7)
+    create_object PHONL {
+      avoid_actor_area island_$i
+      
+      terrain_to_place_on DLC_JUNGLEGRASS
+      avoid_forest_zone 2
+      max_distance_to_other_zones 4
+      avoid_actor_area $i_initial_3_14
+      
+      actor_area $i_$j_placeholder_0
+      actor_area_radius 0
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_$j_placeholder_success
+      actor_area_radius 512
+    }
+    
+    create_object PHONL {
+      avoid_actor_area island_$i
+      avoid_actor_area $i_$j_placeholder_success
+      
+      terrain_to_place_on DLC_JUNGLEGRASS
+      avoid_forest_zone 2
+      max_distance_to_other_zones 4
+      avoid_actor_area $i_initial_3_12
+      
+      actor_area $i_$j_placeholder_0
+      actor_area_radius 0
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_$j_placeholder_success
+      actor_area_radius 512
+    }
+    
+    create_object PHONL {
+      avoid_actor_area island_$i
+      avoid_actor_area $i_$j_placeholder_success
+      
+      terrain_to_place_on DLC_JUNGLEGRASS
+      avoid_forest_zone 2
+      max_distance_to_other_zones 4
+      avoid_actor_area $i_initial_3_10
+      
+      actor_area $i_$j_placeholder_0
+      actor_area_radius 0
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_$j_placeholder_success
+      actor_area_radius 512
+    }
+    
+    create_object PHONL {
+      avoid_actor_area island_$i
+      avoid_actor_area $i_$j_placeholder_success
+      
+      terrain_to_place_on DLC_JUNGLEGRASS
+      avoid_forest_zone 2
+      max_distance_to_other_zones 4
+      avoid_actor_area $i_initial_3_8
+      
+      actor_area $i_$j_placeholder_0
+      actor_area_radius 0
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_initial_3_8
+      actor_area_radius 8
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_initial_3_10
+      actor_area_radius 10
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_initial_3_12
+      actor_area_radius 12
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_initial_3_14
+      actor_area_radius 14
+    }
+    
+    create_object PHON {
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      actor_area $i_$j_success
+      actor_area_radius 512
+    }
+  #END_FOR
+  
+  /* Places Gold in the initial placedholder areas. */
+  create_object GOLD {
+    avoid_actor_area island_$i
+    actor_area_to_place_in $i_initial_3_0
+    number_of_objects 4
+    number_of_groups 3
+    set_tight_grouping
+    group_placement_radius 1
+    min_distance_group_placement 2
+  }
+  
+  #FOR($j, 4, 7)
+    /* Places Gold in the final 3 placedholder areas. */
+    create_object GOLD {
+      avoid_actor_area $i_6_success
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      number_of_objects 4
+      set_tight_grouping
+      group_placement_radius 1
+      min_distance_group_placement 2
+      actor_area $i_secondary_gold_placement
+      actor_area_radius 512
+    }
+    
+    create_object GOLD {
+      avoid_actor_area $i_secondary_gold_placement
+      avoid_actor_area island_$i
+      actor_area_to_place_in $i_$j_placeholder_0
+      number_of_objects 3
+      set_tight_grouping
+      group_placement_radius 1
+      min_distance_group_placement 2
+    }
+  #END_FOR
+#END_FOR
 
 /* Middle Herdables */
 create_object CAPYBARA {
