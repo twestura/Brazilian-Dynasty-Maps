@@ -5,8 +5,6 @@
  */
 #HEADER_END
 
-/* TODO regulate the distance of player Gold */
-
 /*
  * Defeat players if the game mode is not set to random map.
  * Includes a check for the secondary game mode checkboxes.
@@ -111,6 +109,17 @@ endif
 #const BX (BR * COS_B + 50)
 #const BY (BR * SIN_B + 50)
 
+/* Randomizes the land IDs for the second islands. */
+#FOR($i, 1, 3)
+  start_random
+    percent_chance 50
+      #const FIRST_ISLAND_ID_$i 10
+      #const SECOND_ISLAND_ID_$i 11
+    percent_chance 50
+      #const FIRST_ISLAND_ID_$i 11
+      #const SECOND_ISLAND_ID_$i 10
+  end_random
+#END_FOR
 
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
@@ -129,7 +138,6 @@ effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
 /* Sets rocks to spawn only on water. */
 effect_amount SET_ATTRIBUTE DLC_ROCKBEACH ATTR_TERRAIN_ID 19
 effect_amount SET_ATTRIBUTE SEA_ROCKS_2 ATTR_TERRAIN_ID 19
-
 
 /* Ensure that Oystering Ships can attack. */
 effect_amount SET_ATTRIBUTE OYSTERING_SHIP ATTR_GARRISON_FIREPOWER -1
@@ -154,6 +162,7 @@ enable_waves 1
     zone $i
     other_zone_avoidance_distance 8
   }
+  
   create_land {
     land_position X1$i Y1$i
     terrain_type SPAWN$i
@@ -169,6 +178,7 @@ enable_waves 1
     zone $i
     other_zone_avoidance_distance 8
   }
+  
   create_land {
     land_position X2$i Y2$i
     terrain_type SPAWN$i
@@ -405,7 +415,8 @@ create_terrain DLC_WETROCKBEACH {
     number_of_tiles 300
     number_of_clumps 7
     spacing_to_other_terrain_types 3
-    set_avoid_player_start_areas
+    set_avoid_player_start_areas 14
+    clumping_factor 25
   }
 
   #REPEAT(8)
@@ -617,52 +628,138 @@ create_object PHON {
 
 #OBJECTS9VILS
 
-/* Player Resources */
+/* Player Gold and Stone Spawns */
 #FOR($i, 10, 12)
-  create_object GOLD {
-    number_of_objects 4
-    set_tight_grouping
-    group_placement_radius 1
-    max_distance_to_other_zones 7
-    avoid_forest_zone 2
-    min_distance_group_placement 3
+  create_object PHON {
     place_on_specific_land_id $i
+    number_of_objects 14400
     set_circular_placement
-    min_distance_to_players 12
-    max_distance_to_players 16
-    actor_area placed_mine
-    actor_area_radius 4
-  }
-  create_object STONE {
-    number_of_objects 2
-    set_tight_grouping
-    group_placement_radius 1
-    max_distance_to_other_zones 3
-    avoid_forest_zone 2
-    min_distance_group_placement 3
-    place_on_specific_land_id $i
-    set_circular_placement
-    min_distance_to_players 16
-    max_distance_to_players 16
-    avoid_actor_area placed_mine
-    actor_area placed_mine
-    actor_area_radius 4
+    max_distance_to_players 28
+    actor_area mine_avoider_$i
+    actor_area_radius 0
   }
 #END_FOR
 
+/* First set of resources, place gold first. */
+create_object GOLD {
+  set_place_for_every_player
+  set_gaia_object_only
+  
+  number_of_objects 4
+  set_tight_grouping
+  group_placement_radius 1
+  
+  min_distance_group_placement 3
+  
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  enable_tile_shuffling
+  
+  max_distance_to_other_zones 6
+  avoid_forest_zone 2
+  avoid_actor_area mine_avoider_10
+  
+  actor_area placed_mine
+  actor_area_radius 4
+}
+
+create_object STONE {
+  set_place_for_every_player
+  set_gaia_object_only
+  
+  number_of_objects 4
+  set_tight_grouping
+  group_placement_radius 1
+  
+  min_distance_group_placement 3
+  
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  enable_tile_shuffling
+  
+  max_distance_to_other_zones 6
+  avoid_forest_zone 2
+  avoid_actor_area mine_avoider_10
+  
+  avoid_actor_area placed_mine
+  actor_area placed_mine
+  actor_area_radius 4
+}
+
+/* Second set of resources, place stone first. */
+create_object STONE {
+  set_place_for_every_player
+  set_gaia_object_only
+  
+  number_of_objects 4
+  set_tight_grouping
+  group_placement_radius 1
+  
+  min_distance_group_placement 3
+  
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  enable_tile_shuffling
+  
+  max_distance_to_other_zones 6
+  avoid_forest_zone 2
+  avoid_actor_area mine_avoider_11
+  
+  actor_area placed_mine
+  actor_area_radius 4
+}
+
+create_object GOLD {
+  set_place_for_every_player
+  set_gaia_object_only
+  
+  number_of_objects 4
+  set_tight_grouping
+  group_placement_radius 1
+  
+  min_distance_group_placement 3
+  
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  enable_tile_shuffling
+  
+  max_distance_to_other_zones 6
+  avoid_forest_zone 2
+  avoid_actor_area mine_avoider_11
+  
+  avoid_actor_area placed_mine
+  actor_area placed_mine
+  actor_area_radius 4
+}
+
+/* Normal Player Resources */
 create_object PINEAPPLE_BUSH {
   number_of_objects 6
-  group_placement_radius 2
+  group_placement_radius 1
   set_place_for_every_player
   set_gaia_object_only
   set_tight_grouping
-  max_distance_to_other_zones 5
-  avoid_forest_zone 3
+  max_distance_to_other_zones 4
+  avoid_forest_zone 2
   avoid_actor_area box10
   actor_area_to_place_in box14
   avoid_actor_area placed_mine
   min_distance_group_placement 3
+  /* Pineapple Bush Debuggins */
+  /* actor_area pineapple_bush */
+  /* actor_area_radius 10 */
 }
+
+/* Pineapple Bush Debuggins */
+/* create_object KING {
+  set_place_for_every_player
+  number_of_objects 14400
+  actor_area_to_place_in pineapple_bush
+} */
 
 create_object RELIC {
   set_place_for_every_player
