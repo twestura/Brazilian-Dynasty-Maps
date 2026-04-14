@@ -198,7 +198,7 @@ enable_waves 1
 /* Neutral Islands */
 create_land {
   land_position AX AY
-  base_size 8
+  base_size 7
   number_of_tiles rnd(400,500)
   top_border 7
   right_border 8
@@ -213,7 +213,7 @@ create_land {
 
 create_land {
   land_position BX BY
-  base_size 8
+  base_size 7
   number_of_tiles rnd(400,500)
   top_border 7
   right_border 8
@@ -228,7 +228,7 @@ create_land {
 
 create_land {
   land_position CX CY
-  base_size 8
+  base_size 7
   number_of_tiles rnd(400,500)
   top_border 7
   right_border 8
@@ -873,12 +873,12 @@ create_object DLC_RAINTREE {
     place_on_specific_land_id $i
     number_of_objects 4
     number_of_groups 2
-    temp_min_distance_group_placement 6
+    temp_min_distance_group_placement 5
     min_distance_group_placement 2
     set_tight_grouping
-    group_placement_radius 2
-    avoid_forest_zone 3
-    max_distance_to_other_zones 4
+    group_placement_radius 1
+    avoid_forest_zone 2
+    max_distance_to_other_zones 3
     actor_area neutral_gold
     actor_area_radius 3
   }
@@ -886,7 +886,7 @@ create_object DLC_RAINTREE {
   create_object STONE {
     place_on_specific_land_id $i
     number_of_objects 2
-    number_of_groups 4
+    number_of_groups 2
     temp_min_distance_group_placement 5
     min_distance_group_placement 2
     set_tight_grouping
