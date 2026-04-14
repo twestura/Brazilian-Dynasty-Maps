@@ -1,11 +1,9 @@
- #HEADER_START
+#HEADER_START
 /*
  * Monte Pascoal for Brazilian Dyasty.
  * Edited by T-West, March 2026.
  */
 #HEADER_END
-
-/* TODO keep a consistent number of whales in the corner */
 
 /*
  * Defeat players if the game mode is not set to random map.
@@ -85,7 +83,6 @@ start_random
   percent_chance 25 #define SOUTH
   percent_chance 25 #define WEST
 end_random
-
 
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
@@ -480,14 +477,118 @@ create_terrain UNDERBRUSH_JUNGLE {
 }
 
 /* Beach Forests */
-create_terrain PALM_DESERT {
-  base_terrain DESERT
-  number_of_tiles 120
-  number_of_clumps 12
-  spacing_to_specific_terrain DLC_JUNGLEGRASS 4
-  spacing_to_specific_terrain DLC_WATER5 6
+#REPEAT(8)
+  create_terrain ROAD {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_JUNGLEGRASS 4
+    spacing_to_specific_terrain DLC_WATER5 6
+  }
+#END_REPEAT
+
+/* Place 8 forests separated from each other. */
+#REPEAT(8)
+  create_terrain DLC_BLACK {
+    base_terrain ROAD
+    number_of_tiles 1
+    spacing_to_specific_terrain PALM_DESERT 10
+  }
+  
+  #REPEAT(8)
+    create_terrain ROAD2 {
+      base_terrain ROAD
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain DLC_BLACK 4
+    }
+  #END_REPEAT
+  
+  #REPEAT(4)
+    create_terrain ROAD {
+      base_terrain DLC_BLACK
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+  
+  create_terrain PALM_DESERT {
+    number_of_tiles 10
+    base_terrain ROAD
+  }
+  
+  #REPEAT(8)
+    create_terrain ROAD {
+      base_terrain ROAD2
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_REPEAT
+
+/* Place 2 more forests with less spacing. */
+#REPEAT(2)
+  create_terrain DLC_BLACK {
+    base_terrain ROAD
+    number_of_tiles 1
+    spacing_to_specific_terrain PALM_DESERT 8
+  }
+  
+  #REPEAT(8)
+    create_terrain ROAD2 {
+      base_terrain ROAD
+      land_percent 100
+      number_of_clumps 8192
+      spacing_to_specific_terrain DLC_BLACK 4
+    }
+  #END_REPEAT
+  
+  #REPEAT(4)
+    create_terrain ROAD {
+      base_terrain DLC_BLACK
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+  
+  create_terrain PALM_DESERT {
+    number_of_tiles 10
+    base_terrain ROAD
+  }
+  
+  #REPEAT(8)
+    create_terrain ROAD {
+      base_terrain ROAD2
+      land_percent 100
+      number_of_clumps 8192
+    }
+  #END_REPEAT
+#END_REPEAT
+
+/* Place a few extra forests. */
+create_terrain ROAD2 {
+  number_of_tiles 20
+  number_of_clumps 2
+  base_terrain ROAD
+  spacing_to_specific_terrain PALM_DESERT 3
 }
 
+/* Restore terrains after placing beach forests. */
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+  
+  create_terrain PALM_DESERT {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Mix the Beach Forests */
 create_terrain DLC_RAINFOREST {
   base_terrain PALM_DESERT
   number_of_tiles 60
@@ -564,6 +665,7 @@ create_terrain DLC_JUNGLEROAD {
   number_of_clumps 8
   terrain_mask 1
 }
+
 create_terrain UNDERBRUSH_JUNGLE {
   base_terrain DLC_JUNGLEGRASS
   land_percent 2
@@ -603,6 +705,7 @@ create_terrain DLC_DESERTGRAVEL {
   land_percent 5
   number_of_clumps 7
   beach_terrain DLC_WETBEACH
+  clumping_factor 25
 }
 
 create_terrain JUNGLE {
@@ -689,6 +792,39 @@ create_terrain WATER {
 }
 
 <OBJECTS_GENERATION>
+/* Whales avoid 3 corners of the map, depending on the direction. */
+if NORTH
+else
+  create_actor_area 0 119 map_whale_avoider 64
+endif
+if EAST
+else
+  create_actor_area 0 0 map_whale_avoider 64
+endif
+if SOUTH
+else
+  create_actor_area 119 0 map_whale_avoider 64
+endif
+if WEST
+else
+  create_actor_area 119 119 map_whale_avoider 64
+endif
+
+/* Each orientation has two avoidance areas for side Relics. */
+if NORTH
+  create_actor_area 119 60 side_relic_avoider_0 60
+  create_actor_area 60 0 side_relic_avoider_1 60
+elseif EAST
+  create_actor_area 119 60 side_relic_avoider_0 60
+  create_actor_area 60 119 side_relic_avoider_1 60
+elseif SOUTH
+  create_actor_area 0 60 side_relic_avoider_0 60
+  create_actor_area 60 119 side_relic_avoider_1 60
+elseif WEST
+  create_actor_area 0 60 side_relic_avoider_0 60
+  create_actor_area 60 0 side_relic_avoider_1 60
+endif
+
 /* Big fish appropriate for the coast of Brazil. */
 create_object_group CAPTAIN_FIN {
   add_object TUNA 34
@@ -721,6 +857,20 @@ create_object PHON {
   terrain_to_place_on BEACH
   actor_area beach24
   actor_area_radius 24
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_DESERTGRAVEL
+  actor_area desertgravel
+  actor_area_radius 2
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_WETBEACH
+  actor_area wet_beach_small
+  actor_area_radius 3
 }
 
 create_object PHON {
@@ -762,6 +912,14 @@ create_object PHON {
 }
 
 /* Player Placeholders */
+create_object PHONL {
+  number_of_objects 14400
+  set_place_for_every_player
+  set_gaia_object_only
+  actor_area player_whale_avoider_close
+  actor_area_radius 6
+}
+
 create_object PHONL {
   number_of_objects 14400
   set_place_for_every_player
@@ -866,14 +1024,34 @@ create_object SHORE_FISH {
 
 /* Whales */
 create_object WHALE {
-  number_of_objects 4
+  ignore_terrain_restrictions
+  set_place_for_every_player
+  set_gaia_object_only
   max_distance_to_other_zones 6
-  temp_min_distance_group_placement 16
-  min_distance_to_map_edge 2
-  min_distance_group_placement 4
-  avoid_actor_area wet_beach
+  min_distance_to_map_edge 5
+  min_distance_group_placement 5
+  avoid_forest_zone 4
+  avoid_actor_area map_whale_avoider
+  avoid_actor_area player_whale_avoider_close
+  avoid_actor_area desertgravel
+  avoid_actor_area wet_beach_small
   avoid_actor_area beach24
+  find_closest
+  actor_area player_whale
+  actor_area_radius 16
+}
+
+create_object WHALE {
+  number_of_objects 2
+  max_distance_to_other_zones 6
+  temp_min_distance_group_placement 11
+  min_distance_to_map_edge 1
+  min_distance_group_placement 4
+  avoid_actor_area wet_beach_small
+  avoid_actor_area beach24
+  avoid_actor_area map_whale_avoider
   avoid_actor_area player_whale_avoider
+  avoid_actor_area player_whale
 }
 
 /* Big Fish */
@@ -942,15 +1120,30 @@ create_object PINEAPPLE_BUSH {
   actor_area_radius 6
 }
 
+/* Relics: one in the middle, two on each side. */
 create_object RELIC {
-  number_of_objects 5
   terrain_to_place_on DESERT
+  min_distance_to_map_edge 50
   avoid_forest_zone 1
-  min_distance_to_map_edge 1
   max_distance_to_other_zones 6
-  temp_min_distance_group_placement 16
   min_distance_group_placement 4
+  actor_area relic_area
+  actor_area_radius 16
 }
+
+#FOR($i, 0, 2)
+  create_object RELIC {
+    number_of_objects 2
+    terrain_to_place_on DESERT
+    avoid_forest_zone 1
+    min_distance_to_map_edge 1
+    max_distance_to_other_zones 6
+    avoid_actor_area relic_area
+    temp_min_distance_group_placement 16
+    min_distance_group_placement 4
+    avoid_actor_area side_relic_avoider_$i
+  }
+#END_FOR
 
 /* Forest Objects */
 create_object JAVELINA {
