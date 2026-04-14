@@ -913,6 +913,7 @@ create_object OYSTERS {
   group_variance 1
   terrain_to_place_on DLC_WETROCKBEACH
   min_distance_group_placement 6
+  avoid_actor_area whale_avoider
 }
 
 create_object SHORE_FISH {
