@@ -332,6 +332,7 @@ create_terrain SNOW_FOREST {
     number_of_clumps 8192
     spacing_to_specific_terrain SNOW_FOREST 20
     spacing_to_specific_terrain DLC_FORESTDEAD 20
+    beach_terrain ICYSHORE
   }
 #END_REPEAT
 
@@ -340,6 +341,7 @@ create_terrain GRASS3 {
   set_avoid_player_start_areas 7
   number_of_tiles 1024
   number_of_clumps 1024
+  beach_terrain ICYSHORE
 }
 
 create_terrain SNOW {
@@ -347,6 +349,7 @@ create_terrain SNOW {
   number_of_tiles 128
   number_of_clumps 16
   terrain_mask 1
+  beach_terrain ICYSHORE
 }
 
 create_terrain GRASS3 {
@@ -374,11 +377,13 @@ create_terrain GRASS3 {
     spacing_to_specific_terrain SNOW_FOREST 20
     spacing_to_specific_terrain DLC_FORESTDEAD 20
     terrain_mask 1
+    beach_terrain ICYSHORE
   }
   create_terrain SNOW {
     base_terrain ROAD2
     land_percent 100
     number_of_clumps 8192
+    beach_terrain ICYSHORE
   }
 #END_REPEAT
 
@@ -396,18 +401,21 @@ create_terrain BIRCH_FOREST {
   base_terrain FOREST
   number_of_tiles 128
   number_of_clumps 32
+  beach_terrain ICYSHORE
 }
 
 create_terrain PINE_FOREST {
   base_terrain FOREST
   number_of_tiles 128
   number_of_clumps 16
+  beach_terrain ICYSHORE
 }
 
 create_terrain DLC_FORESTDEAD {
   base_terrain FOREST
   number_of_tiles 64
   number_of_clumps 16
+  beach_terrain ICYSHORE
 }
 
 /* Outer Forests */
@@ -415,18 +423,21 @@ create_terrain BIRCH_FOREST {
   base_terrain SNOW_FOREST
   number_of_tiles 512
   number_of_clumps 64
+  beach_terrain ICYSHORE
 }
 
 create_terrain PINE_FOREST {
   base_terrain SNOW_FOREST
   number_of_tiles 1024
   number_of_clumps 64
+  beach_terrain ICYSHORE
 }
 
 create_terrain DLC_FORESTDEAD {
   base_terrain SNOW_FOREST
   number_of_tiles 256
   number_of_clumps 32
+  beach_terrain ICYSHORE
 }
 
 /* Replaces all remaining middle forest. */
@@ -435,6 +446,7 @@ create_terrain DLC_FORESTDEAD {
     base_terrain FOREST
     land_percent 100
     number_of_clumps 8192
+    beach_terrain ICYSHORE
   }
 #END_REPEAT
 
@@ -445,12 +457,14 @@ create_terrain DLC_FORESTDEAD {
     land_percent 100
     number_of_clumps 8192
     terrain_mask 1
+    beach_terrain ICYSHORE
   }
   create_terrain UNDERBRUSH_SNOW {
     base_terrain BIRCH_FOREST
     land_percent 100
     number_of_clumps 8192
     terrain_mask 1
+    beach_terrain ICYSHORE
   }
 #END_REPEAT
 
