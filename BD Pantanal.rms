@@ -65,7 +65,6 @@ endif
   #const Y$i (R * SIN_U$i + 50)
 #END_FOR
 
-
 #const PLACEHOLDER0 ROAD
 #const PLACEHOLDER1 ROAD2
 #const PLACEHOLDER2 38 /* Road, Snow */
@@ -359,7 +358,7 @@ create_land {
 #END_REPEAT
 
 /* Create two clumps of land in the middle. */
-#REPEAT(8)
+/* #REPEAT(8)
   create_terrain GRASS {
     base_terrain DIRT
     land_percent 100
@@ -368,7 +367,7 @@ create_land {
     spacing_to_specific_terrain ROAD 30
     /* spacing_to_specific_terrain ROAD DIST */
   }
-#END_REPEAT
+#END_REPEAT */
 
 #REPEAT(8)
   create_terrain DLC_JUNGLEGRASS {
