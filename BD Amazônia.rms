@@ -457,10 +457,10 @@ create_terrain DLC_WATER4 {
 
 <OBJECTS_GENERATION>
 if TB
-  create_actor_area 20 20 left_blocker 40
-  create_actor_area 20 99 left_blocker 40
-  create_actor_area 99 20 right_blocker 40
-  create_actor_area 99 99 right_blocker 40
+  create_actor_area 20 20 left_blocker 48
+  create_actor_area 20 99 left_blocker 48
+  create_actor_area 99 20 right_blocker 48
+  create_actor_area 99 99 right_blocker 48
 
   create_actor_area 20 2 top_blocker_1 23
   create_actor_area 60 2 top_blocker_1 23
@@ -805,31 +805,82 @@ create_object SHORE_FISH {
   }
 #END_REPEAT */
 
-/* Forward Fish */
-create_object DORADO {
-  #SET_PLACE_FOR_EVERY_PLAYER
-  set_gaia_object_only
-  max_distance_to_players 20
-  ignore_terrain_restrictions
-  terrain_to_place_on WEEDS_WATER
-  max_distance_to_other_zones 3
-  avoid_actor_area middle_fish_edge_avoider
-  avoid_actor_area right_blocker
-  actor_area front_fish
-  actor_area_radius 8
-}
-
-create_object DORADO {
-  #SET_PLACE_FOR_EVERY_PLAYER
-  set_gaia_object_only
-  max_distance_to_players 20
-  ignore_terrain_restrictions
-  terrain_to_place_on WEEDS_WATER
-  max_distance_to_other_zones 3
-  avoid_actor_area middle_fish_edge_avoider
-  avoid_actor_area left_blocker
-  avoid_actor_area front_fish
-}
+/*
+ * Forward Fish
+ * Includes a backup case if the first fish placement fails, allowing the
+ * backup fish to be farther away.
+ */
+#FOR($i, 1, 3)
+  create_object DORADO {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    max_distance_to_players 20
+    ignore_terrain_restrictions
+    terrain_to_place_on WEEDS_WATER
+    max_distance_to_other_zones 4
+    avoid_actor_area middle_fish_edge_avoider
+    avoid_actor_area right_blocker
+    actor_area front_fish_0_$i
+    actor_area_radius 0
+  }
+  
+  create_object PHON {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    actor_area_to_place_in front_fish_0_$i
+    actor_area front_fish_$i
+    actor_area_radius 8
+  }
+  
+  create_object PHON {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    actor_area_to_place_in front_fish_0_$i
+    actor_area front_fish_success_$i
+    actor_area_radius 512
+  }
+  
+  create_object DORADO {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    max_distance_to_players 22
+    ignore_terrain_restrictions
+    terrain_to_place_on WEEDS_WATER
+    max_distance_to_other_zones 3
+    avoid_actor_area middle_fish_edge_avoider
+    avoid_actor_area right_blocker
+    avoid_actor_area front_fish_success_$i
+    actor_area front_fish_$i
+    actor_area_radius 8
+  }
+  
+  create_object DORADO {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    max_distance_to_players 20
+    ignore_terrain_restrictions
+    terrain_to_place_on WEEDS_WATER
+    max_distance_to_other_zones 3
+    avoid_actor_area middle_fish_edge_avoider
+    avoid_actor_area left_blocker
+    avoid_actor_area front_fish_$i
+    actor_area second_fish_success_$i
+    actor_area_radius 512
+  }
+  
+  create_object DORADO {
+    place_on_specific_land_id $i
+    set_gaia_object_only
+    max_distance_to_players 22
+    ignore_terrain_restrictions
+    terrain_to_place_on WEEDS_WATER
+    max_distance_to_other_zones 3
+    avoid_actor_area middle_fish_edge_avoider
+    avoid_actor_area left_blocker
+    avoid_actor_area front_fish_$i
+    avoid_actor_area second_fish_success_$i
+  }
+#END_FOR
 
 /* Player Trees */
 /* Attempt several times to place trees. */
