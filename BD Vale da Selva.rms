@@ -618,6 +618,13 @@ create_object MACAW {
 /* Placeholders */
 create_object PHON {
   number_of_objects 14400
+  actor_area_to_place_in map_center
+  actor_area map_center_large
+  actor_area_radius 10
+}
+
+create_object PHON {
+  number_of_objects 14400
   terrain_to_place_on DLC_ROCK
   actor_area rock0
   actor_area_radius 0
@@ -749,12 +756,12 @@ create_object DLC_GOOSE {
   max_distance_to_players 9
 }
 
-/* TODO avoid being invisible */
 create_object SCOUT {
   set_place_for_every_player
   set_circular_placement
   actor_area_to_place_in box8
   find_closest_to_map_center
+  /* Avoid being invisible */
   avoid_actor_area replacement_rock_1
 }
 
@@ -815,6 +822,7 @@ create_object CAPYBARA {
   generate_for_first_land_only
   set_gaia_object_only
   avoid_actor_area center_deer
+  avoid_actor_area map_center_large
 
   number_of_objects 2
   number_of_groups 24
