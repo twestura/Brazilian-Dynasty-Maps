@@ -1200,7 +1200,7 @@ create_object BLACK_PANTHER {
   layer_to_place_on DLC_DESERTGRAVEL
   min_distance_group_placement 1
   actor_area top_panthers
-  actor_area_radius 7
+  actor_area_radius 5
 }
 
 create_object GOLD {
@@ -1232,11 +1232,23 @@ create_object STONE {
   actor_area_radius 4
 }
 
-create_object JAGUAR {
+#REPEAT(4)
+  create_object JAGUAR {
+    number_of_objects 4
+    temp_min_distance_group_placement 7
+    terrain_to_place_on DLC_CRACKED
+    actor_area jaguar_1
+    actor_area_radius 1
+    avoid_actor_area jaguar_1
+    avoid_actor_area top_panthers
+  }
+#END_REPEAT
+
+/* create_object JAGUAR {
   terrain_to_place_on DLC_CRACKED
   number_of_objects 16
   avoid_actor_area top_panthers
-}
+} */
 
 create_object DLC_DEADTREE {
   terrain_to_place_on DLC_CRACKED
