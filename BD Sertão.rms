@@ -58,6 +58,9 @@ endif
 #const GOLD_ID 10
 #const STONE_ID 11
 
+/* Default distance for spacing between forests. */
+#const DEFAULT_FOREST_SPACING 11
+
 #MKCONSTS
 
 /* Player Land Coordinates */
@@ -296,7 +299,7 @@ cliff_curliness 75
 create_terrain DIRT2 {
   base_terrain DIRT
   land_percent 100
-  spacing_to_other_terrain_types 2
+  spacing_to_other_terrain_types 3
 }
 
 #REPEAT(8)
@@ -316,15 +319,198 @@ create_terrain DIRT2 {
   }
 #END_REPEAT
 
-create_terrain PALM_DESERT {
-  base_terrain DIRT
-  number_of_tiles 150
-  number_of_clumps 3
-  spacing_to_specific_terrain ROCK1 4
-  spacing_to_specific_terrain DLC_CRACKED 4
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain ROCK1 3
+    spacing_to_specific_terrain DLC_CRACKED 3
+  }
+#END_REPEAT
+
+/* First P1 Forest */
+create_terrain DLC_BLACK {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_other_terrain_types 2
 }
 
 #REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 7
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain PALM_DESERT {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Second P1 Forest */
+create_terrain DLC_BLACK {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_other_terrain_types 2
+  spacing_to_specific_terrain PALM_DESERT DEFAULT_FOREST_SPACING
+}
+
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 7
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain PALM_DESERT {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Third P1 Forest, Including a Backup Case */
+create_terrain DLC_BLACK {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_specific_terrain PALM_DESERT DEFAULT_FOREST_SPACING
+  spacing_to_other_terrain_types 2
+}
+
+create_terrain DIRT3 {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_specific_terrain PALM_DESERT 7
+  spacing_to_specific_terrain DLC_BLACK 512
+  spacing_to_other_terrain_types 2
+}
+
+/* Place the backup case first. */
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DIRT3 7
+    spacing_to_specific_terrain DLC_BLACK 512
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DIRT3
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 512
+  }
+#END_REPEAT
+
+create_terrain DESERT {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+  spacing_to_specific_terrain DLC_BLACK 512
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 512
+  }
+#END_REPEAT
+
+/* Place the main case, avoiding the backup case. */
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 7
+    spacing_to_specific_terrain DESERT 512
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DESERT 512
+  }
+#END_REPEAT
+
+create_terrain PALM_DESERT {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+  spacing_to_specific_terrain DESERT 512
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DESERT 512
+  }
+#END_REPEAT
+
+/* After the main case, place the forest for the backup case. */
+#REPEAT(8)
+  create_terrain PALM_DESERT {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Cover up the placeholder terrain for player 1. */
+#REPEAT(8)
+  create_terrain DIRT2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+  
   create_terrain DIRT2 {
     base_terrain DIRT
     land_percent 100
@@ -337,47 +523,262 @@ create_terrain PALM_DESERT {
     base_terrain ROAD
     land_percent 100
     number_of_clumps 8192
-    set_avoid_player_start_areas 18
   }
 #END_REPEAT
 
+/* Setup Placeholders for Player 2 Forests. */
 #REPEAT(8)
-  create_terrain ROAD2 {
+  create_terrain ROAD {
     base_terrain DIRT
     land_percent 100
     number_of_clumps 8192
-    spacing_to_specific_terrain ROAD 9
+    set_avoid_player_start_areas 20
   }
 #END_REPEAT
 
-create_terrain FOREST {
+create_terrain DLC_ROCK {
   base_terrain DIRT
-  number_of_tiles 150
-  number_of_clumps 3
-  spacing_to_specific_terrain ROCK1 4
-  spacing_to_specific_terrain DLC_CRACKED 4
-  spacing_to_specific_terrain PALM_DESERT 5
+  land_percent 100
+  spacing_to_other_terrain_types 3
 }
 
-/* Replace terrains after forests. */
 #REPEAT(8)
   create_terrain DIRT {
     base_terrain ROAD
     land_percent 100
     number_of_clumps 8192
   }
-  create_terrain DIRT {
-    base_terrain ROAD2
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain ROAD {
+    base_terrain DIRT
     land_percent 100
     number_of_clumps 8192
+    spacing_to_specific_terrain DLC_ROCK 9
   }
-  create_terrain DIRT {
-    base_terrain DIRT2
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain ROCK1 3
+    spacing_to_specific_terrain DLC_CRACKED 3
+    spacing_to_specific_terrain DIRT2 5
+    spacing_to_specific_terrain PALM_DESERT 7
+  }
+#END_REPEAT
+
+/* First P2 Forest */
+create_terrain DLC_BLACK {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_other_terrain_types 2
+}
+
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 7
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
     land_percent 100
     number_of_clumps 8192
   }
 #END_REPEAT
 
+create_terrain FOREST {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Second P2 Forest */
+create_terrain DLC_BLACK {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_other_terrain_types 2
+  spacing_to_specific_terrain FOREST DEFAULT_FOREST_SPACING
+}
+
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 7
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain FOREST {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Third P2 Forest, Including a Backup Case */
+create_terrain DLC_BLACK {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_specific_terrain FOREST DEFAULT_FOREST_SPACING
+  spacing_to_other_terrain_types 2
+}
+
+create_terrain DIRT3 {
+  base_terrain SNOW
+  number_of_tiles 1
+  spacing_to_specific_terrain FOREST 7
+  spacing_to_specific_terrain DLC_BLACK 512
+  spacing_to_other_terrain_types 2
+}
+
+/* Place the backup case first. */
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DIRT3 7
+    spacing_to_specific_terrain DLC_BLACK 512
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DIRT3
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 512
+  }
+#END_REPEAT
+
+create_terrain DESERT {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+  spacing_to_specific_terrain DLC_BLACK 512
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 512
+  }
+#END_REPEAT
+
+/* Place the main case, avoiding the backup case. */
+#REPEAT(8)
+  create_terrain ROAD2 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DLC_BLACK 7
+    spacing_to_specific_terrain DESERT 512
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DESERT 512
+  }
+#END_REPEAT
+
+create_terrain FOREST {
+  base_terrain SNOW
+  number_of_tiles 50
+  clumping_factor 25
+  spacing_to_specific_terrain DESERT 512
+}
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_specific_terrain DESERT 512
+  }
+#END_REPEAT
+
+/* After the main case, place the forest for the backup case. */
+#REPEAT(8)
+  create_terrain FOREST {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Cover up all of the forests placeholder terrains for both players. */
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain DIRT2
+    land_percent 100
+    number_of_clumps 8192
+  }
+  
+  create_terrain DIRT {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+  
+  create_terrain DIRT {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+  }
+  
+  create_terrain DIRT {
+    base_terrain DLC_ROCK
+    land_percent 100
+    number_of_clumps 8192
+  }
+  
+  create_terrain DIRT {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* TODO improve spacing of global forests. */
 /* Global forests. */
 create_terrain DLC_ACACIAFOREST {
   base_terrain DIRT
@@ -385,6 +786,7 @@ create_terrain DLC_ACACIAFOREST {
   land_percent 3
   number_of_clumps 8
   spacing_to_other_terrain_types 5
+  clumping_factor 25
 }
 
 /* Replaces the player forests. */
@@ -408,6 +810,7 @@ create_terrain FOREST_OAK_BUSH {
   land_percent 2
   number_of_clumps 12
   spacing_to_other_terrain_types 5
+  clumping_factor 25
 }
 
 /* Leaves under the dead forests. */
