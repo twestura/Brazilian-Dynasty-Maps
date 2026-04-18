@@ -526,13 +526,15 @@ create_object TOWN_CENTER {
 #STRAGGLER9VILSSOCOTRA
 
 /* Captain Fin */
-#FOR($i, 20, 24)
+#REPEAT(3)
   create_object SHORE_FISH {
-    place_on_specific_land_id $i
-    number_of_objects 3
-    temp_min_distance_group_placement 2
+    number_of_objects 4
+    temp_min_distance_group_placement 16
+    avoid_actor_area shore_fish_2
+    actor_area shore_fish_2
+    actor_area_radius 2
   }
-#END_FOR
+#END_REPEAT
 
 /* Lanes */
 create_object PHON {
