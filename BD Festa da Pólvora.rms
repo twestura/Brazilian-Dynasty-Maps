@@ -1352,11 +1352,23 @@ create_object PHON {
   actor_area_radius 0
 }
 
+/*
+ * TODO
+ * Double check that side barrels still spawn with an avoidance of 7,
+ * then remove these placeholders.
+ */
 create_object PHON {
   number_of_objects 14400
   terrain_to_place_on SOUTH_AMERICAN_FOREST
   actor_area ring_forest_4
   actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on SOUTH_AMERICAN_FOREST
+  actor_area ring_forest_7
+  actor_area_radius 7
 }
 
 /* Player Objects */
@@ -1504,7 +1516,7 @@ create_object TOWN_CENTER {
     create_object PHON {
       /* number_of_objects 2 */
       avoid_forest_zone 2
-      avoid_actor_area ring_forest_4
+      avoid_actor_area ring_forest_7
       temp_min_distance_group_placement 6
       place_on_specific_land_id $j$i
       actor_area_to_place_in sidewall1
