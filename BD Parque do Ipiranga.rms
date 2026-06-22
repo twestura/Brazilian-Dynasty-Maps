@@ -1,0 +1,796 @@
+#HEADER_START
+/*
+ * TBA for Brazilian Dyasty.
+ * Edited by T-West, June 2026.
+ */
+#HEADER_END
+
+/*
+ * Defeat players if the game mode is not set to random map.
+ * Includes a check for the secondary game mode checkboxes.
+ */
+if ANTIQUITY_MODE
+  #define ADMIN_RESTART
+elseif RANDOM_MAP
+  if REGICIDE
+    #define ADMIN_RESTART
+  elseif EMPIRE_WARS
+    #define ADMIN_RESTART
+  elseif SUDDEN_DEATH
+    #define ADMIN_RESTART
+  endif
+else
+  #define ADMIN_RESTART
+endif
+if TINY_MAP
+else
+  #define ADMIN_RESTART
+endif
+if DEFAULT_RESOURCES
+else
+  #define ADMIN_RESTART
+endif
+if DARK_AGE_START
+else
+  #define ADMIN_RESTART
+endif
+if TURBO_MODE
+  #define ADMIN_RESTART
+endif
+if ADMIN_RESTART
+  <PLAYER_SETUP>
+  guard_state SABOTEUR AMOUNT_GOLD 0 1
+endif
+
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+
+#const STATUE_CIV 1279
+#const ROCK_CHURCH 1378
+
+#const UNDERBRUSH_LEAVES 71
+#const MUD 76
+#const UNDERBRUSH_JUNGLE 77
+
+#const HERDABLE_A CAPYBARA
+#const STRAGGLER TREE_BRAZILWOOD
+
+#MKCONSTS
+
+#const MONUMENT_GRAPHIC 13973
+/* start_random
+  percent_chance 2 #const MONUMENT_GRAPHIC 3068
+  percent_chance 2 #const MONUMENT_GRAPHIC 3069
+  percent_chance 2 #const MONUMENT_GRAPHIC 3070
+  percent_chance 2 #const MONUMENT_GRAPHIC 3072
+  percent_chance 2 #const MONUMENT_GRAPHIC 3075
+  percent_chance 2 #const MONUMENT_GRAPHIC 3076
+  percent_chance 2 #const MONUMENT_GRAPHIC 3077
+  percent_chance 2 #const MONUMENT_GRAPHIC 3078
+  percent_chance 2 #const MONUMENT_GRAPHIC 3080
+  percent_chance 2 #const MONUMENT_GRAPHIC 3093
+  percent_chance 2 #const MONUMENT_GRAPHIC 3094
+  percent_chance 2 #const MONUMENT_GRAPHIC 3095
+  percent_chance 2 #const MONUMENT_GRAPHIC 3096
+  percent_chance 2 #const MONUMENT_GRAPHIC 3097
+  percent_chance 2 #const MONUMENT_GRAPHIC 3098
+  percent_chance 2 #const MONUMENT_GRAPHIC 6079
+  percent_chance 2 #const MONUMENT_GRAPHIC 6086
+  percent_chance 2 #const MONUMENT_GRAPHIC 6322
+  percent_chance 2 #const MONUMENT_GRAPHIC 6323
+  percent_chance 2 #const MONUMENT_GRAPHIC 6324
+  percent_chance 2 #const MONUMENT_GRAPHIC 6631
+  percent_chance 2 #const MONUMENT_GRAPHIC 7249
+  percent_chance 2 #const MONUMENT_GRAPHIC 7382
+  percent_chance 2 #const MONUMENT_GRAPHIC 7648
+  percent_chance 2 #const MONUMENT_GRAPHIC 7651
+  percent_chance 2 #const MONUMENT_GRAPHIC 8396
+  percent_chance 2 #const MONUMENT_GRAPHIC 8398
+  percent_chance 2 #const MONUMENT_GRAPHIC 8400
+  percent_chance 2 #const MONUMENT_GRAPHIC 8402
+  percent_chance 2 #const MONUMENT_GRAPHIC 10276
+  percent_chance 2 #const MONUMENT_GRAPHIC 10278
+  percent_chance 2 #const MONUMENT_GRAPHIC 10280
+  percent_chance 2 #const MONUMENT_GRAPHIC 10282
+  percent_chance 2 #const MONUMENT_GRAPHIC 10473
+  percent_chance 2 #const MONUMENT_GRAPHIC 10475
+  percent_chance 2 #const MONUMENT_GRAPHIC 10477
+  percent_chance 2 #const MONUMENT_GRAPHIC 10479
+  percent_chance 2 #const MONUMENT_GRAPHIC 12396
+  percent_chance 2 #const MONUMENT_GRAPHIC 12403
+  percent_chance 2 #const MONUMENT_GRAPHIC 12485
+  percent_chance 2 #const MONUMENT_GRAPHIC 12492
+  percent_chance 2 #const MONUMENT_GRAPHIC 12499
+  percent_chance 2 #const MONUMENT_GRAPHIC 12602
+  percent_chance 2 #const MONUMENT_GRAPHIC 12609
+  percent_chance 3 #const MONUMENT_GRAPHIC 12885
+  percent_chance 3 #const MONUMENT_GRAPHIC 12892
+  percent_chance 1 #const MONUMENT_GRAPHIC 12899
+  percent_chance 1 #const MONUMENT_GRAPHIC 13105
+  percent_chance 2 #const MONUMENT_GRAPHIC 13114
+  percent_chance 2 #const MONUMENT_GRAPHIC 13966
+  percent_chance 2 #const MONUMENT_GRAPHIC 13973
+end_random */
+
+<PLAYER_SETUP>
+direct_placement
+behavior_version 2
+ai_info_map_type GOLD_RUSH 0 0 0
+
+#SETPHATTR
+
+/* Sets Bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
+
+/* Makes the Rock Church look like a Monument/Wonder. */
+effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_STANDING_GRAPHIC MONUMENT_GRAPHIC
+effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_NAME_ID 5726
+effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_RADIUS_1 2
+effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_RADIUS_2 2
+
+/* Adds population space to the monument. */
+effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_STORAGE_VALUE 25
+effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_STORAGE2_VALUE 25
+
+<LAND_GENERATION>
+base_terrain DLC_BLACK
+enable_waves 0
+
+create_land {
+  terrain_type GRASS
+  land_position 15 40
+  assign_to AT_TEAM -10 0 0
+  top_border 16
+  right_border 16
+  bottom_border -20
+  left_border -20
+  zone 1
+}
+
+create_land {
+  terrain_type GRASS2
+  land_position 60 85
+  assign_to AT_TEAM -10 0 0
+  top_border 16
+  right_border 16
+  bottom_border -20
+  left_border -20
+  zone 2
+}
+
+/* Top hill */
+create_land {
+  terrain_type DESERT
+  land_position 65 35
+  base_elevation 7
+  /* set_circular_base */
+  top_border 18
+  right_border 18
+  base_size 16
+  land_id 10
+  number_of_tiles 1500
+  clumping_factor 30
+  zone 3
+}
+
+/* Bottom hill */
+create_land {
+  terrain_type DESERT
+  land_position 20 80
+  base_size 8
+  number_of_tiles 512
+  set_circular_base
+  base_elevation 4
+  land_id 20
+  clumping_factor 30
+  bottom_border 10
+  left_border 10
+}
+
+/* Middle hills */
+create_land {
+  terrain_type DESERT
+  land_position 42 40
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 45 45
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 50 50
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 55 55
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 60 58
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 40 55
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 45 60
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 30 60
+  base_size 6
+  number_of_tiles 300
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 40 70
+  base_size 6
+  number_of_tiles 300
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 30 70
+  base_size 6
+  number_of_tiles 300
+  zone 3
+}
+
+create_land {
+  terrain_type DESERT
+  land_position 25 75
+  base_size 6
+  number_of_tiles 256
+  zone 3
+}
+
+create_land {
+  terrain_type ROAD
+  land_id 30
+  land_position 0 99
+  number_of_tiles 0
+  base_size 1
+  zone 3
+}
+
+<ELEVATION_GENERATION>
+#REPEAT(8)
+  create_elevation 3 {
+    enable_balanced_elevation
+    base_terrain DESERT
+    number_of_tiles 8192
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Additional hills on the top. */
+create_elevation 6 {
+  enable_balanced_elevation
+  base_terrain DESERT
+  number_of_tiles 128
+  number_of_clumps 32
+}
+
+/* Bottom hills near players. */
+create_elevation 2 {
+  enable_balanced_elevation
+  base_terrain GRASS
+  number_of_tiles 64
+  number_of_clumps 16
+}
+
+create_elevation 2 {
+  enable_balanced_elevation
+  base_terrain GRASS2
+  number_of_tiles 64
+  number_of_clumps 16
+}
+
+<TERRAIN_GENERATION>
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 1 7
+  }
+  create_terrain DIRT {
+    base_terrain GRASS
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 1 7
+  }
+  create_terrain DIRT {
+    base_terrain GRASS2
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 1 7
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain SNOW {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+    set_flat_terrain_only
+    spacing_to_other_terrain_types 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain GRASS3 {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DIRT3 {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain WATER {
+    base_terrain SNOW
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain SHALLOW {
+  base_terrain WATER
+  number_of_tiles 400
+  number_of_clumps 32
+  clumping_factor 25
+}
+
+/* Woodlines */
+/* Replaces small clumps on top of little hills near players. */
+#REPEAT(8)
+  create_terrain GRASS {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 0 2
+    spacing_to_other_terrain_types 2
+  }
+  create_terrain GRASS2 {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 0 2
+    spacing_to_other_terrain_types 2
+  }
+#END_REPEAT
+
+/* Player woodlines. */
+create_terrain SOUTH_AMERICAN_FOREST {
+  base_terrain GRASS
+  land_percent 2
+  number_of_clumps 7
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 3
+  spacing_to_specific_terrain GRASS2 8
+  spacing_to_specific_terrain ROAD 16
+}
+
+create_terrain SOUTH_AMERICAN_FOREST {
+  base_terrain GRASS2
+  land_percent 2
+  number_of_clumps 7
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 3
+  spacing_to_specific_terrain GRASS 8
+  spacing_to_specific_terrain ROAD 16
+}
+
+/* Outside woodlines. */
+create_terrain PALM_GRASS_FOREST {
+  base_terrain DIRT3
+  land_percent 2
+  number_of_clumps 32
+  spacing_to_other_terrain_types 3
+}
+
+#REPEAT(8)
+  create_terrain LEAVES {
+    base_terrain PALM_GRASS_FOREST
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Creates a terrain in the center of the top of the hill. */
+#REPEAT(8)
+  create_terrain DLC_JUNGLEROAD {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 8
+    set_flat_terrain_only
+    height_limits 7 7
+  }
+#END_REPEAT
+
+/* Woodlines on the top of the hill. */
+create_terrain SOUTH_AMERICAN_FOREST {
+  base_terrain DESERT
+  land_percent 1
+  number_of_clumps 24
+  spacing_to_other_terrain_types 1
+  height_limits 3 7
+  spacing_to_specific_terrain ROAD 32
+}
+
+/* Covers the bottom road placeholder. */
+#REPEAT(8)
+  create_terrain GRASS {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain GRASS2 {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 2
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain GRASS {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Theming */
+#REPEAT(8)
+  create_terrain DESERT {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+create_terrain GRASS_FLOWERS_1 {
+  base_terrain DESERT
+  number_of_tiles 1024
+  number_of_clumps 64
+  height_limits 6 7
+}
+
+create_terrain GRASS_FLOWERS_2 {
+  base_terrain DESERT
+  number_of_tiles 256
+  number_of_clumps 16
+  height_limits 4 4
+  spacing_to_specific_terrain GRASS_FLOWERS_1 16
+}
+
+create_terrain GRASS {
+  base_terrain DESERT
+  number_of_tiles 1024
+  number_of_clumps 256
+  height_limits 3 7
+}
+
+create_terrain GRASS2 {
+  base_terrain DESERT
+  number_of_tiles 512
+  number_of_clumps 128
+  height_limits 2 7
+}
+
+#REPEAT(8)
+  create_terrain GRASS {
+    base_terrain DESERT
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Top of the river. */
+#REPEAT(8)
+  create_terrain DLC_DRYGRASS {
+    base_terrain DIRT3
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 2
+  }
+#END_REPEAT
+
+/* Base theming. */
+#REPEAT(8)
+  create_terrain DLC_DRYGRASS {
+    base_terrain GRASS
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 0 0
+  }
+  create_terrain DLC_DRYGRASS {
+    base_terrain GRASS2
+    land_percent 100
+    number_of_clumps 8192
+    height_limits 0 0
+  }
+#END_REPEAT
+
+#REPEAT(4)
+  create_terrain GRASS {
+    base_terrain DLC_DRYGRASS
+    land_percent 6
+    number_of_clumps 32
+    terrain_mask 1
+  }
+
+  create_terrain GRASS2 {
+    base_terrain DLC_DRYGRASS
+    land_percent 6
+    number_of_clumps 32
+    terrain_mask 1
+  }
+
+  create_terrain GRASS3 {
+    base_terrain DLC_DRYGRASS
+    land_percent 6
+    number_of_clumps 32
+    terrain_mask 1
+  }
+
+  create_terrain LEAVES {
+    base_terrain DLC_DRYGRASS
+    land_percent 4
+    number_of_clumps 32
+    terrain_mask 1
+  }
+#END_REPEAT
+
+<OBJECTS_GENERATION>
+/* Placeholders */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_DRYGRASS
+  actor_area gold_avoider
+  actor_area_radius 2
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on GRASS3
+  actor_area gold_avoider
+  actor_area_radius 2
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on DLC_JUNGLEROAD
+  actor_area gold_avoider
+  actor_area_radius 2
+}
+
+/* Birds */
+create_object MACAW {
+  number_of_objects 7
+}
+
+#OBJECTS9VILS
+
+/* Monument */
+create_object ROCK_CHURCH {
+  place_on_specific_land_id 10
+  find_closest
+  set_gaia_object_only
+  ignore_terrain_restrictions
+  min_distance_group_placement 6
+}
+
+/* Player Objects */
+create_object FORAGE {
+  set_place_for_every_player
+  set_gaia_object_only
+  number_of_objects 6
+  set_tight_grouping
+  min_distance_to_players 11
+  max_distance_to_players 14
+  set_circular_placement
+  avoid_forest_zone 4
+  min_distance_group_placement 4
+  actor_area forage7
+  actor_area_radius 7
+}
+
+create_object GOLD {
+  set_place_for_every_player
+  set_gaia_object_only
+  number_of_objects 3
+  number_of_groups 2
+  set_tight_grouping
+  group_placement_radius 1
+  min_distance_to_players 13
+  max_distance_to_players 18
+  set_circular_placement
+  avoid_forest_zone 1
+  min_distance_to_map_edge 2
+  min_distance_group_placement 4
+  temp_min_distance_group_placement 10
+  avoid_actor_area forage7
+}
+
+create_object CAPYBARA {
+  set_place_for_every_player
+  number_of_objects 2
+  set_loose_grouping
+  set_gaia_object_only
+  set_circular_placement
+  min_distance_to_players 16
+  max_distance_to_players 20
+}
+
+create_object TAPIR {
+  set_place_for_every_player
+  number_of_objects 2
+  temp_min_distance_group_placement 8
+  set_gaia_object_only
+  avoid_forest_zone 1
+  min_distance_to_map_edge 1
+  set_circular_placement
+  min_distance_to_players 16
+  max_distance_to_players 18
+}
+
+create_object SCOUT {
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
+}
+
+/* Monument Scenery */
+create_object STATUE_CIV {
+  number_of_objects 5
+  temp_min_distance_group_placement 6
+  place_on_specific_land_id 10
+  set_circular_placement
+  max_distance_to_players 12
+  terrain_to_place_on DLC_JUNGLEROAD
+  actor_area statue1
+  actor_area_radius 1
+}
+
+create_object RELIC {
+  number_of_objects 5
+  place_on_specific_land_id 10
+  actor_area_to_place_in statue1
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 4
+}
+
+create_object RUGS {
+  number_of_objects 6
+  min_distance_group_placement 1
+  temp_min_distance_group_placement 4
+  place_on_specific_land_id 10
+  set_circular_placement
+  max_distance_to_players 12
+  terrain_to_place_on DLC_JUNGLEROAD
+}
+
+/* Lower Berries */
+create_object PAPAYA_TREE {
+  number_of_objects 4
+  group_variance 2
+  set_tight_grouping
+  group_placement_radius 1
+  number_of_groups 12
+  temp_min_distance_group_placement 4
+  min_distance_group_placement 3
+  place_on_specific_land_id 20
+  max_distance_to_players 12
+  set_circular_placement
+  avoid_forest_zone 2
+  actor_area lower_berries
+  actor_area_radius 12
+}
+
+create_object DEER {
+  number_of_objects 2
+  number_of_groups 6
+  temp_min_distance_group_placement 4
+  place_on_specific_land_id 20
+  max_distance_to_players 12
+  set_circular_placement
+  actor_area lower_berries
+  actor_area_radius 12
+}
+
+/* Stone and Animals on top of the river. */
+create_object STONE {
+  number_of_objects 2
+  set_tight_grouping
+  group_placement_radius 1
+  number_of_groups 24
+  max_distance_to_other_zones 3
+  avoid_forest_zone 2
+  min_distance_to_map_edge 2
+  temp_min_distance_group_placement 20
+  layer_to_place_on DIRT3
+}
+
+create_object RHEA {
+  number_of_objects 3
+  set_loose_grouping
+  number_of_groups 24
+  temp_min_distance_group_placement 12
+  layer_to_place_on DIRT3
+}
+
+/* Snakes at the bottom. */
+create_object SNAKE {
+  number_of_objects 3
+  place_on_specific_land_id 30
+  max_distance_to_players 12
+  set_circular_placement
+}
+
+/* Scattered Gold */
+create_object GOLD {
+  number_of_objects 3
+  group_variance 1
+  number_of_groups 32
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  set_tight_grouping
+  group_placement_radius 1
+  max_distance_to_other_zones 7
+  avoid_forest_zone 2
+  avoid_actor_area gold_avoider
+  avoid_actor_area lower_berries
+  set_circular_placement
+  min_distance_to_players 27
+}
