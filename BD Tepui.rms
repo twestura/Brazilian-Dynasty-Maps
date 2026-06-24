@@ -1,0 +1,1056 @@
+#HEADER_START
+/*
+ * Tepuis for Brazilian Dyasty.
+ * Edited by T-West, June 2026.
+ */
+#HEADER_END
+
+/*
+ * Defeat players if the game mode is not set to random map.
+ * Includes a check for the secondary game mode checkboxes.
+ */
+if ANTIQUITY_MODE
+  #define ADMIN_RESTART
+elseif RANDOM_MAP
+  if REGICIDE
+    #define ADMIN_RESTART
+  elseif EMPIRE_WARS
+    #define ADMIN_RESTART
+  elseif SUDDEN_DEATH
+    #define ADMIN_RESTART
+  endif
+else
+  #define ADMIN_RESTART
+endif
+if TINY_MAP
+else
+  #define ADMIN_RESTART
+endif
+if DEFAULT_RESOURCES
+else
+  #define ADMIN_RESTART
+endif
+if DARK_AGE_START
+else
+  #define ADMIN_RESTART
+endif
+if TURBO_MODE
+  #define ADMIN_RESTART
+endif
+if ADMIN_RESTART
+  <PLAYER_SETUP>
+  guard_state SABOTEUR AMOUNT_GOLD 0 1
+endif
+
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+
+#const FOREST_OAK_BUSH 20
+#const UNDERBRUSH_JUNGLE 77
+#const RAINFOREST_GRASS 83
+#const DLC_BOULDER_A 1048
+#const ROCK2 1323
+
+/* Cliff values. */
+#const GRAPHICS_CLIFF_LIMESTONE 1577
+#const CLIFF_LIMESTONE_01 2069
+#const CLIFF_LIMESTONE_02 2070
+#const CLIFF_LIMESTONE_03 2071
+#const CLIFF_LIMESTONE_04 2072
+#const CLIFF_LIMESTONE_05 2073
+#const CLIFF_LIMESTONE_06 2074
+#const CLIFF_LIMESTONE_07 2075
+#const CLIFF_LIMESTONE_08 2076
+#const CLIFF_LIMESTONE_09 2077
+
+#const CLIFF_FACET_0_CONST 2074
+#const CLIFF_FACET_1_CONST 2069
+#const CLIFF_FACET_2_CONST 2069
+#const CLIFF_FACET_3_CONST 2069
+#const CLIFF_FACET_4_CONST 2069
+#const CLIFF_FACET_5_CONST 2069
+#const CLIFF_FACET_6_CONST 2072
+#const CLIFF_FACET_7_CONST 2070
+#const CLIFF_FACET_8_CONST 2070
+#const CLIFF_FACET_9_CONST 2076
+#const CLIFF_FACET_10_CONST 2071
+#const CLIFF_FACET_11_CONST 2071
+#const CLIFF_FACET_12_CONST 2072
+#const CLIFF_FACET_13_CONST 2076
+#const CLIFF_FACET_14_CONST 2074
+#const CLIFF_FACET_15_CONST 2069
+#const CLIFF_FACET_16_CONST 2069
+#const CLIFF_FACET_17_CONST 2069
+#const CLIFF_FACET_18_CONST 2069
+#const CLIFF_FACET_19_CONST 2069
+#const CLIFF_FACET_20_CONST 2071
+#const CLIFF_FACET_21_CONST 2071
+#const CLIFF_FACET_22_CONST 2070
+#const CLIFF_FACET_23_CONST 2070
+
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+
+/* 9-Villager constants. */
+#const HERDABLE_A CAPYBARA
+#const STRAGGLER DLC_AFRICANBUSH
+
+#MKCONSTS
+
+#const T1 rnd(0,359)
+#const TOFF rnd(135,225)
+#const T2 (T1 + TOFF)
+#const R 24
+#FOR($i, 1, 3)
+  #TRIG(T$i)
+  #const X$i (R * COS_T$i + 50)
+  #const Y$i (R * SIN_T$i + 50)
+#END_FOR
+
+<PLAYER_SETUP>
+direct_placement
+behavior_version 2
+ai_info_map_type SOCOTRA 0 0 0
+
+<LAND_GENERATION>
+base_terrain RAINFOREST_GRASS
+enable_waves 0
+
+#FOR($i, 1, 3)
+  create_land {
+    land_position X$i Y$i
+    assign_to AT_TEAM -10 0 0
+    terrain_type DIRT
+    number_of_tiles 0
+  }
+#END_FOR
+
+create_land {
+  land_position 50 50
+  terrain_type DIRT
+  number_of_tiles 0
+  base_size 42
+  set_circular_base
+}
+
+<ELEVATION_GENERATION>
+create_elevation 2 {
+  enable_balanced_elevation
+  base_terrain DIRT
+  number_of_tiles 300
+  number_of_clumps 10
+}
+
+<TERRAIN_GENERATION>
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain RAINFOREST_GRASS
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 12
+  }
+#END_REPEAT
+
+/* Outside trees and mixing. */
+create_terrain JUNGLE {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 12
+  number_of_clumps 128
+  spacing_to_other_terrain_types 1
+}
+
+create_terrain DLC_RAINFOREST {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 8
+  number_of_clumps 128
+  spacing_to_other_terrain_types 1
+}
+
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 100
+  number_of_clumps 64
+}
+
+#REPEAT(8)
+  create_terrain UNDERBRUSH_JUNGLE {
+    base_terrain DLC_JUNGLEGRASS
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Player Forests */
+#REPEAT(8)
+  create_terrain DLC_BLACK {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    set_avoid_player_start_areas 24
+  }
+#END_REPEAT
+
+create_terrain ROAD {
+  base_terrain DIRT
+  land_percent 100
+  spacing_to_other_terrain_types 2
+}
+
+create_terrain ROAD2 {
+  base_terrain DIRT
+  land_percent 100
+  spacing_to_other_terrain_types 2
+  spacing_to_specific_terrain ROAD 4
+}
+
+create_terrain FOREST_OAK_BUSH {
+  base_terrain ROAD
+  number_of_tiles 60
+  number_of_clumps 2
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 1
+  spacing_to_specific_terrain RAINFOREST_GRASS 5
+  clumping_factor 25
+}
+
+create_terrain FOREST_OAK_BUSH {
+  base_terrain ROAD2
+  number_of_tiles 60
+  number_of_clumps 2
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 1
+  spacing_to_specific_terrain RAINFOREST_GRASS 5
+  clumping_factor 25
+}
+
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Global Forests */
+create_terrain FOREST_OAK_BUSH {
+  base_terrain DIRT
+  number_of_tiles 300
+  number_of_clumps 10
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 2
+  spacing_to_specific_terrain RAINFOREST_GRASS 6
+  clumping_factor 25
+}
+
+#REPEAT(6)
+  create_terrain SOUTH_AMERICAN_FOREST {
+    base_terrain FOREST_OAK_BUSH
+    land_percent 100
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+  create_terrain DIRT {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Upper terrain masking. */
+create_terrain DLC_DRYGRASS {
+  base_terrain DIRT
+  land_percent 12
+  number_of_clumps 32
+  terrain_mask 1
+}
+
+create_terrain DIRT3 {
+  base_terrain DIRT
+  land_percent 8
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain GRASS3 {
+  base_terrain DIRT
+  land_percent 6
+  number_of_clumps 12
+  terrain_mask 1
+}
+
+create_terrain DIRT2 {
+  base_terrain DIRT
+  land_percent 1
+  number_of_clumps 4
+  terrain_mask 1
+}
+
+/* Making the slopes. */
+create_terrain DLC_DIRT4 {
+  base_terrain RAINFOREST_GRASS
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 1
+}
+
+<OBJECTS_GENERATION>
+/* Test actor areas for showing cliff facings. */
+create_actor_area 34 13 facet_18 0
+create_actor_area 34 10 facet_14 0
+create_actor_area 19 22 facet_10 0
+create_actor_area 34 16 facet_14 0
+create_actor_area 79 16 facet_20 0
+create_actor_area 31 16 facet_11 0
+create_actor_area 68 16 facet_13 0
+create_actor_area 97 97 facet_17 0
+create_actor_area 97 103 facet_6 0
+create_actor_area 97 100 facet_22 0
+create_actor_area 40 16 facet_19 0
+create_actor_area 31 13 facet_19 0
+create_actor_area 94 17 facet_9 0
+create_actor_area 37 10 facet_20 0
+create_actor_area 94 19 facet_8 0
+create_actor_area 97 16 facet_22 0
+create_actor_area 100 97 facet_7 0
+create_actor_area 22 19 facet_2 0
+create_actor_area 13 34 facet_19 0
+create_actor_area 68 13 facet_12 0
+create_actor_area 28 14 facet_9 0
+create_actor_area 91 23 facet_9 0
+create_actor_area 103 35 facet_0 0
+create_actor_area 97 19 facet_7 0
+create_actor_area 109 34 facet_7 0
+create_actor_area 79 13 facet_21 0
+create_actor_area 83 22 facet_13 0
+create_actor_area 115 43 facet_6 0
+create_actor_area 115 38 facet_9 0
+create_actor_area 110 40 facet_13 0
+create_actor_area 106 40 facet_6 0
+create_actor_area 19 37 facet_15 0
+create_actor_area 112 40 facet_14 0
+create_actor_area 10 43 facet_19 0
+create_actor_area 106 70 facet_23 0
+create_actor_area 22 43 facet_19 0
+create_actor_area 22 40 facet_18 0
+create_actor_area 19 46 facet_18 0
+create_actor_area 10 49 facet_3 0
+create_actor_area 16 49 facet_2 0
+create_actor_area 13 76 facet_19 0
+create_actor_area 19 49 facet_1 0
+create_actor_area 16 46 facet_1 0
+create_actor_area 19 52 facet_19 0
+create_actor_area 106 47 facet_9 0
+create_actor_area 13 49 facet_15 0
+create_actor_area 16 52 facet_1 0
+create_actor_area 22 61 facet_14 0
+create_actor_area 103 29 facet_9 0
+create_actor_area 109 32 facet_9 0
+create_actor_area 112 61 facet_8 0
+create_actor_area 19 62 facet_0 0
+create_actor_area 104 55 facet_13 0
+create_actor_area 100 28 facet_20 0
+create_actor_area 103 52 facet_22 0
+create_actor_area 19 79 facet_15 0
+create_actor_area 22 64 facet_18 0
+create_actor_area 19 55 facet_18 0
+create_actor_area 106 58 facet_6 0
+create_actor_area 19 64 facet_1 0
+create_actor_area 22 58 facet_15 0
+create_actor_area 16 58 facet_15 0
+create_actor_area 25 67 facet_18 0
+create_actor_area 19 58 facet_3 0
+create_actor_area 104 64 facet_12 0
+create_actor_area 103 79 facet_6 0
+create_actor_area 13 67 facet_15 0
+create_actor_area 19 70 facet_15 0
+create_actor_area 22 70 facet_2 0
+create_actor_area 16 70 facet_3 0
+create_actor_area 10 79 facet_3 0
+create_actor_area 25 82 facet_3 0
+create_actor_area 109 73 facet_17 0
+create_actor_area 79 19 facet_20 0
+create_actor_area 25 79 facet_18 0
+create_actor_area 28 79 facet_19 0
+create_actor_area 25 88 facet_14 0
+create_actor_area 107 73 facet_12 0
+create_actor_area 31 88 facet_1 0
+create_actor_area 109 76 facet_22 0
+create_actor_area 16 88 facet_16 0
+create_actor_area 107 91 facet_12 0
+create_actor_area 19 88 facet_15 0
+create_actor_area 94 97 facet_5 0
+create_actor_area 109 91 facet_6 0
+create_actor_area 16 91 facet_18 0
+create_actor_area 106 94 facet_6 0
+create_actor_area 16 94 facet_1 0
+create_actor_area 25 94 facet_1 0
+create_actor_area 83 97 facet_12 0
+create_actor_area 94 100 facet_17 0
+create_actor_area 19 94 facet_1 0
+create_actor_area 73 100 facet_19 0
+create_actor_area 55 103 facet_16 0
+create_actor_area 25 97 facet_1 0
+create_actor_area 70 100 facet_23 0
+create_actor_area 16 100 facet_2 0
+create_actor_area 34 94 facet_18 0
+create_actor_area 64 103 facet_4 0
+create_actor_area 94 103 facet_16 0
+create_actor_area 43 100 facet_15 0
+create_actor_area 61 106 facet_6 0
+create_actor_area 64 106 facet_18 0
+create_actor_area 19 103 facet_5 0
+create_actor_area 25 100 facet_2 0
+create_actor_area 58 106 facet_3 0
+create_actor_area 82 100 facet_6 0
+create_actor_area 22 103 facet_15 0
+create_actor_area 85 106 facet_16 0
+create_actor_area 31 104 facet_0 0
+create_actor_area 31 109 facet_4 0
+create_actor_area 25 109 facet_19 0
+create_actor_area 76 109 facet_4 0
+create_actor_area 34 109 facet_15 0
+create_actor_area 34 112 facet_3 0
+create_actor_area 65 112 facet_12 0
+create_actor_area 70 112 facet_16 0
+create_actor_area 46 109 facet_19 0
+create_actor_area 46 112 facet_15 0
+create_actor_area 46 115 facet_3 0
+create_actor_area 55 112 facet_17 0
+create_actor_area 67 112 facet_17 0
+create_actor_area 58 115 facet_3 0
+create_actor_area 64 115 facet_6 0
+create_actor_area 61 115 facet_4 0
+create_actor_area 13 64 facet_23 0
+create_actor_area 13 73 facet_15 0
+create_actor_area 13 56 facet_0 0
+create_actor_area 13 52 facet_19 0
+create_actor_area 10 55 facet_18 0
+create_actor_area 16 55 facet_14 0
+create_actor_area 10 62 facet_0 0
+create_actor_area 10 64 facet_1 0
+create_actor_area 10 73 facet_3 0
+create_actor_area 16 73 facet_18 0
+create_actor_area 10 67 facet_3 0
+create_actor_area 10 71 facet_0 0
+create_actor_area 13 70 facet_14 0
+create_actor_area 13 85 facet_19 0
+create_actor_area 16 67 facet_1 0
+create_actor_area 22 67 facet_2 0
+create_actor_area 22 76 facet_15 0
+create_actor_area 13 43 facet_3 0
+create_actor_area 16 43 facet_15 0
+create_actor_area 13 58 facet_3 0
+create_actor_area 10 58 facet_19 0
+create_actor_area 13 82 facet_2 0
+create_actor_area 10 76 facet_18 0
+create_actor_area 16 76 facet_19 0
+create_actor_area 19 67 facet_19 0
+create_actor_area 16 85 facet_3 0
+create_actor_area 13 79 facet_15 0
+create_actor_area 25 85 facet_15 0
+create_actor_area 19 82 facet_19 0
+create_actor_area 22 79 facet_1 0
+create_actor_area 13 62 facet_9 0
+create_actor_area 10 47 facet_0 0
+create_actor_area 13 46 facet_21 0
+create_actor_area 16 34 facet_18 0
+create_actor_area 16 37 facet_3 0
+create_actor_area 19 40 facet_1 0
+create_actor_area 19 43 facet_19 0
+create_actor_area 22 37 facet_19 0
+create_actor_area 22 34 facet_1 0
+create_actor_area 19 34 facet_19 0
+create_actor_area 25 31 facet_14 0
+create_actor_area 28 28 facet_14 0
+create_actor_area 25 29 facet_0 0
+create_actor_area 25 25 facet_19 0
+create_actor_area 16 25 facet_1 0
+create_actor_area 19 31 facet_1 0
+create_actor_area 22 32 facet_0 0
+create_actor_area 22 28 facet_14 0
+create_actor_area 25 23 facet_0 0
+create_actor_area 19 76 facet_16 0
+create_actor_area 22 89 facet_0 0
+create_actor_area 28 88 facet_18 0
+create_actor_area 22 85 facet_3 0
+create_actor_area 19 85 facet_17 0
+create_actor_area 19 91 facet_1 0
+create_actor_area 22 91 facet_1 0
+create_actor_area 28 94 facet_19 0
+create_actor_area 25 70 facet_19 0
+create_actor_area 16 97 facet_1 0
+create_actor_area 22 94 facet_19 0
+create_actor_area 28 106 facet_18 0
+create_actor_area 19 100 facet_3 0
+create_actor_area 28 109 facet_3 0
+create_actor_area 28 100 facet_16 0
+create_actor_area 28 103 facet_17 0
+create_actor_area 31 100 facet_5 0
+create_actor_area 34 103 facet_14 0
+create_actor_area 34 106 facet_4 0
+create_actor_area 40 109 facet_16 0
+create_actor_area 31 106 facet_3 0
+create_actor_area 28 97 facet_16 0
+create_actor_area 37 103 facet_16 0
+create_actor_area 22 106 facet_3 0
+create_actor_area 37 109 facet_19 0
+create_actor_area 37 112 facet_5 0
+create_actor_area 40 112 facet_17 0
+create_actor_area 37 100 facet_3 0
+create_actor_area 40 106 facet_3 0
+create_actor_area 37 97 facet_15 0
+create_actor_area 37 106 facet_15 0
+create_actor_area 43 109 facet_17 0
+create_actor_area 40 100 facet_5 0
+create_actor_area 43 103 facet_3 0
+create_actor_area 43 112 facet_16 0
+create_actor_area 49 115 facet_4 0
+create_actor_area 49 112 facet_16 0
+create_actor_area 52 115 facet_17 0
+create_actor_area 52 112 facet_4 0
+create_actor_area 55 106 facet_15 0
+create_actor_area 52 106 facet_4 0
+create_actor_area 49 109 facet_16 0
+create_actor_area 49 106 facet_16 0
+create_actor_area 55 109 facet_3 0
+create_actor_area 52 109 facet_17 0
+create_actor_area 61 112 facet_14 0
+create_actor_area 58 113 facet_0 0
+create_actor_area 58 109 facet_17 0
+create_actor_area 61 110 facet_0 0
+create_actor_area 64 109 facet_14 0
+create_actor_area 67 106 facet_16 0
+create_actor_area 73 103 facet_4 0
+create_actor_area 67 109 facet_16 0
+create_actor_area 76 106 facet_17 0
+create_actor_area 58 103 facet_15 0
+create_actor_area 67 103 facet_17 0
+create_actor_area 73 112 facet_6 0
+create_actor_area 70 106 facet_6 0
+create_actor_area 70 109 facet_17 0
+create_actor_area 74 109 facet_12 0
+create_actor_area 76 103 facet_4 0
+create_actor_area 73 106 facet_16 0
+create_actor_area 79 109 facet_6 0
+create_actor_area 82 106 facet_6 0
+create_actor_area 80 106 facet_12 0
+create_actor_area 79 103 facet_17 0
+create_actor_area 88 106 facet_6 0
+create_actor_area 79 100 facet_16 0
+create_actor_area 85 97 facet_5 0
+create_actor_area 83 103 facet_12 0
+create_actor_area 86 100 facet_12 0
+create_actor_area 85 103 facet_6 0
+create_actor_area 92 100 facet_12 0
+create_actor_area 89 94 facet_12 0
+create_actor_area 88 97 facet_6 0
+create_actor_area 88 100 facet_17 0
+create_actor_area 91 94 facet_15 0
+create_actor_area 97 88 facet_4 0
+create_actor_area 91 97 facet_3 0
+create_actor_area 91 91 facet_16 0
+create_actor_area 98 91 facet_12 0
+create_actor_area 95 88 facet_12 0
+create_actor_area 100 85 facet_22 0
+create_actor_area 109 85 facet_6 0
+create_actor_area 101 79 facet_12 0
+create_actor_area 101 82 facet_13 0
+create_actor_area 103 83 facet_9 0
+create_actor_area 109 70 facet_16 0
+create_actor_area 103 85 facet_8 0
+create_actor_area 104 67 facet_13 0
+create_actor_area 106 79 facet_8 0
+create_actor_area 109 67 facet_20 0
+create_actor_area 106 56 facet_9 0
+create_actor_area 112 58 facet_7 0
+create_actor_area 112 49 facet_22 0
+create_actor_area 112 70 facet_6 0
+create_actor_area 112 64 facet_23 0
+create_actor_area 112 68 facet_9 0
+create_actor_area 103 76 facet_22 0
+create_actor_area 106 76 facet_8 0
+create_actor_area 109 79 facet_7 0
+create_actor_area 109 82 facet_8 0
+create_actor_area 106 82 facet_23 0
+create_actor_area 107 85 facet_12 0
+create_actor_area 103 91 facet_6 0
+create_actor_area 101 94 facet_12 0
+create_actor_area 94 91 facet_6 0
+create_actor_area 103 88 facet_7 0
+create_actor_area 100 88 facet_6 0
+create_actor_area 106 88 facet_23 0
+create_actor_area 97 94 facet_6 0
+create_actor_area 109 49 facet_8 0
+create_actor_area 95 28 facet_13 0
+create_actor_area 97 29 facet_9 0
+create_actor_area 98 31 facet_13 0
+create_actor_area 106 31 facet_11 0
+create_actor_area 109 37 facet_7 0
+create_actor_area 101 37 facet_13 0
+create_actor_area 100 34 facet_8 0
+create_actor_area 106 37 facet_8 0
+create_actor_area 104 43 facet_13 0
+create_actor_area 112 38 facet_0 0
+create_actor_area 103 37 facet_14 0
+create_actor_area 104 40 facet_12 0
+create_actor_area 109 44 facet_9 0
+create_actor_area 109 46 facet_7 0
+create_actor_area 112 43 facet_16 0
+create_actor_area 106 43 facet_10 0
+create_actor_area 106 49 facet_23 0
+create_actor_area 112 55 facet_8 0
+create_actor_area 103 46 facet_20 0
+create_actor_area 112 52 facet_8 0
+create_actor_area 109 61 facet_23 0
+create_actor_area 109 52 facet_8 0
+create_actor_area 88 19 facet_11 0
+create_actor_area 88 22 facet_11 0
+create_actor_area 91 17 facet_0 0
+create_actor_area 100 100 facet_23 0
+create_actor_area 91 28 facet_23 0
+create_actor_area 82 14 facet_0 0
+create_actor_area 85 14 facet_9 0
+create_actor_area 85 16 facet_7 0
+create_actor_area 86 19 facet_13 0
+create_actor_area 31 28 facet_19 0
+create_actor_area 31 25 facet_1 0
+create_actor_area 37 19 facet_10 0
+create_actor_area 29 16 facet_13 0
+create_actor_area 31 19 facet_21 0
+create_actor_area 34 20 facet_0 0
+create_actor_area 22 17 facet_0 0
+create_actor_area 28 20 facet_0 0
+create_actor_area 25 14 facet_0 0
+create_actor_area 25 16 facet_14 0
+create_actor_area 28 22 facet_14 0
+create_actor_area 31 23 facet_0 0
+create_actor_area 37 13 facet_18 0
+create_actor_area 31 11 facet_0 0
+create_actor_area 22 25 facet_18 0
+create_actor_area 22 22 facet_14 0
+create_actor_area 16 23 facet_0 0
+create_actor_area 19 29 facet_0 0
+create_actor_area 16 28 facet_14 0
+create_actor_area 13 29 facet_0 0
+create_actor_area 13 31 facet_2 0
+create_actor_area 40 10 facet_11 0
+create_actor_area 46 8 facet_0 0
+create_actor_area 52 16 facet_11 0
+create_actor_area 50 16 facet_13 0
+create_actor_area 55 8 facet_9 0
+create_actor_area 55 16 facet_14 0
+create_actor_area 46 10 facet_14 0
+create_actor_area 55 13 facet_18 0
+create_actor_area 49 14 facet_9 0
+create_actor_area 43 10 facet_10 0
+create_actor_area 58 11 facet_9 0
+create_actor_area 52 7 facet_11 0
+create_actor_area 49 7 facet_11 0
+create_actor_area 56 10 facet_13 0
+create_actor_area 46 13 facet_10 0
+create_actor_area 59 13 facet_13 0
+create_actor_area 61 13 facet_11 0
+create_actor_area 40 14 facet_0 0
+create_actor_area 70 11 facet_9 0
+create_actor_area 64 11 facet_0 0
+create_actor_area 64 13 facet_14 0
+create_actor_area 67 10 facet_10 0
+create_actor_area 73 16 facet_14 0
+create_actor_area 70 16 facet_11 0
+create_actor_area 70 13 facet_6 0
+create_actor_area 73 14 facet_0 0
+create_actor_area 76 13 facet_11 0
+create_actor_area 91 19 facet_14 0
+create_actor_area 94 25 facet_7 0
+create_actor_area 91 25 facet_7 0
+create_actor_area 85 22 facet_10 0
+create_actor_area 82 16 facet_14 0
+create_actor_area 82 20 facet_9 0
+create_actor_area 16 79 facet_16 0
+create_actor_area 16 82 facet_18 0
+create_actor_area 16 64 facet_2 0
+create_actor_area 16 61 facet_1 0
+create_actor_area 19 73 facet_19 0
+create_actor_area 22 73 facet_3 0
+create_actor_area 25 73 facet_15 0
+create_actor_area 25 91 facet_18 0
+create_actor_area 31 94 facet_19 0
+create_actor_area 31 91 facet_2 0
+create_actor_area 28 91 facet_1 0
+create_actor_area 31 85 facet_15 0
+create_actor_area 28 82 facet_15 0
+create_actor_area 28 85 facet_3 0
+create_actor_area 22 82 facet_1 0
+create_actor_area 25 76 facet_19 0
+create_actor_area 28 76 facet_1 0
+create_actor_area 28 73 facet_18 0
+create_actor_area 19 97 facet_1 0
+create_actor_area 16 103 facet_3 0
+create_actor_area 22 100 facet_17 0
+create_actor_area 25 103 facet_3 0
+create_actor_area 25 106 facet_15 0
+create_actor_area 31 97 facet_17 0
+create_actor_area 34 97 facet_3 0
+create_actor_area 34 100 facet_15 0
+create_actor_area 43 106 facet_4 0
+create_actor_area 40 103 facet_15 0
+create_actor_area 46 106 facet_15 0
+create_actor_area 46 103 facet_4 0
+create_actor_area 49 103 facet_17 0
+create_actor_area 62 103 facet_12 0
+create_actor_area 71 103 facet_12 0
+create_actor_area 73 97 facet_15 0
+create_actor_area 71 97 facet_12 0
+create_actor_area 64 100 facet_16 0
+create_actor_area 67 100 facet_17 0
+create_actor_area 91 103 facet_6 0
+create_actor_area 89 103 facet_12 0
+create_actor_area 109 88 facet_22 0
+create_actor_area 94 94 facet_16 0
+create_actor_area 103 94 facet_5 0
+create_actor_area 100 91 facet_5 0
+create_actor_area 94 22 facet_7 0
+create_actor_area 98 22 facet_13 0
+create_actor_area 100 23 facet_9 0
+create_actor_area 100 25 facet_6 0
+create_actor_area 97 25 facet_16 0
+create_actor_area 115 40 facet_7 0
+create_actor_area 106 35 facet_9 0
+create_actor_area 104 31 facet_13 0
+create_actor_area 100 32 facet_9 0
+create_actor_area 104 58 facet_12 0
+create_actor_area 109 58 facet_22 0
+create_actor_area 109 55 facet_23 0
+create_actor_area 106 62 facet_9 0
+create_actor_area 104 61 facet_13 0
+create_actor_area 106 64 facet_6 0
+create_actor_area 106 68 facet_9 0
+create_actor_area 13 40 facet_18 0
+create_actor_area 10 40 facet_1 0
+create_actor_area 10 38 facet_0 0
+create_actor_area 13 37 facet_21 0
+create_actor_area 34 8 facet_0 0
+create_actor_area 37 7 facet_21 0
+create_actor_area 28 25 facet_18 0
+create_actor_area 34 22 facet_14 0
+create_actor_area 37 16 facet_19 0
+create_actor_area 43 19 facet_14 0
+create_actor_area 40 19 facet_11 0
+create_actor_area 43 13 facet_10 0
+create_actor_area 43 17 facet_0 0
+create_actor_area 46 16 facet_21 0
+
+create_actor_area 60 15 facet_21 0
+create_actor_area 63 15 facet_21 0
+create_actor_area 66 16 facet_20 0
+create_actor_area 60 19 facet_21 0
+create_actor_area 63 19 facet_21 0
+create_actor_area 66 18 facet_20 0
+create_actor_area 69 18 facet_20 0
+
+create_object_group CHICKENS {
+  add_object WILD_CHICKEN_A 50
+  add_object WILD_CHICKEN_C 50
+}
+
+create_object_group TOP_ROCKS {
+  add_object DLC_BOULDER_A 20
+  add_object DLC_BOULDER_B 20
+  add_object DLC_ROCKJUNGLE 20
+  add_object ROCK 20
+  add_object ROCK2 20
+}
+
+/* Places cliff objects inside of the appropriate actor areas. */
+#FOR($i, 1, 24)
+  create_object CLIFF_FACET_$i_CONST {
+    number_of_objects 14400
+    actor_area_to_place_in facet_$i
+    set_facet $i
+    actor_area edge_border
+    actor_area_radius 4
+  }
+#END_FOR
+
+/* Places facet 0 at the very end. */
+create_object CLIFF_FACET_0_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_0
+  set_facet 25
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+/* TODO birds */
+
+#OBJECTS9VILS
+
+/* Objects around the cliffs. */
+create_object DLC_ROCKJUNGLE {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+  temp_min_distance_group_placement 2
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+create_object DLC_AFRICANBUSH {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+  temp_min_distance_group_placement 4
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+create_object DLC_RAINTREE {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+  temp_min_distance_group_placement 4
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+create_object DLC_ROCKJUNGLE {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+  temp_min_distance_group_placement 1
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  actor_area_to_place_in edge_border
+  actor_area edge_border_large
+  actor_area_radius 5
+}
+
+/* Outside scenery. */
+create_object JAGUAR {
+  number_of_objects 7
+  min_distance_group_placement 1
+  terrain_to_place_on DLC_JUNGLEGRASS
+}
+
+create_object BLACK_PANTHER {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  min_distance_group_placement 1
+}
+
+create_object SNAKE {
+  number_of_objects 3
+  terrain_to_place_on DLC_JUNGLEGRASS
+  min_distance_group_placement 1
+}
+
+/* Player Objects */
+create_object FORAGE {
+  set_place_for_every_player
+  number_of_objects 6
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_forest_zone 2
+  avoid_actor_area edge_border_large
+  set_circular_placement
+  min_distance_to_players 13
+  find_closest
+  min_distance_group_placement 3
+  actor_area forage
+  actor_area_radius 6
+}
+
+create_object GOLD {
+  set_place_for_every_player
+  number_of_objects 5
+  set_gaia_object_only
+  set_tight_grouping
+  number_of_groups 2
+  group_placement_radius 1
+  avoid_forest_zone 2
+  avoid_actor_area edge_border_large
+  avoid_actor_area forage
+  temp_min_distance_group_placement 8
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  min_distance_group_placement 3
+  actor_area player_gold
+  actor_area_radius 6
+}
+
+create_object STONE {
+  set_place_for_every_player
+  number_of_objects 4
+  set_gaia_object_only
+  set_tight_grouping
+  number_of_groups 2
+  group_placement_radius 1
+  avoid_forest_zone 2
+  avoid_actor_area edge_border_large
+  avoid_actor_area forage
+  avoid_actor_area player_gold
+  temp_min_distance_group_placement 8
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  min_distance_group_placement 3
+  actor_area player_stone
+  actor_area_radius 6
+}
+
+create_object TAPIR {
+  set_place_for_every_player
+  number_of_objects 2
+  set_gaia_object_only
+  temp_min_distance_group_placement 8
+  min_distance_to_players 14
+  max_distance_to_players 17
+  avoid_forest_zone 1
+  avoid_actor_area edge_border
+  require_path 0
+}
+
+create_object CAPYBARA {
+  set_place_for_every_player
+  number_of_objects 2
+  set_loose_grouping
+  set_gaia_object_only
+  min_distance_to_players 16
+  max_distance_to_players 18
+  avoid_forest_zone 1
+  avoid_actor_area edge_border
+  require_path 0
+}
+
+create_object CAPYBARA {
+  number_of_objects 3
+  set_loose_grouping
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
+}
+
+create_object SCOUT {
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
+}
+
+/* Neutral Resources */
+create_object GOLD {
+  number_of_objects 3
+  number_of_groups 4
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_actor_area player_gold
+  avoid_actor_area player_stone
+  set_circular_placement
+  min_distance_to_players 24
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  avoid_forest_zone 2
+  actor_area neutral_gold
+  actor_area_radius 6
+}
+
+create_object STONE {
+  number_of_objects 2
+  number_of_groups 4
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_actor_area neutral_gold
+  avoid_actor_area player_gold
+  avoid_actor_area player_stone
+  set_circular_placement
+  min_distance_to_players 24
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  avoid_forest_zone 2
+  actor_area neutral_stone
+  actor_area_radius 6
+}
+
+create_object RELIC {
+  terrain_to_place_on DIRT
+  number_of_objects 5
+  set_circular_placement
+  min_distance_to_players 24
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  avoid_forest_zone 1
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 16
+}
+
+/* Neutral Animals */
+create_object CHICKENS {
+  number_of_objects 5
+  group_variance 1
+  number_of_groups 6
+  set_loose_grouping
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 28
+}
+
+create_object RED_FOX {
+  number_of_objects 2
+  number_of_groups 6
+  set_loose_grouping
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 28
+}
+
+create_object DEER {
+  number_of_objects 3
+  number_of_groups 4
+  set_loose_grouping
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 32
+}
+
+/* Scenery */
+create_object TOP_ROCKS {
+  number_of_objects 7
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 24
+  avoid_forest_zone 2
+}
