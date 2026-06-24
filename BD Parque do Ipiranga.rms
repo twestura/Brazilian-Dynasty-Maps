@@ -1,6 +1,6 @@
 #HEADER_START
 /*
- * TBA for Brazilian Dyasty.
+ * Parque do Ipiranga for Brazilian Dyasty.
  * Edited by T-West, June 2026.
  */
 #HEADER_END
@@ -682,6 +682,15 @@ create_object TAPIR {
   set_circular_placement
   min_distance_to_players 16
   max_distance_to_players 18
+}
+
+create_object CAPYBARA {
+  number_of_objects 3
+  set_loose_grouping
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
 }
 
 create_object SCOUT {
