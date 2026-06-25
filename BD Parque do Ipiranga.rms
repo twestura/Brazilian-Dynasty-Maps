@@ -48,6 +48,7 @@ endif
 
 #const STATUE_CIV 1279
 #const ROCK_CHURCH 1378
+#const PLANT_FLOWERS 1366
 
 #const UNDERBRUSH_LEAVES 71
 #const MUD 76
@@ -80,6 +81,10 @@ effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_RADIUS_2 2
 effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_STORAGE_VALUE 25
 effect_amount GAIA_SET_ATTRIBUTE ROCK_CHURCH ATTR_STORAGE2_VALUE 25
 
+/* Prohibits Relics from being placed on Beach/Shallows. */
+effect_amount SET_ATTRIBUTE RELIC ATTR_TERRAIN_ID 4
+effect_amount SET_ATTRIBUTE ROCK ATTR_TERRAIN_ID 4
+
 <LAND_GENERATION>
 base_terrain DLC_BLACK
 enable_waves 0
@@ -111,7 +116,6 @@ create_land {
   terrain_type DESERT
   land_position 65 35
   base_elevation 7
-  /* set_circular_base */
   top_border 18
   right_border 18
   base_size 16
@@ -538,7 +542,26 @@ create_terrain GRASS2 {
   }
 #END_REPEAT
 
+/* Northern Masking */
+create_terrain MUD {
+  base_layer DIRT3
+  base_terrain DLC_DRYGRASS
+  land_percent 2
+  number_of_clumps 24
+  terrain_mask 1
+}
+
+create_terrain GRASS3 {
+  base_layer DIRT3
+  base_terrain DLC_DRYGRASS
+  land_percent 2
+  number_of_clumps 24
+  terrain_mask 1
+}
+
 <OBJECTS_GENERATION>
+create_actor_area 119 0 northern_relic 16
+
 /* Placeholders */
 create_object PHON {
   number_of_objects 14400
@@ -549,7 +572,7 @@ create_object PHON {
 
 create_object PHON {
   number_of_objects 14400
-  terrain_to_place_on GRASS3
+  terrain_to_place_on GRASS
   actor_area gold_avoider
   actor_area_radius 2
 }
@@ -564,6 +587,16 @@ create_object PHON {
 /* Birds */
 create_object MACAW {
   number_of_objects 7
+}
+
+/* Northern Relic */
+create_object RELIC {
+  actor_area_to_place_in northern_relic
+  terrain_to_place_on DLC_DRYGRASS
+  layer_to_place_on DIRT3
+  max_distance_to_other_zones 3
+  avoid_forest_zone 1
+  min_distance_to_map_edge 2
 }
 
 #OBJECTS9VILS
@@ -581,7 +614,7 @@ create_object ROCK_CHURCH {
 create_object FORAGE {
   set_place_for_every_player
   set_gaia_object_only
-  number_of_objects 6
+  number_of_objects 4
   set_tight_grouping
   min_distance_to_players 11
   max_distance_to_players 14
@@ -602,11 +635,13 @@ create_object GOLD {
   min_distance_to_players 13
   max_distance_to_players 18
   set_circular_placement
-  avoid_forest_zone 1
-  min_distance_to_map_edge 2
+  avoid_forest_zone 4
+  min_distance_to_map_edge 8
   min_distance_group_placement 4
-  temp_min_distance_group_placement 10
+  temp_min_distance_group_placement 12
   avoid_actor_area forage7
+  actor_area player_gold
+  actor_area_radius 12
 }
 
 create_object CAPYBARA {
@@ -647,6 +682,34 @@ create_object SCOUT {
   set_circular_placement
 }
 
+/* Monument Relic */
+create_object RELIC {
+  place_on_specific_land_id 10
+  min_distance_group_placement 2
+  set_circular_placement
+  max_distance_to_players 11
+}
+
+/* Middle Relic */
+create_object RELIC {
+  max_distance_to_players 40
+  place_on_specific_land_id 20
+  min_distance_to_map_edge 40
+  min_distance_to_players 30
+  set_circular_placement
+  avoid_forest_zone 1
+  min_distance_group_placement 2
+}
+
+/* Bottom Relic */
+create_object RELIC {
+  set_circular_placement
+  min_distance_to_map_edge 2
+  max_distance_to_players 12
+  place_on_specific_land_id 30
+  min_distance_group_placement 1
+}
+
 /* Monument Scenery */
 create_object STATUE_CIV {
   number_of_objects 5
@@ -655,16 +718,7 @@ create_object STATUE_CIV {
   set_circular_placement
   max_distance_to_players 12
   terrain_to_place_on DLC_JUNGLEROAD
-  actor_area statue1
-  actor_area_radius 1
-}
-
-create_object RELIC {
-  number_of_objects 5
-  place_on_specific_land_id 10
-  actor_area_to_place_in statue1
-  min_distance_group_placement 2
-  temp_min_distance_group_placement 4
+  min_distance_group_placement 1
 }
 
 create_object RUGS {
@@ -692,6 +746,15 @@ create_object PAPAYA_TREE {
   avoid_forest_zone 2
   actor_area lower_berries
   actor_area_radius 12
+}
+
+/* Berry Relic */
+create_object RELIC {
+  max_distance_to_players 8
+  place_on_specific_land_id 20
+  set_circular_placement
+  avoid_forest_zone 1
+  min_distance_group_placement 2
 }
 
 create_object DEER {
@@ -749,4 +812,61 @@ create_object GOLD {
   avoid_actor_area lower_berries
   set_circular_placement
   min_distance_to_players 27
+  avoid_actor_area player_gold
+}
+
+/* Rock Scenery */
+create_object ROCK {
+  set_place_for_every_player
+  set_gaia_object_only
+  number_of_objects 14400
+  avoid_forest_zone 4
+  min_distance_to_map_edge 4
+  min_distance_to_players 16
+  set_circular_placement
+  max_distance_to_other_zones 4
+  number_of_objects 3
+  temp_min_distance_group_placement 24
+  min_distance_group_placement 4
+  second_object FLOWER_BED
+  max_distance_to_players 36
+}
+
+/* Map Stragglers */
+create_object TREE_BRAZILWOOD {
+  set_place_for_every_player
+  set_gaia_object_only
+  number_of_objects 8
+  terrain_to_place_on DLC_DRYGRASS
+  avoid_forest_zone 2
+  min_distance_to_players 18
+  set_circular_placement
+  max_distance_to_other_zones 4
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 16
+}
+
+create_object TREE_BRAZILWOOD {
+  number_of_objects 8
+  terrain_to_place_on GRASS2
+  avoid_forest_zone 6
+  min_distance_to_players 24
+  set_circular_placement
+  max_distance_to_other_zones 4
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 18
+}
+
+/* Bottom flowers. */
+create_object PLANT_FLOWERS {
+  number_of_objects 5
+  group_variance 2
+  set_loose_grouping
+  number_of_groups 3
+  temp_min_distance_group_placement 5
+  place_on_specific_land_id 30
+  min_distance_to_map_edge 4
+  set_loose_grouping
+  avoid_forest_zone 4
+  max_distance_to_players 16
 }
