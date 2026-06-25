@@ -59,59 +59,6 @@ endif
 #MKCONSTS
 
 #const MONUMENT_GRAPHIC 13973
-/* start_random
-  percent_chance 2 #const MONUMENT_GRAPHIC 3068
-  percent_chance 2 #const MONUMENT_GRAPHIC 3069
-  percent_chance 2 #const MONUMENT_GRAPHIC 3070
-  percent_chance 2 #const MONUMENT_GRAPHIC 3072
-  percent_chance 2 #const MONUMENT_GRAPHIC 3075
-  percent_chance 2 #const MONUMENT_GRAPHIC 3076
-  percent_chance 2 #const MONUMENT_GRAPHIC 3077
-  percent_chance 2 #const MONUMENT_GRAPHIC 3078
-  percent_chance 2 #const MONUMENT_GRAPHIC 3080
-  percent_chance 2 #const MONUMENT_GRAPHIC 3093
-  percent_chance 2 #const MONUMENT_GRAPHIC 3094
-  percent_chance 2 #const MONUMENT_GRAPHIC 3095
-  percent_chance 2 #const MONUMENT_GRAPHIC 3096
-  percent_chance 2 #const MONUMENT_GRAPHIC 3097
-  percent_chance 2 #const MONUMENT_GRAPHIC 3098
-  percent_chance 2 #const MONUMENT_GRAPHIC 6079
-  percent_chance 2 #const MONUMENT_GRAPHIC 6086
-  percent_chance 2 #const MONUMENT_GRAPHIC 6322
-  percent_chance 2 #const MONUMENT_GRAPHIC 6323
-  percent_chance 2 #const MONUMENT_GRAPHIC 6324
-  percent_chance 2 #const MONUMENT_GRAPHIC 6631
-  percent_chance 2 #const MONUMENT_GRAPHIC 7249
-  percent_chance 2 #const MONUMENT_GRAPHIC 7382
-  percent_chance 2 #const MONUMENT_GRAPHIC 7648
-  percent_chance 2 #const MONUMENT_GRAPHIC 7651
-  percent_chance 2 #const MONUMENT_GRAPHIC 8396
-  percent_chance 2 #const MONUMENT_GRAPHIC 8398
-  percent_chance 2 #const MONUMENT_GRAPHIC 8400
-  percent_chance 2 #const MONUMENT_GRAPHIC 8402
-  percent_chance 2 #const MONUMENT_GRAPHIC 10276
-  percent_chance 2 #const MONUMENT_GRAPHIC 10278
-  percent_chance 2 #const MONUMENT_GRAPHIC 10280
-  percent_chance 2 #const MONUMENT_GRAPHIC 10282
-  percent_chance 2 #const MONUMENT_GRAPHIC 10473
-  percent_chance 2 #const MONUMENT_GRAPHIC 10475
-  percent_chance 2 #const MONUMENT_GRAPHIC 10477
-  percent_chance 2 #const MONUMENT_GRAPHIC 10479
-  percent_chance 2 #const MONUMENT_GRAPHIC 12396
-  percent_chance 2 #const MONUMENT_GRAPHIC 12403
-  percent_chance 2 #const MONUMENT_GRAPHIC 12485
-  percent_chance 2 #const MONUMENT_GRAPHIC 12492
-  percent_chance 2 #const MONUMENT_GRAPHIC 12499
-  percent_chance 2 #const MONUMENT_GRAPHIC 12602
-  percent_chance 2 #const MONUMENT_GRAPHIC 12609
-  percent_chance 3 #const MONUMENT_GRAPHIC 12885
-  percent_chance 3 #const MONUMENT_GRAPHIC 12892
-  percent_chance 1 #const MONUMENT_GRAPHIC 12899
-  percent_chance 1 #const MONUMENT_GRAPHIC 13105
-  percent_chance 2 #const MONUMENT_GRAPHIC 13114
-  percent_chance 2 #const MONUMENT_GRAPHIC 13966
-  percent_chance 2 #const MONUMENT_GRAPHIC 13973
-end_random */
 
 <PLAYER_SETUP>
 direct_placement
