@@ -47,6 +47,7 @@ endif
 #const STRAGGLER DLC_RAINTREE
 #const WHALE 2625
 #const PHONL 1544
+#const PHONA 1545
 
 /* Terrains */
 #const ROAD_FUNGUS 75
@@ -626,6 +627,21 @@ create_object PHON {
   actor_area_radius 3
 }
 
+create_object PHONA {
+  number_of_objects 14400
+  set_place_for_every_player
+  set_gaia_object_only
+  actor_area player_islands
+  actor_area_radius 2
+}
+
+create_object PHONA {
+  number_of_objects 14400
+  avoid_actor_area player_islands
+  actor_area small_fish_avoider
+  actor_area_radius 2
+}
+
 #OBJECTS9VILS
 
 /* Player Gold and Stone Spawns */
@@ -919,7 +935,10 @@ create_object OYSTERS {
 create_object SHORE_FISH {
   number_of_objects 14400
   temp_min_distance_group_placement 8
-  min_distance_group_placement 3
+  min_distance_group_placement 2
+  avoid_actor_area small_fish_avoider
+  actor_area player_shore_fish
+  actor_area_radius 8
 }
 
 create_object WHALE {
@@ -937,9 +956,17 @@ create_object WHALE {
 create_object CAPTAIN_FIN {
   number_of_objects 512
   avoid_forest_zone 3
-  max_distance_to_other_zones 4
+  avoid_actor_area small_fish_avoider
+  avoid_actor_area player_islands
   temp_min_distance_group_placement 8
   min_distance_group_placement 3
+}
+
+create_object SHORE_FISH {
+  number_of_objects 14400
+  temp_min_distance_group_placement 8
+  min_distance_group_placement 3
+  avoid_actor_area player_shore_fish
 }
 
 /* Scenery */
