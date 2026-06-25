@@ -299,7 +299,7 @@ cliff_curliness 75
 create_terrain DIRT2 {
   base_terrain DIRT
   land_percent 100
-  spacing_to_other_terrain_types 3
+  spacing_to_other_terrain_types 4
 }
 
 #REPEAT(8)
@@ -333,7 +333,7 @@ create_terrain DIRT2 {
 create_terrain DLC_BLACK {
   base_terrain SNOW
   number_of_tiles 1
-  spacing_to_other_terrain_types 2
+  spacing_to_other_terrain_types 3
 }
 
 #REPEAT(8)
@@ -411,7 +411,7 @@ create_terrain DLC_BLACK {
   base_terrain SNOW
   number_of_tiles 1
   spacing_to_specific_terrain PALM_DESERT DEFAULT_FOREST_SPACING
-  spacing_to_other_terrain_types 2
+  spacing_to_other_terrain_types 3
 }
 
 create_terrain DIRT3 {
@@ -539,7 +539,7 @@ create_terrain PALM_DESERT {
 create_terrain DLC_ROCK {
   base_terrain DIRT
   land_percent 100
-  spacing_to_other_terrain_types 3
+  spacing_to_other_terrain_types 4
 }
 
 #REPEAT(8)
@@ -575,7 +575,7 @@ create_terrain DLC_ROCK {
 create_terrain DLC_BLACK {
   base_terrain SNOW
   number_of_tiles 1
-  spacing_to_other_terrain_types 2
+  spacing_to_other_terrain_types 3
 }
 
 #REPEAT(8)
@@ -613,7 +613,7 @@ create_terrain FOREST {
 create_terrain DLC_BLACK {
   base_terrain SNOW
   number_of_tiles 1
-  spacing_to_other_terrain_types 2
+  spacing_to_other_terrain_types 3
   spacing_to_specific_terrain FOREST DEFAULT_FOREST_SPACING
 }
 
@@ -653,7 +653,7 @@ create_terrain DLC_BLACK {
   base_terrain SNOW
   number_of_tiles 1
   spacing_to_specific_terrain FOREST DEFAULT_FOREST_SPACING
-  spacing_to_other_terrain_types 2
+  spacing_to_other_terrain_types 3
 }
 
 create_terrain DIRT3 {
