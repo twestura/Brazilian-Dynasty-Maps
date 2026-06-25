@@ -949,7 +949,6 @@ endif
 #const D2_359 (T2 - 359) #const B2_359 (D2_359 / D2_359 - 1 * -70) [ B2_359 #const P2 92 #const Q2 59 ]
 /* End Position Calculation */
 
-
 /* Oystering Ship constant for the Dock arrow bug fix. */
 #const OYSTERING_SHIP 2171
 
