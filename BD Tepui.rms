@@ -208,7 +208,7 @@ create_terrain ROAD2 {
 
 create_terrain FOREST_OAK_BUSH {
   base_terrain ROAD
-  number_of_tiles 60
+  number_of_tiles 50
   number_of_clumps 2
   set_avoid_player_start_areas
   spacing_to_other_terrain_types 1
@@ -237,11 +237,11 @@ create_terrain FOREST_OAK_BUSH {
 /* Global Forests */
 create_terrain FOREST_OAK_BUSH {
   base_terrain DIRT
-  number_of_tiles 300
+  number_of_tiles 240
   number_of_clumps 10
   set_avoid_player_start_areas
   spacing_to_other_terrain_types 2
-  spacing_to_specific_terrain RAINFOREST_GRASS 6
+  spacing_to_specific_terrain RAINFOREST_GRASS 7
   clumping_factor 25
 }
 
