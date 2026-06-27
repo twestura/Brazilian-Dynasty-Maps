@@ -89,10 +89,6 @@ endif
 #const CLIFF_FACET_22_CONST 2070
 #const CLIFF_FACET_23_CONST 2070
 
-/* Placeholders */
-#const PHON 1543
-#const PHONL 1544
-
 /* 9-Villager constants. */
 #const HERDABLE_A CAPYBARA
 #const STRAGGLER DLC_AFRICANBUSH
