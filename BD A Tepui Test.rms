@@ -1,0 +1,1760 @@
+/* Test script for placing the cliffs on Tepui. */
+
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+
+#const FOREST_OAK_BUSH 20
+#const UNDERBRUSH_JUNGLE 77
+#const RAINFOREST_GRASS 83
+#const DLC_BOULDER_A 1048
+#const ROCK2 1323
+#const ROCK_LIMESTONE 2009
+
+/* Cliff values. */
+#const GRAPHICS_CLIFF_LIMESTONE 1577
+/* Unlabelled objects are unused. */
+#const CLIFF_LIMESTONE_01 2069 /* 3 x 3 */
+#const CLIFF_LIMESTONE_02 2070 /* 1 x 3 */
+#const CLIFF_LIMESTONE_03 2071 /* 3 x 1 */
+#const CLIFF_LIMESTONE_04 2072 /* 2 x 3 */
+#const CLIFF_LIMESTONE_05 2073
+#const CLIFF_LIMESTONE_06 2074 /* 3 x 2 */
+#const CLIFF_LIMESTONE_07 2075
+#const CLIFF_LIMESTONE_08 2076 /* 1 x 1 */
+#const CLIFF_LIMESTONE_09 2077
+
+#const CLIFF_FACET_0_CONST 2074
+#const CLIFF_FACET_1_CONST 2069
+#const CLIFF_FACET_2_CONST 2069
+#const CLIFF_FACET_3_CONST 2069
+#const CLIFF_FACET_4_CONST 2069
+#const CLIFF_FACET_5_CONST 2069
+#const CLIFF_FACET_6_CONST 2072
+#const CLIFF_FACET_7_CONST 2070
+#const CLIFF_FACET_8_CONST 2070
+#const CLIFF_FACET_9_CONST 2076
+#const CLIFF_FACET_10_CONST 2071
+#const CLIFF_FACET_11_CONST 2071
+#const CLIFF_FACET_12_CONST 2072
+#const CLIFF_FACET_13_CONST 2076
+#const CLIFF_FACET_14_CONST 2074
+#const CLIFF_FACET_15_CONST 2069
+#const CLIFF_FACET_16_CONST 2069
+#const CLIFF_FACET_17_CONST 2069
+#const CLIFF_FACET_18_CONST 2069
+#const CLIFF_FACET_19_CONST 2069
+#const CLIFF_FACET_20_CONST 2071
+#const CLIFF_FACET_21_CONST 2071
+#const CLIFF_FACET_22_CONST 2070
+#const CLIFF_FACET_23_CONST 2070
+
+/* 9-Villager constants. */
+#const HERDABLE_A CAPYBARA
+#const STRAGGLER DLC_AFRICANBUSH
+
+#MKCONSTS
+
+#const T1 rnd(0,359)
+#const TOFF rnd(135,225)
+#const T2 (T1 + TOFF)
+#const R 24
+#FOR($i, 1, 3)
+  #TRIG(T$i)
+  #const X$i (R * COS_T$i + 50)
+  #const Y$i (R * SIN_T$i + 50)
+#END_FOR
+
+<PLAYER_SETUP>
+direct_placement
+behavior_version 2
+ai_info_map_type SOCOTRA 0 0 0
+
+#SETPHATTR
+
+/* Adjusts the x and y radii of cliff objects to prevent overlap deletion. */
+
+/* 3 x 3 */
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_01 ATTR_RADIUS_1 0
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_01 ATTR_RADIUS_2 0
+/* 1 x 3 */
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_02 ATTR_RADIUS_1 0.1
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_02 ATTR_RADIUS_2 0.3
+/* 3 x 1 */
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_03 ATTR_RADIUS_1 0.3
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_03 ATTR_RADIUS_2 0.1
+/* 2 x 3 */
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_04 ATTR_RADIUS_1 0
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_04 ATTR_RADIUS_2 0
+/* 3 x 2 */
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_06 ATTR_RADIUS_1 0
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_06 ATTR_RADIUS_2 0
+/* 2 x 2 */
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_08 ATTR_RADIUS_1 0
+effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_08 ATTR_RADIUS_2 0
+
+#FOR($i, 1, 10)
+  effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_0$i ATTR_OBSTRUCTION_TYPE 0
+  effect_amount GAIA_SET_ATTRIBUTE CLIFF_LIMESTONE_0$i ATTR_BLOCKAGE_CLASS 0
+#END_FOR
+
+/* Makes Rock 2 invisible, to use as an impenetrable barrier. */
+effect_amount GAIA_SET_ATTRIBUTE ROCK2 ATTR_STANDING_GRAPHIC 0
+
+/* Sets bird Line of Sight to 0. */
+effect_amount SET_ATTRIBUTE HAWK ATTR_LINE_OF_SIGHT 0
+effect_amount SET_ATTRIBUTE MACAW ATTR_LINE_OF_SIGHT 0
+
+<LAND_GENERATION>
+base_terrain RAINFOREST_GRASS
+enable_waves 0
+
+#FOR($i, 1, 3)
+  create_land {
+    land_position X$i Y$i
+    assign_to AT_TEAM -10 0 0
+    terrain_type DIRT
+    number_of_tiles 0
+  }
+#END_FOR
+
+create_land {
+  land_position 50 50
+  terrain_type DIRT
+  number_of_tiles 0
+  base_size 42
+  set_circular_base
+}
+
+<ELEVATION_GENERATION>
+create_elevation 2 {
+  enable_balanced_elevation
+  base_terrain DIRT
+  number_of_tiles 300
+  number_of_clumps 10
+}
+
+<TERRAIN_GENERATION>
+#REPEAT(8)
+  create_terrain DLC_JUNGLEGRASS {
+    base_terrain RAINFOREST_GRASS
+    land_percent 100
+    number_of_clumps 8192
+    spacing_to_other_terrain_types 12
+  }
+#END_REPEAT
+
+/* Outside trees and mixing. */
+create_terrain JUNGLE {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 12
+  number_of_clumps 128
+  spacing_to_other_terrain_types 1
+}
+
+create_terrain DLC_RAINFOREST {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 8
+  number_of_clumps 128
+  spacing_to_other_terrain_types 1
+}
+
+create_terrain UNDERBRUSH_JUNGLE {
+  base_terrain DLC_JUNGLEGRASS
+  land_percent 100
+  number_of_clumps 64
+}
+
+#REPEAT(8)
+  create_terrain UNDERBRUSH_JUNGLE {
+    base_terrain DLC_JUNGLEGRASS
+    land_percent 100
+    number_of_clumps 8192
+    terrain_mask 1
+  }
+#END_REPEAT
+
+/* Player Forests */
+#REPEAT(8)
+  create_terrain DLC_BLACK {
+    base_terrain DIRT
+    land_percent 100
+    number_of_clumps 8192
+    set_avoid_player_start_areas 24
+  }
+#END_REPEAT
+
+create_terrain ROAD {
+  base_terrain DIRT
+  land_percent 100
+  spacing_to_other_terrain_types 2
+}
+
+create_terrain ROAD2 {
+  base_terrain DIRT
+  land_percent 100
+  spacing_to_other_terrain_types 2
+  spacing_to_specific_terrain ROAD 4
+}
+
+create_terrain FOREST_OAK_BUSH {
+  base_terrain ROAD
+  number_of_tiles 70
+  number_of_clumps 3
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 1
+  spacing_to_specific_terrain RAINFOREST_GRASS 5
+  clumping_factor 25
+}
+
+create_terrain FOREST_OAK_BUSH {
+  base_terrain ROAD2
+  number_of_tiles 70
+  number_of_clumps 3
+  set_avoid_player_start_areas
+  spacing_to_other_terrain_types 1
+  spacing_to_specific_terrain RAINFOREST_GRASS 5
+  clumping_factor 25
+}
+
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain DLC_BLACK
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Global Forests */
+create_terrain FOREST_OAK_BUSH {
+  base_terrain DIRT
+  number_of_tiles 210
+  number_of_clumps 9
+  set_avoid_player_start_areas 24
+  spacing_to_other_terrain_types 2
+  spacing_to_specific_terrain RAINFOREST_GRASS 4
+  clumping_factor 25
+}
+
+#REPEAT(6)
+  create_terrain SOUTH_AMERICAN_FOREST {
+    base_terrain FOREST_OAK_BUSH
+    land_percent 100
+  }
+#END_REPEAT
+
+#REPEAT(8)
+  create_terrain DIRT {
+    base_terrain ROAD
+    land_percent 100
+    number_of_clumps 8192
+  }
+  create_terrain DIRT {
+    base_terrain ROAD2
+    land_percent 100
+    number_of_clumps 8192
+  }
+#END_REPEAT
+
+/* Upper terrain masking. */
+create_terrain DLC_DRYGRASS {
+  base_terrain DIRT
+  land_percent 12
+  number_of_clumps 32
+  terrain_mask 1
+}
+
+create_terrain DIRT3 {
+  base_terrain DIRT
+  land_percent 8
+  number_of_clumps 16
+  terrain_mask 1
+}
+
+create_terrain GRASS3 {
+  base_terrain DIRT
+  land_percent 6
+  number_of_clumps 12
+  terrain_mask 1
+}
+
+create_terrain DIRT2 {
+  base_terrain DIRT
+  land_percent 1
+  number_of_clumps 4
+  terrain_mask 1
+}
+
+/* Making the slopes. */
+create_terrain DLC_DIRT4 {
+  base_terrain RAINFOREST_GRASS
+  land_percent 100
+  number_of_clumps 8192
+  terrain_mask 1
+}
+
+<OBJECTS_GENERATION>
+/*
+ * Dummy actor areas where cliff objects don't fit.
+ * They ensure that all actor areas always are defined,
+ * even if no cliff object with the given facet appears in the scenario.
+ */
+#FOR($i, 0, 25)
+  create_actor_area 0 0 facet_$i 0
+#END_FOR
+
+create_object_group CHICKENS {
+  add_object WILD_CHICKEN_A 50
+  add_object WILD_CHICKEN_C 50
+}
+
+create_object_group TOP_ROCKS {
+  add_object DLC_BOULDER_A 50
+  add_object DLC_BOULDER_B 50
+}
+
+/* Debug by showing the unpassable terrain. */
+/* create_object FLAG_B {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+} */
+
+/* Middles */
+create_object CLIFF_FACET_1_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_1
+  set_facet 1
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_2_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_2
+  set_facet 2
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_4_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_4
+  set_facet 4
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_5_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_5
+  set_facet 5
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_7_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_7
+  set_facet 7
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_8_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_8
+  set_facet 8
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_10_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_10
+  set_facet 10
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_11_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_11
+  set_facet 11
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+/* Start and End */
+create_object CLIFF_FACET_16_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_16
+  set_facet 16
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_17_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_17
+  set_facet 17
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_18_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_18
+  set_facet 18
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_19_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_19
+  set_facet 19
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_20_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_20
+  set_facet 20
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_21_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_21
+  set_facet 21
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_22_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_22
+  set_facet 22
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_23_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_23
+  set_facet 23
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+/* Inner Corners */
+create_object CLIFF_FACET_12_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_12
+  set_facet 12
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_13_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_13
+  set_facet 13
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_14_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_14
+  set_facet 14
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_15_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_15
+  set_facet 15
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+/* Outer Corners */
+create_object CLIFF_FACET_3_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_3
+  set_facet 3
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_6_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_6
+  set_facet 6
+  actor_area edge_border
+  actor_area_radius 4
+}
+create_object CLIFF_FACET_9_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_9
+  set_facet 9
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+/* Places facet 0 at the very end. */
+create_object CLIFF_FACET_0_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_0
+  set_facet 25
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+/* #FOR($i, 0, 24)
+  create_object FLAG_C {
+    number_of_objects 14400
+    actor_area_to_place_in facet_$i
+  }
+#END_FOR */
+
+create_object ROCK {
+  number_of_objects 14400
+  actor_area_to_place_in rock_object_area
+}
+create_object DLC_ROCKJUNGLE {
+  number_of_objects 14400
+  actor_area_to_place_in jungle_rock_area
+}
+create_object ROCK_LIMESTONE {
+  number_of_objects 14400
+  actor_area_to_place_in limestone_rock_area
+}
+
+/* Border of invisible Rocks to prevent players from getting outside. */
+create_object PHON {
+  number_of_objects 14400
+  terrain_to_place_on RAINFOREST_GRASS
+  second_object ROCK2
+  actor_area edge_border
+  actor_area_radius 4
+}
+
+create_object PHON {
+  number_of_objects 14400
+  actor_area_to_place_in edge_border
+  actor_area edge_border_large
+  actor_area_radius 5
+}
+
+/* Birds */
+create_object HAWK {
+  number_of_objects 4
+}
+create_object MACAW {
+  number_of_objects 4
+}
+
+/* Outside scenery. */
+create_object JAGUAR {
+  number_of_objects 7
+  min_distance_group_placement 1
+  terrain_to_place_on DLC_JUNGLEGRASS
+}
+
+create_object BLACK_PANTHER {
+  terrain_to_place_on DLC_JUNGLEGRASS
+  min_distance_group_placement 1
+}
+
+create_object SNAKE {
+  number_of_objects 3
+  terrain_to_place_on DLC_JUNGLEGRASS
+  min_distance_group_placement 1
+}
+
+#OBJECTS9VILS
+
+/* Player Objects */
+create_object FORAGE {
+  set_place_for_every_player
+  number_of_objects 6
+  set_gaia_object_only
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_forest_zone 2
+  avoid_actor_area edge_border_large
+  set_circular_placement
+  min_distance_to_players 13
+  find_closest
+  min_distance_group_placement 3
+  actor_area forage
+  actor_area_radius 6
+}
+
+create_object GOLD {
+  set_place_for_every_player
+  number_of_objects 5
+  set_gaia_object_only
+  set_tight_grouping
+  number_of_groups 2
+  group_placement_radius 1
+  avoid_forest_zone 2
+  avoid_actor_area edge_border_large
+  avoid_actor_area forage
+  temp_min_distance_group_placement 8
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  min_distance_group_placement 3
+  actor_area player_gold
+  actor_area_radius 6
+}
+
+create_object STONE {
+  set_place_for_every_player
+  number_of_objects 4
+  set_gaia_object_only
+  set_tight_grouping
+  number_of_groups 2
+  group_placement_radius 1
+  avoid_forest_zone 2
+  avoid_actor_area edge_border_large
+  avoid_actor_area forage
+  avoid_actor_area player_gold
+  temp_min_distance_group_placement 8
+  set_circular_placement
+  min_distance_to_players 16
+  find_closest
+  min_distance_group_placement 3
+  actor_area player_stone
+  actor_area_radius 6
+}
+
+create_object TAPIR {
+  set_place_for_every_player
+  number_of_objects 2
+  set_gaia_object_only
+  temp_min_distance_group_placement 8
+  min_distance_to_players 14
+  max_distance_to_players 17
+  avoid_forest_zone 1
+  avoid_actor_area edge_border
+  require_path 0
+}
+
+create_object CAPYBARA {
+  set_place_for_every_player
+  number_of_objects 2
+  set_loose_grouping
+  set_gaia_object_only
+  min_distance_to_players 16
+  max_distance_to_players 18
+  avoid_forest_zone 1
+  avoid_actor_area edge_border
+  require_path 0
+}
+
+create_object CAPYBARA {
+  number_of_objects 3
+  set_loose_grouping
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
+}
+
+create_object SCOUT {
+  set_place_for_every_player
+  min_distance_to_players 7
+  max_distance_to_players 9
+  set_circular_placement
+}
+
+/* Neutral Resources */
+create_object GOLD {
+  number_of_objects 3
+  number_of_groups 4
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_actor_area player_gold
+  avoid_actor_area player_stone
+  set_circular_placement
+  min_distance_to_players 24
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  avoid_forest_zone 2
+  actor_area neutral_gold
+  actor_area_radius 6
+}
+
+create_object STONE {
+  number_of_objects 2
+  number_of_groups 4
+  set_tight_grouping
+  group_placement_radius 1
+  avoid_actor_area neutral_gold
+  avoid_actor_area player_gold
+  avoid_actor_area player_stone
+  set_circular_placement
+  min_distance_to_players 24
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  avoid_forest_zone 2
+  actor_area neutral_stone
+  actor_area_radius 6
+}
+
+create_object RELIC {
+  terrain_to_place_on DIRT
+  number_of_objects 5
+  set_circular_placement
+  min_distance_to_players 24
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  avoid_forest_zone 1
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 16
+}
+
+/* Neutral Animals */
+create_object CHICKENS {
+  number_of_objects 5
+  group_variance 1
+  number_of_groups 6
+  set_loose_grouping
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 28
+}
+
+create_object RED_FOX {
+  number_of_objects 2
+  number_of_groups 6
+  set_loose_grouping
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 28
+}
+
+create_object DEER {
+  number_of_objects 3
+  number_of_groups 4
+  set_loose_grouping
+  min_distance_group_placement 3
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 32
+}
+
+/* Scenery */
+create_object TOP_ROCKS {
+  number_of_objects 7
+  min_distance_group_placement 2
+  temp_min_distance_group_placement 12
+  terrain_to_place_on DIRT
+  avoid_actor_area edge_border
+  set_circular_placement
+  min_distance_to_players 24
+  avoid_forest_zone 2
+}
+
+/* ACTOR AREAS START HERE */
+/* create_actor_area 0 0 rock_object_area 0 */
+/* create_actor_area 0 0 jungle_rock_area 0 */
+create_actor_area 106 34 facet_8 0
+create_actor_area 97 94 facet_22 0
+create_actor_area 16 67 facet_1 0
+create_actor_area 19 85 facet_1 0
+create_actor_area 13 88 facet_1 0
+create_actor_area 28 31 facet_1 0
+create_actor_area 22 82 facet_1 0
+create_actor_area 19 52 facet_1 0
+create_actor_area 16 64 facet_1 0
+create_actor_area 19 67 facet_1 0
+create_actor_area 22 97 facet_1 0
+create_actor_area 25 94 facet_1 0
+create_actor_area 25 28 facet_1 0
+create_actor_area 19 22 facet_1 0
+create_actor_area 43 16 facet_2 0
+create_actor_area 19 58 facet_2 0
+create_actor_area 19 61 facet_2 0
+create_actor_area 16 88 facet_2 0
+create_actor_area 22 40 facet_2 0
+create_actor_area 10 49 facet_2 0
+create_actor_area 16 61 facet_2 0
+create_actor_area 28 91 facet_2 0
+create_actor_area 31 100 facet_2 0
+create_actor_area 19 37 facet_2 0
+create_actor_area 19 70 facet_2 0
+create_actor_area 16 58 facet_2 0
+create_actor_area 19 55 facet_2 0
+create_actor_area 16 28 facet_2 0
+create_actor_area 19 64 facet_2 0
+create_actor_area 13 58 facet_2 0
+create_actor_area 16 55 facet_2 0
+create_actor_area 13 91 facet_2 0
+create_actor_area 13 34 facet_2 0
+create_actor_area 28 106 facet_4 0
+create_actor_area 31 109 facet_4 0
+create_actor_area 31 94 facet_4 0
+create_actor_area 76 112 facet_4 0
+create_actor_area 67 103 facet_4 0
+create_actor_area 67 112 facet_4 0
+create_actor_area 103 91 facet_4 0
+create_actor_area 25 100 facet_4 0
+create_actor_area 79 112 facet_4 0
+create_actor_area 103 94 facet_4 0
+create_actor_area 40 103 facet_5 0
+create_actor_area 70 103 facet_5 0
+create_actor_area 109 64 facet_5 0
+create_actor_area 40 100 facet_5 0
+create_actor_area 97 103 facet_5 0
+create_actor_area 31 106 facet_5 0
+create_actor_area 34 106 facet_5 0
+create_actor_area 43 100 facet_5 0
+create_actor_area 28 97 facet_5 0
+create_actor_area 37 103 facet_5 0
+create_actor_area 34 109 facet_5 0
+create_actor_area 25 103 facet_5 0
+create_actor_area 37 106 facet_5 0
+create_actor_area 106 85 facet_5 0
+create_actor_area 103 46 facet_7 0
+create_actor_area 109 55 facet_7 0
+create_actor_area 112 70 facet_7 0
+create_actor_area 106 43 facet_7 0
+create_actor_area 112 55 facet_7 0
+create_actor_area 103 67 facet_7 0
+create_actor_area 97 37 facet_7 0
+create_actor_area 103 76 facet_7 0
+create_actor_area 109 31 facet_7 0
+create_actor_area 100 73 facet_7 0
+create_actor_area 103 49 facet_7 0
+create_actor_area 103 79 facet_7 0
+create_actor_area 109 40 facet_7 0
+create_actor_area 106 49 facet_7 0
+create_actor_area 103 64 facet_7 0
+create_actor_area 100 76 facet_8 0
+create_actor_area 97 34 facet_8 0
+create_actor_area 109 58 facet_8 0
+create_actor_area 103 37 facet_8 0
+create_actor_area 97 82 facet_8 0
+create_actor_area 112 52 facet_8 0
+create_actor_area 112 73 facet_8 0
+create_actor_area 103 52 facet_8 0
+create_actor_area 106 46 facet_8 0
+create_actor_area 106 67 facet_8 0
+create_actor_area 106 79 facet_8 0
+create_actor_area 97 16 facet_8 0
+create_actor_area 109 70 facet_8 0
+create_actor_area 103 55 facet_8 0
+create_actor_area 106 76 facet_8 0
+create_actor_area 103 34 facet_8 0
+create_actor_area 61 16 facet_10 0
+create_actor_area 70 7 facet_10 0
+create_actor_area 85 19 facet_10 0
+create_actor_area 73 7 facet_10 0
+create_actor_area 34 19 facet_10 0
+create_actor_area 106 28 facet_10 0
+create_actor_area 88 25 facet_10 0
+create_actor_area 91 16 facet_10 0
+create_actor_area 88 10 facet_10 0
+create_actor_area 40 10 facet_11 0
+create_actor_area 85 13 facet_11 0
+create_actor_area 91 22 facet_11 0
+create_actor_area 28 13 facet_11 0
+create_actor_area 76 13 facet_11 0
+create_actor_area 76 7 facet_11 0
+create_actor_area 37 22 facet_11 0
+create_actor_area 58 16 facet_11 0
+create_actor_area 94 13 facet_11 0
+create_actor_area 73 112 facet_16 0
+create_actor_area 88 109 facet_16 0
+create_actor_area 76 106 facet_16 0
+create_actor_area 100 94 facet_16 0
+create_actor_area 100 88 facet_16 0
+create_actor_area 88 103 facet_16 0
+create_actor_area 100 82 facet_16 0
+create_actor_area 82 103 facet_16 0
+create_actor_area 97 100 facet_16 0
+create_actor_area 25 106 facet_16 0
+create_actor_area 100 91 facet_16 0
+create_actor_area 55 112 facet_16 0
+create_actor_area 22 103 facet_16 0
+create_actor_area 82 109 facet_16 0
+create_actor_area 10 85 facet_16 0
+create_actor_area 70 112 facet_17 0
+create_actor_area 76 109 facet_17 0
+create_actor_area 40 106 facet_17 0
+create_actor_area 28 100 facet_17 0
+create_actor_area 109 88 facet_17 0
+create_actor_area 46 106 facet_17 0
+create_actor_area 103 97 facet_17 0
+create_actor_area 55 109 facet_17 0
+create_actor_area 82 112 facet_17 0
+create_actor_area 106 94 facet_17 0
+create_actor_area 28 103 facet_17 0
+create_actor_area 13 82 facet_17 0
+create_actor_area 88 106 facet_17 0
+create_actor_area 100 103 facet_17 0
+create_actor_area 13 70 facet_17 0
+create_actor_area 97 91 facet_17 0
+create_actor_area 79 106 facet_17 0
+create_actor_area 10 40 facet_18 0
+create_actor_area 67 106 facet_18 0
+create_actor_area 25 25 facet_18 0
+create_actor_area 16 85 facet_18 0
+create_actor_area 64 109 facet_18 0
+create_actor_area 13 76 facet_18 0
+create_actor_area 16 34 facet_18 0
+create_actor_area 13 55 facet_18 0
+create_actor_area 10 79 facet_18 0
+create_actor_area 73 106 facet_18 0
+create_actor_area 10 73 facet_18 0
+create_actor_area 34 100 facet_18 0
+create_actor_area 19 49 facet_18 0
+create_actor_area 13 40 facet_18 0
+create_actor_area 37 16 facet_18 0
+create_actor_area 10 34 facet_18 0
+create_actor_area 22 25 facet_19 0
+create_actor_area 19 31 facet_19 0
+create_actor_area 10 52 facet_19 0
+create_actor_area 10 37 facet_19 0
+create_actor_area 16 43 facet_19 0
+create_actor_area 10 43 facet_19 0
+create_actor_area 16 37 facet_19 0
+create_actor_area 19 73 facet_19 0
+create_actor_area 61 112 facet_19 0
+create_actor_area 13 37 facet_19 0
+create_actor_area 10 76 facet_19 0
+create_actor_area 31 103 facet_19 0
+create_actor_area 19 100 facet_19 0
+create_actor_area 13 43 facet_19 0
+create_actor_area 70 10 facet_20 0
+create_actor_area 100 25 facet_20 0
+create_actor_area 34 13 facet_20 0
+create_actor_area 85 10 facet_20 0
+create_actor_area 28 22 facet_20 0
+create_actor_area 91 19 facet_20 0
+create_actor_area 34 22 facet_20 0
+create_actor_area 82 22 facet_21 0
+create_actor_area 103 22 facet_21 0
+create_actor_area 73 16 facet_21 0
+create_actor_area 31 16 facet_21 0
+create_actor_area 94 16 facet_21 0
+create_actor_area 94 19 facet_21 0
+create_actor_area 13 46 facet_21 0
+create_actor_area 34 10 facet_21 0
+create_actor_area 49 16 facet_21 0
+create_actor_area 64 16 facet_21 0
+create_actor_area 22 28 facet_21 0
+create_actor_area 106 31 facet_22 0
+create_actor_area 109 67 facet_22 0
+create_actor_area 112 37 facet_22 0
+create_actor_area 112 67 facet_22 0
+create_actor_area 70 106 facet_22 0
+create_actor_area 103 73 facet_22 0
+create_actor_area 112 40 facet_23 0
+create_actor_area 106 82 facet_23 0
+create_actor_area 109 34 facet_23 0
+create_actor_area 106 70 facet_23 0
+create_actor_area 112 58 facet_23 0
+create_actor_area 86 106 facet_12 0
+create_actor_area 110 46 facet_12 0
+create_actor_area 86 94 facet_12 0
+create_actor_area 89 97 facet_12 0
+create_actor_area 92 106 facet_12 0
+create_actor_area 89 91 facet_12 0
+create_actor_area 101 97 facet_12 0
+create_actor_area 53 103 facet_12 0
+create_actor_area 92 100 facet_12 0
+create_actor_area 65 103 facet_12 0
+create_actor_area 98 79 facet_12 0
+create_actor_area 41 109 facet_12 0
+create_actor_area 110 76 facet_12 0
+create_actor_area 95 85 facet_12 0
+create_actor_area 74 100 facet_12 0
+create_actor_area 101 70 facet_12 0
+create_actor_area 92 94 facet_12 0
+create_actor_area 104 85 facet_12 0
+create_actor_area 59 103 facet_12 0
+create_actor_area 53 109 facet_12 0
+create_actor_area 95 91 facet_12 0
+create_actor_area 83 97 facet_12 0
+create_actor_area 86 100 facet_12 0
+create_actor_area 59 109 facet_12 0
+create_actor_area 107 73 facet_12 0
+create_actor_area 107 88 facet_12 0
+create_actor_area 95 103 facet_12 0
+create_actor_area 92 88 facet_12 0
+create_actor_area 110 82 facet_12 0
+create_actor_area 95 97 facet_12 0
+create_actor_area 80 100 facet_12 0
+create_actor_area 107 64 facet_12 0
+create_actor_area 104 61 facet_12 0
+create_actor_area 47 109 facet_12 0
+create_actor_area 98 28 facet_13 0
+create_actor_area 83 19 facet_13 0
+create_actor_area 107 37 facet_13 0
+create_actor_area 71 16 facet_13 0
+create_actor_area 89 16 facet_13 0
+create_actor_area 110 43 facet_13 0
+create_actor_area 56 16 facet_13 0
+create_actor_area 62 13 facet_13 0
+create_actor_area 110 79 facet_13 0
+create_actor_area 101 22 facet_13 0
+create_actor_area 107 52 facet_13 0
+create_actor_area 98 40 facet_13 0
+create_actor_area 110 49 facet_13 0
+create_actor_area 104 58 facet_13 0
+create_actor_area 110 61 facet_13 0
+create_actor_area 77 19 facet_13 0
+create_actor_area 53 10 facet_13 0
+create_actor_area 47 16 facet_13 0
+create_actor_area 86 25 facet_13 0
+create_actor_area 83 13 facet_13 0
+create_actor_area 80 22 facet_13 0
+create_actor_area 74 13 facet_13 0
+create_actor_area 101 43 facet_13 0
+create_actor_area 80 10 facet_13 0
+create_actor_area 80 16 facet_13 0
+create_actor_area 92 28 facet_13 0
+create_actor_area 47 10 facet_13 0
+create_actor_area 104 40 facet_13 0
+create_actor_area 95 25 facet_13 0
+create_actor_area 95 31 facet_13 0
+create_actor_area 92 13 facet_13 0
+create_actor_area 98 19 facet_13 0
+create_actor_area 59 10 facet_13 0
+create_actor_area 104 28 facet_13 0
+create_actor_area 101 31 facet_13 0
+create_actor_area 89 22 facet_13 0
+create_actor_area 19 40 facet_14 0
+create_actor_area 19 46 facet_14 0
+create_actor_area 52 16 facet_14 0
+create_actor_area 13 61 facet_14 0
+create_actor_area 64 13 facet_14 0
+create_actor_area 37 19 facet_14 0
+create_actor_area 16 49 facet_14 0
+create_actor_area 55 10 facet_14 0
+create_actor_area 22 34 facet_14 0
+create_actor_area 19 25 facet_14 0
+create_actor_area 67 16 facet_14 0
+create_actor_area 28 19 facet_14 0
+create_actor_area 25 16 facet_14 0
+create_actor_area 13 67 facet_14 0
+create_actor_area 34 25 facet_14 0
+create_actor_area 16 31 facet_14 0
+create_actor_area 31 22 facet_14 0
+create_actor_area 25 37 facet_14 0
+create_actor_area 10 58 facet_14 0
+create_actor_area 43 10 facet_14 0
+create_actor_area 40 22 facet_14 0
+create_actor_area 31 13 facet_14 0
+create_actor_area 67 10 facet_14 0
+create_actor_area 22 43 facet_14 0
+create_actor_area 28 34 facet_14 0
+create_actor_area 37 13 facet_14 0
+create_actor_area 25 22 facet_14 0
+create_actor_area 25 31 facet_14 0
+create_actor_area 43 19 facet_14 0
+create_actor_area 31 28 facet_14 0
+create_actor_area 22 19 facet_14 0
+create_actor_area 49 10 facet_14 0
+create_actor_area 16 70 facet_14 0
+create_actor_area 13 85 facet_15 0
+create_actor_area 16 79 facet_15 0
+create_actor_area 19 91 facet_15 0
+create_actor_area 19 97 facet_15 0
+create_actor_area 16 94 facet_15 0
+create_actor_area 10 55 facet_15 0
+create_actor_area 22 94 facet_15 0
+create_actor_area 25 91 facet_15 0
+create_actor_area 37 97 facet_15 0
+create_actor_area 61 109 facet_15 0
+create_actor_area 61 103 facet_15 0
+create_actor_area 19 76 facet_15 0
+create_actor_area 43 109 facet_15 0
+create_actor_area 55 103 facet_15 0
+create_actor_area 22 79 facet_15 0
+create_actor_area 31 97 facet_15 0
+create_actor_area 13 64 facet_15 0
+create_actor_area 49 109 facet_15 0
+create_actor_area 16 52 facet_15 0
+create_actor_area 22 88 facet_15 0
+create_actor_area 49 103 facet_15 0
+create_actor_area 25 85 facet_15 0
+create_actor_area 16 73 facet_15 0
+create_actor_area 46 100 facet_15 0
+create_actor_area 43 103 facet_15 0
+create_actor_area 28 88 facet_15 0
+create_actor_area 19 82 facet_15 0
+create_actor_area 76 100 facet_15 0
+create_actor_area 34 94 facet_15 0
+create_actor_area 37 109 facet_15 0
+create_actor_area 16 91 facet_3 0
+create_actor_area 10 64 facet_3 0
+create_actor_area 19 88 facet_3 0
+create_actor_area 49 106 facet_3 0
+create_actor_area 13 73 facet_3 0
+create_actor_area 43 112 facet_3 0
+create_actor_area 46 103 facet_3 0
+create_actor_area 49 112 facet_3 0
+create_actor_area 73 109 facet_3 0
+create_actor_area 25 88 facet_3 0
+create_actor_area 22 85 facet_3 0
+create_actor_area 13 79 facet_3 0
+create_actor_area 25 97 facet_3 0
+create_actor_area 55 106 facet_3 0
+create_actor_area 34 103 facet_3 0
+create_actor_area 22 91 facet_3 0
+create_actor_area 43 106 facet_3 0
+create_actor_area 76 103 facet_3 0
+create_actor_area 64 112 facet_3 0
+create_actor_area 22 100 facet_3 0
+create_actor_area 10 70 facet_3 0
+create_actor_area 61 106 facet_3 0
+create_actor_area 37 100 facet_3 0
+create_actor_area 16 76 facet_3 0
+create_actor_area 13 52 facet_3 0
+create_actor_area 34 97 facet_3 0
+create_actor_area 28 94 facet_3 0
+create_actor_area 16 97 facet_3 0
+create_actor_area 67 109 facet_3 0
+create_actor_area 10 82 facet_3 0
+create_actor_area 16 82 facet_3 0
+create_actor_area 19 79 facet_3 0
+create_actor_area 19 94 facet_3 0
+create_actor_area 37 112 facet_3 0
+create_actor_area 109 85 facet_6 0
+create_actor_area 91 91 facet_6 0
+create_actor_area 97 97 facet_6 0
+create_actor_area 94 94 facet_6 0
+create_actor_area 85 97 facet_6 0
+create_actor_area 103 88 facet_6 0
+create_actor_area 58 106 facet_6 0
+create_actor_area 100 79 facet_6 0
+create_actor_area 106 91 facet_6 0
+create_actor_area 85 109 facet_6 0
+create_actor_area 40 112 facet_6 0
+create_actor_area 94 88 facet_6 0
+create_actor_area 112 82 facet_6 0
+create_actor_area 100 100 facet_6 0
+create_actor_area 88 100 facet_6 0
+create_actor_area 94 100 facet_6 0
+create_actor_area 97 85 facet_6 0
+create_actor_area 82 100 facet_6 0
+create_actor_area 109 73 facet_6 0
+create_actor_area 103 70 facet_6 0
+create_actor_area 112 76 facet_6 0
+create_actor_area 94 106 facet_6 0
+create_actor_area 85 103 facet_6 0
+create_actor_area 106 61 facet_6 0
+create_actor_area 88 94 facet_6 0
+create_actor_area 58 112 facet_6 0
+create_actor_area 79 103 facet_6 0
+create_actor_area 91 97 facet_6 0
+create_actor_area 91 109 facet_6 0
+create_actor_area 52 106 facet_6 0
+create_actor_area 103 82 facet_6 0
+create_actor_area 91 103 facet_6 0
+create_actor_area 112 64 facet_6 0
+create_actor_area 52 112 facet_6 0
+create_actor_area 46 112 facet_6 0
+create_actor_area 73 103 facet_6 0
+create_actor_area 70 109 facet_6 0
+create_actor_area 64 106 facet_6 0
+create_actor_area 112 46 facet_6 0
+create_actor_area 82 11 facet_9 0
+create_actor_area 58 8 facet_9 0
+create_actor_area 70 14 facet_9 0
+create_actor_area 82 17 facet_9 0
+create_actor_area 61 11 facet_9 0
+create_actor_area 112 80 facet_9 0
+create_actor_area 76 17 facet_9 0
+create_actor_area 79 14 facet_9 0
+create_actor_area 112 44 facet_9 0
+create_actor_area 97 32 facet_9 0
+create_actor_area 79 8 facet_9 0
+create_actor_area 46 8 facet_9 0
+create_actor_area 100 20 facet_9 0
+create_actor_area 100 29 facet_9 0
+create_actor_area 112 50 facet_9 0
+create_actor_area 55 14 facet_9 0
+create_actor_area 109 53 facet_9 0
+create_actor_area 109 38 facet_9 0
+create_actor_area 106 59 facet_9 0
+create_actor_area 103 26 facet_9 0
+create_actor_area 52 8 facet_9 0
+create_actor_area 94 29 facet_9 0
+create_actor_area 46 14 facet_9 0
+create_actor_area 106 41 facet_9 0
+create_actor_area 85 23 facet_9 0
+create_actor_area 103 44 facet_9 0
+create_actor_area 88 14 facet_9 0
+create_actor_area 112 62 facet_9 0
+create_actor_area 94 23 facet_9 0
+create_actor_area 73 11 facet_9 0
+create_actor_area 97 26 facet_9 0
+create_actor_area 88 20 facet_9 0
+create_actor_area 100 41 facet_9 0
+create_actor_area 91 26 facet_9 0
+create_actor_area 79 20 facet_9 0
+create_actor_area 103 32 facet_9 0
+
+create_actor_area 61 15 rock_object_area 0
+create_actor_area 86 21 rock_object_area 0
+create_actor_area 39 23 rock_object_area 0
+create_actor_area 87 24 rock_object_area 0
+create_actor_area 110 42 rock_object_area 0
+create_actor_area 111 48 rock_object_area 0
+create_actor_area 110 60 rock_object_area 0
+create_actor_area 99 76 rock_object_area 0
+create_actor_area 93 86 rock_object_area 0
+create_actor_area 48 100 rock_object_area 0
+create_actor_area 82 107 rock_object_area 0
+create_actor_area 25 83 rock_object_area 0
+create_actor_area 80 23 rock_object_area 0
+create_actor_area 82 20 rock_object_area 0
+create_actor_area 64 8 rock_object_area 0
+create_actor_area 29 89 rock_object_area 0
+create_actor_area 48 101 rock_object_area 0
+create_actor_area 26 83 rock_object_area 0
+create_actor_area 70 9 rock_object_area 0
+create_actor_area 102 68 rock_object_area 0
+create_actor_area 83 95 rock_object_area 0
+create_actor_area 110 54 rock_object_area 0
+create_actor_area 107 50 rock_object_area 0
+create_actor_area 91 14 rock_object_area 0
+create_actor_area 74 9 rock_object_area 0
+create_actor_area 64 14 rock_object_area 0
+create_actor_area 84 25 rock_object_area 0
+create_actor_area 35 26 rock_object_area 0
+create_actor_area 110 66 rock_object_area 0
+create_actor_area 100 75 rock_object_area 0
+create_actor_area 84 95 rock_object_area 0
+create_actor_area 57 14 rock_object_area 0
+create_actor_area 82 24 rock_object_area 0
+create_actor_area 30 89 rock_object_area 0
+create_actor_area 93 21 rock_object_area 0
+create_actor_area 51 9 rock_object_area 0
+create_actor_area 22 27 rock_object_area 0
+create_actor_area 31 29 rock_object_area 0
+create_actor_area 102 67 rock_object_area 0
+create_actor_area 30 88 rock_object_area 0
+create_actor_area 36 25 rock_object_area 0
+create_actor_area 49 100 rock_object_area 0
+create_actor_area 108 42 rock_object_area 0
+create_actor_area 31 91 rock_object_area 0
+create_actor_area 50 101 rock_object_area 0
+create_actor_area 92 25 rock_object_area 0
+create_actor_area 96 83 rock_object_area 0
+create_actor_area 74 12 rock_object_area 0
+create_actor_area 45 11 rock_object_area 0
+create_actor_area 98 30 rock_object_area 0
+create_actor_area 113 52 rock_object_area 0
+create_actor_area 96 82 rock_object_area 0
+create_actor_area 34 12 rock_object_area 0
+create_actor_area 102 99 rock_object_area 0
+create_actor_area 82 15 rock_object_area 0
+create_actor_area 83 24 rock_object_area 0
+create_actor_area 14 83 rock_object_area 0
+create_actor_area 109 89 rock_object_area 0
+create_actor_area 71 19 rock_object_area 0
+create_actor_area 48 19 rock_object_area 0
+create_actor_area 81 97 rock_object_area 0
+create_actor_area 92 103 rock_object_area 0
+create_actor_area 47 20 rock_object_area 0
+create_actor_area 69 105 rock_object_area 0
+create_actor_area 59 14 rock_object_area 0
+create_actor_area 99 77 rock_object_area 0
+create_actor_area 99 24 rock_object_area 0
+create_actor_area 52 100 rock_object_area 0
+create_actor_area 78 22 rock_object_area 0
+create_actor_area 80 98 rock_object_area 0
+create_actor_area 86 26 rock_object_area 0
+create_actor_area 95 28 rock_object_area 0
+create_actor_area 102 65 rock_object_area 0
+create_actor_area 57 9 rock_object_area 0
+create_actor_area 40 13 rock_object_area 0
+create_actor_area 111 73 rock_object_area 0
+create_actor_area 107 91 rock_object_area 0
+create_actor_area 81 98 rock_object_area 0
+create_actor_area 23 79 rock_object_area 0
+create_actor_area 37 21 rock_object_area 0
+create_actor_area 81 23 rock_object_area 0
+create_actor_area 44 21 rock_object_area 0
+create_actor_area 71 12 rock_object_area 0
+create_actor_area 105 44 rock_object_area 0
+create_actor_area 34 15 rock_object_area 0
+create_actor_area 22 21 rock_object_area 0
+create_actor_area 38 24 rock_object_area 0
+create_actor_area 104 49 rock_object_area 0
+create_actor_area 42 22 rock_object_area 0
+create_actor_area 66 12 rock_object_area 0
+create_actor_area 111 85 rock_object_area 0
+create_actor_area 27 86 rock_object_area 0
+create_actor_area 27 84 rock_object_area 0
+create_actor_area 34 27 rock_object_area 0
+create_actor_area 47 101 rock_object_area 0
+create_actor_area 82 96 rock_object_area 0
+create_actor_area 100 74 rock_object_area 0
+create_actor_area 113 69 rock_object_area 0
+create_actor_area 90 100 rock_object_area 0
+create_actor_area 51 108 rock_object_area 0
+create_actor_area 61 9 rock_object_area 0
+create_actor_area 42 98 rock_object_area 0
+create_actor_area 74 20 rock_object_area 0
+create_actor_area 85 26 rock_object_area 0
+create_actor_area 28 14 rock_object_area 0
+create_actor_area 40 98 rock_object_area 0
+create_actor_area 40 17 rock_object_area 0
+create_actor_area 108 61 rock_object_area 0
+create_actor_area 24 80 rock_object_area 0
+create_actor_area 54 11 rock_object_area 0
+create_actor_area 89 18 rock_object_area 0
+create_actor_area 41 98 rock_object_area 0
+create_actor_area 92 23 rock_object_area 0
+create_actor_area 101 36 rock_object_area 0
+create_actor_area 100 35 rock_object_area 0
+create_actor_area 102 41 rock_object_area 0
+create_actor_area 104 42 rock_object_area 0
+create_actor_area 105 39 rock_object_area 0
+create_actor_area 104 30 rock_object_area 0
+create_actor_area 93 27 rock_object_area 0
+create_actor_area 90 24 rock_object_area 0
+create_actor_area 91 18 rock_object_area 0
+create_actor_area 86 18 rock_object_area 0
+create_actor_area 84 15 rock_object_area 0
+create_actor_area 92 11 rock_object_area 0
+create_actor_area 104 21 rock_object_area 0
+create_actor_area 101 19 rock_object_area 0
+create_actor_area 106 27 rock_object_area 0
+create_actor_area 13 27 rock_object_area 0
+create_actor_area 16 22 rock_object_area 0
+create_actor_area 51 12 jungle_rock_area 0
+create_actor_area 56 12 jungle_rock_area 0
+create_actor_area 60 12 jungle_rock_area 0
+create_actor_area 34 17 jungle_rock_area 0
+create_actor_area 83 23 jungle_rock_area 0
+create_actor_area 93 29 jungle_rock_area 0
+create_actor_area 90 30 jungle_rock_area 0
+create_actor_area 26 32 jungle_rock_area 0
+create_actor_area 93 32 jungle_rock_area 0
+create_actor_area 96 37 jungle_rock_area 0
+create_actor_area 102 53 jungle_rock_area 0
+create_actor_area 102 56 jungle_rock_area 0
+create_actor_area 11 59 jungle_rock_area 0
+create_actor_area 14 61 jungle_rock_area 0
+create_actor_area 102 62 jungle_rock_area 0
+create_actor_area 20 73 jungle_rock_area 0
+create_actor_area 107 81 jungle_rock_area 0
+create_actor_area 9 84 jungle_rock_area 0
+create_actor_area 104 87 jungle_rock_area 0
+create_actor_area 40 97 jungle_rock_area 0
+create_actor_area 78 99 jungle_rock_area 0
+create_actor_area 70 101 jungle_rock_area 0
+create_actor_area 81 105 jungle_rock_area 0
+create_actor_area 29 31 jungle_rock_area 0
+create_actor_area 100 47 jungle_rock_area 0
+create_actor_area 83 105 jungle_rock_area 0
+create_actor_area 29 33 jungle_rock_area 0
+create_actor_area 20 65 jungle_rock_area 0
+create_actor_area 64 101 jungle_rock_area 0
+create_actor_area 92 31 jungle_rock_area 0
+create_actor_area 80 18 jungle_rock_area 0
+create_actor_area 30 18 jungle_rock_area 0
+create_actor_area 7 46 jungle_rock_area 0
+create_actor_area 20 70 jungle_rock_area 0
+create_actor_area 98 17 jungle_rock_area 0
+create_actor_area 96 35 jungle_rock_area 0
+create_actor_area 58 101 jungle_rock_area 0
+create_actor_area 7 78 jungle_rock_area 0
+create_actor_area 55 101 jungle_rock_area 0
+create_actor_area 40 15 jungle_rock_area 0
+create_actor_area 90 105 jungle_rock_area 0
+create_actor_area 95 34 jungle_rock_area 0
+create_actor_area 22 35 jungle_rock_area 0
+create_actor_area 96 21 jungle_rock_area 0
+create_actor_area 77 98 jungle_rock_area 0
+create_actor_area 101 69 jungle_rock_area 0
+create_actor_area 20 71 jungle_rock_area 0
+create_actor_area 20 47 jungle_rock_area 0
+create_actor_area 34 21 jungle_rock_area 0
+create_actor_area 96 34 jungle_rock_area 0
+create_actor_area 101 48 jungle_rock_area 0
+create_actor_area 26 35 jungle_rock_area 0
+create_actor_area 59 17 jungle_rock_area 0
+create_actor_area 33 111 jungle_rock_area 0
+create_actor_area 13 96 jungle_rock_area 0
+create_actor_area 53 17 jungle_rock_area 0
+create_actor_area 72 101 jungle_rock_area 0
+create_actor_area 26 37 jungle_rock_area 0
+create_actor_area 20 69 jungle_rock_area 0
+create_actor_area 102 24 jungle_rock_area 0
+create_actor_area 76 21 jungle_rock_area 0
+create_actor_area 16 39 jungle_rock_area 0
+create_actor_area 85 94 jungle_rock_area 0
+create_actor_area 100 44 jungle_rock_area 0
+create_actor_area 98 34 jungle_rock_area 0
+create_actor_area 45 108 jungle_rock_area 0
+create_actor_area 100 71 jungle_rock_area 0
+create_actor_area 51 103 jungle_rock_area 0
+create_actor_area 65 101 jungle_rock_area 0
+create_actor_area 86 92 jungle_rock_area 0
+create_actor_area 34 111 jungle_rock_area 0
+create_actor_area 89 26 jungle_rock_area 0
+create_actor_area 21 76 jungle_rock_area 0
+create_actor_area 87 27 jungle_rock_area 0
+create_actor_area 90 26 jungle_rock_area 0
+create_actor_area 100 69 jungle_rock_area 0
+create_actor_area 86 108 jungle_rock_area 0
+create_actor_area 30 90 jungle_rock_area 0
+create_actor_area 104 78 jungle_rock_area 0
+create_actor_area 89 12 jungle_rock_area 0
+create_actor_area 23 105 jungle_rock_area 0
+create_actor_area 102 51 jungle_rock_area 0
+create_actor_area 82 8 jungle_rock_area 0
+create_actor_area 32 18 jungle_rock_area 0
+create_actor_area 20 49 jungle_rock_area 0
+create_actor_area 107 33 jungle_rock_area 0
+create_actor_area 96 88 jungle_rock_area 0
+create_actor_area 93 30 jungle_rock_area 0
+create_actor_area 54 14 jungle_rock_area 0
+create_actor_area 80 97 jungle_rock_area 0
+create_actor_area 8 71 jungle_rock_area 0
+create_actor_area 84 24 jungle_rock_area 0
+create_actor_area 29 87 jungle_rock_area 0
+create_actor_area 110 56 jungle_rock_area 0
+create_actor_area 28 108 jungle_rock_area 0
+create_actor_area 63 17 jungle_rock_area 0
+create_actor_area 20 55 jungle_rock_area 0
+create_actor_area 28 25 jungle_rock_area 0
+create_actor_area 101 45 jungle_rock_area 0
+create_actor_area 70 18 jungle_rock_area 0
+create_actor_area 107 30 jungle_rock_area 0
+create_actor_area 82 23 jungle_rock_area 0
+create_actor_area 89 29 jungle_rock_area 0
+create_actor_area 101 47 jungle_rock_area 0
+create_actor_area 77 15 jungle_rock_area 0
+create_actor_area 90 28 jungle_rock_area 0
+create_actor_area 55 17 jungle_rock_area 0
+create_actor_area 84 17 jungle_rock_area 0
+create_actor_area 95 32 jungle_rock_area 0
+create_actor_area 104 59 jungle_rock_area 0
+create_actor_area 31 92 jungle_rock_area 0
+create_actor_area 17 45 jungle_rock_area 0
+create_actor_area 96 105 jungle_rock_area 0
+create_actor_area 99 97 jungle_rock_area 0
+create_actor_area 104 82 jungle_rock_area 0
+create_actor_area 96 36 jungle_rock_area 0
+create_actor_area 102 48 jungle_rock_area 0
+create_actor_area 78 98 jungle_rock_area 0
+create_actor_area 7 44 jungle_rock_area 0
+create_actor_area 21 74 jungle_rock_area 0
+create_actor_area 8 67 jungle_rock_area 0
+create_actor_area 27 26 jungle_rock_area 0
+create_actor_area 101 33 jungle_rock_area 0
+create_actor_area 57 18 jungle_rock_area 0
+create_actor_area 98 85 jungle_rock_area 0
+create_actor_area 49 101 jungle_rock_area 0
+create_actor_area 62 18 jungle_rock_area 0
+create_actor_area 104 63 jungle_rock_area 0
+create_actor_area 89 27 jungle_rock_area 0
+create_actor_area 96 87 jungle_rock_area 0
+create_actor_area 62 101 jungle_rock_area 0
+create_actor_area 58 18 jungle_rock_area 0
+create_actor_area 99 42 jungle_rock_area 0
+create_actor_area 97 92 jungle_rock_area 0
+create_actor_area 99 44 jungle_rock_area 0
+create_actor_area 92 97 jungle_rock_area 0
+create_actor_area 20 51 jungle_rock_area 0
+create_actor_area 20 60 jungle_rock_area 0
+create_actor_area 21 36 jungle_rock_area 0
+create_actor_area 22 43 jungle_rock_area 0
+create_actor_area 73 15 jungle_rock_area 0
+create_actor_area 110 36 jungle_rock_area 0
+create_actor_area 20 53 jungle_rock_area 0
+create_actor_area 52 18 jungle_rock_area 0
+create_actor_area 54 18 jungle_rock_area 0
+create_actor_area 108 75 jungle_rock_area 0
+create_actor_area 73 101 jungle_rock_area 0
+create_actor_area 111 78 jungle_rock_area 0
+create_actor_area 71 17 jungle_rock_area 0
+create_actor_area 80 21 jungle_rock_area 0
+create_actor_area 108 68 jungle_rock_area 0
+create_actor_area 60 101 jungle_rock_area 0
+create_actor_area 30 30 jungle_rock_area 0
+create_actor_area 23 81 jungle_rock_area 0
+create_actor_area 102 58 jungle_rock_area 0
+create_actor_area 39 108 jungle_rock_area 0
+create_actor_area 14 45 jungle_rock_area 0
+create_actor_area 105 78 jungle_rock_area 0
+create_actor_area 104 24 jungle_rock_area 0
+create_actor_area 18 42 jungle_rock_area 0
+create_actor_area 86 97 jungle_rock_area 0
+create_actor_area 45 16 jungle_rock_area 0
+create_actor_area 92 87 jungle_rock_area 0
+create_actor_area 18 27 jungle_rock_area 0
+create_actor_area 20 58 jungle_rock_area 0
+create_actor_area 77 20 jungle_rock_area 0
+create_actor_area 49 17 jungle_rock_area 0
+create_actor_area 107 53 jungle_rock_area 0
+create_actor_area 101 27 jungle_rock_area 0
+create_actor_area 84 111 jungle_rock_area 0
+create_actor_area 110 69 jungle_rock_area 0
+create_actor_area 105 74 jungle_rock_area 0
+create_actor_area 88 26 jungle_rock_area 0
+create_actor_area 105 56 jungle_rock_area 0
+create_actor_area 13 93 jungle_rock_area 0
+create_actor_area 101 49 jungle_rock_area 0
+create_actor_area 64 17 jungle_rock_area 0
+create_actor_area 32 92 jungle_rock_area 0
+create_actor_area 99 22 jungle_rock_area 0
+create_actor_area 102 66 jungle_rock_area 0
+create_actor_area 29 108 jungle_rock_area 0
+create_actor_area 69 15 jungle_rock_area 0
+create_actor_area 41 22 jungle_rock_area 0
+create_actor_area 89 28 jungle_rock_area 0
+create_actor_area 94 84 jungle_rock_area 0
+create_actor_area 86 16 jungle_rock_area 0
+create_actor_area 26 108 jungle_rock_area 0
+create_actor_area 28 34 jungle_rock_area 0
+create_actor_area 21 101 jungle_rock_area 0
+create_actor_area 98 86 jungle_rock_area 0
+create_actor_area 72 18 jungle_rock_area 0
+create_actor_area 20 67 jungle_rock_area 0
+create_actor_area 101 79 jungle_rock_area 0
+create_actor_area 102 61 jungle_rock_area 0
+create_actor_area 104 64 jungle_rock_area 0
+create_actor_area 51 102 jungle_rock_area 0
+create_actor_area 97 40 jungle_rock_area 0
+create_actor_area 14 53 jungle_rock_area 0
+create_actor_area 73 17 jungle_rock_area 0
+create_actor_area 29 32 jungle_rock_area 0
+create_actor_area 102 73 jungle_rock_area 0
+create_actor_area 74 17 jungle_rock_area 0
+create_actor_area 9 45 jungle_rock_area 0
+create_actor_area 88 90 jungle_rock_area 0
+create_actor_area 21 22 jungle_rock_area 0
+create_actor_area 101 38 jungle_rock_area 0
+create_actor_area 48 14 jungle_rock_area 0
+create_actor_area 97 79 jungle_rock_area 0
+create_actor_area 49 18 jungle_rock_area 0
+create_actor_area 32 28 jungle_rock_area 0
+create_actor_area 79 108 jungle_rock_area 0
+create_actor_area 95 15 jungle_rock_area 0
+create_actor_area 97 20 jungle_rock_area 0
+create_actor_area 24 38 jungle_rock_area 0
+create_actor_area 100 45 jungle_rock_area 0
+create_actor_area 97 78 jungle_rock_area 0
+create_actor_area 22 77 jungle_rock_area 0
+create_actor_area 20 56 jungle_rock_area 0
+create_actor_area 7 75 jungle_rock_area 0
+create_actor_area 91 88 jungle_rock_area 0
+create_actor_area 14 68 jungle_rock_area 0
+create_actor_area 39 109 jungle_rock_area 0
+create_actor_area 73 99 jungle_rock_area 0
+create_actor_area 102 49 jungle_rock_area 0
+create_actor_area 95 18 jungle_rock_area 0
+create_actor_area 10 66 jungle_rock_area 0
+create_actor_area 92 91 jungle_rock_area 0
+create_actor_area 67 101 jungle_rock_area 0
+create_actor_area 46 98 jungle_rock_area 0
+create_actor_area 37 95 jungle_rock_area 0
+create_actor_area 102 45 jungle_rock_area 0
+create_actor_area 84 23 jungle_rock_area 0
+create_actor_area 20 68 jungle_rock_area 0
+create_actor_area 66 17 jungle_rock_area 0
+create_actor_area 47 17 jungle_rock_area 0
+create_actor_area 102 54 jungle_rock_area 0
+create_actor_area 61 17 jungle_rock_area 0
+create_actor_area 9 60 jungle_rock_area 0
+create_actor_area 102 64 jungle_rock_area 0
+create_actor_area 33 26 jungle_rock_area 0
+create_actor_area 13 92 jungle_rock_area 0
+create_actor_area 69 101 jungle_rock_area 0
+create_actor_area 90 94 jungle_rock_area 0
+create_actor_area 88 28 jungle_rock_area 0
+create_actor_area 16 99 jungle_rock_area 0
+create_actor_area 19 42 jungle_rock_area 0
+create_actor_area 93 34 jungle_rock_area 0
+create_actor_area 111 51 jungle_rock_area 0
+create_actor_area 95 94 jungle_rock_area 0
+create_actor_area 89 89 jungle_rock_area 0
+create_actor_area 51 17 jungle_rock_area 0
+create_actor_area 96 39 jungle_rock_area 0
+create_actor_area 101 72 jungle_rock_area 0
+create_actor_area 73 19 jungle_rock_area 0
+create_actor_area 85 95 jungle_rock_area 0
+create_actor_area 7 63 jungle_rock_area 0
+create_actor_area 94 35 jungle_rock_area 0
+create_actor_area 98 41 jungle_rock_area 0
+create_actor_area 91 29 jungle_rock_area 0
+create_actor_area 100 84 jungle_rock_area 0
+create_actor_area 41 11 jungle_rock_area 0
+create_actor_area 96 24 jungle_rock_area 0
+create_actor_area 19 33 jungle_rock_area 0
+create_actor_area 77 10 jungle_rock_area 0
+create_actor_area 102 47 jungle_rock_area 0
+create_actor_area 42 20 jungle_rock_area 0
+create_actor_area 27 21 jungle_rock_area 0
+create_actor_area 24 39 jungle_rock_area 0
+create_actor_area 24 18 jungle_rock_area 0
+create_actor_area 20 61 jungle_rock_area 0
+create_actor_area 86 27 jungle_rock_area 0
+create_actor_area 23 80 jungle_rock_area 0
+create_actor_area 68 17 jungle_rock_area 0
+create_actor_area 24 82 jungle_rock_area 0
+create_actor_area 47 18 jungle_rock_area 0
+create_actor_area 24 33 jungle_rock_area 0
+create_actor_area 20 63 jungle_rock_area 0
+create_actor_area 44 98 jungle_rock_area 0
+create_actor_area 35 93 jungle_rock_area 0
+create_actor_area 14 80 jungle_rock_area 0
+create_actor_area 104 65 jungle_rock_area 0
+create_actor_area 75 98 jungle_rock_area 0
+create_actor_area 36 24 jungle_rock_area 0
+create_actor_area 13 48 jungle_rock_area 0
+create_actor_area 45 18 jungle_rock_area 0
+create_actor_area 99 92 jungle_rock_area 0
+create_actor_area 102 29 jungle_rock_area 0
+create_actor_area 45 19 jungle_rock_area 0
+create_actor_area 101 74 jungle_rock_area 0
+create_actor_area 60 18 jungle_rock_area 0
+create_actor_area 73 100 jungle_rock_area 0
+create_actor_area 100 46 jungle_rock_area 0
+create_actor_area 75 19 jungle_rock_area 0
+create_actor_area 17 101 jungle_rock_area 0
+create_actor_area 74 18 jungle_rock_area 0
+create_actor_area 107 57 jungle_rock_area 0
+create_actor_area 88 27 jungle_rock_area 0
+create_actor_area 43 98 jungle_rock_area 0
+create_actor_area 69 16 jungle_rock_area 0
+create_actor_area 54 101 jungle_rock_area 0
+create_actor_area 21 45 jungle_rock_area 0
+create_actor_area 51 18 jungle_rock_area 0
+create_actor_area 53 16 jungle_rock_area 0
+create_actor_area 63 102 jungle_rock_area 0
+create_actor_area 37 23 jungle_rock_area 0
+create_actor_area 19 47 jungle_rock_area 0
+create_actor_area 7 54 jungle_rock_area 0
+create_actor_area 59 101 jungle_rock_area 0
+create_actor_area 55 18 jungle_rock_area 0
+create_actor_area 85 93 jungle_rock_area 0
+create_actor_area 57 102 jungle_rock_area 0
+create_actor_area 39 97 jungle_rock_area 0
+create_actor_area 26 85 jungle_rock_area 0
+create_actor_area 44 14 jungle_rock_area 0
+create_actor_area 88 91 jungle_rock_area 0
+create_actor_area 22 29 jungle_rock_area 0
+create_actor_area 75 17 jungle_rock_area 0
+create_actor_area 30 91 jungle_rock_area 0
+create_actor_area 9 66 jungle_rock_area 0
+create_actor_area 22 105 jungle_rock_area 0
+create_actor_area 30 29 jungle_rock_area 0
+create_actor_area 80 12 jungle_rock_area 0
+create_actor_area 23 42 jungle_rock_area 0
+create_actor_area 81 102 jungle_rock_area 0
+create_actor_area 30 15 jungle_rock_area 0
+create_actor_area 40 23 jungle_rock_area 0
+create_actor_area 47 11 jungle_rock_area 0
+create_actor_area 53 18 jungle_rock_area 0
+create_actor_area 83 100 jungle_rock_area 0
+create_actor_area 45 109 jungle_rock_area 0
+create_actor_area 56 101 jungle_rock_area 0
+create_actor_area 47 99 jungle_rock_area 0
+create_actor_area 78 20 jungle_rock_area 0
+create_actor_area 14 24 jungle_rock_area 0
+create_actor_area 12 28 jungle_rock_area 0
+create_actor_area 11 31 jungle_rock_area 0
+create_actor_area 19 18 jungle_rock_area 0
+create_actor_area 28 11 jungle_rock_area 0
+create_actor_area 34 9 jungle_rock_area 0
+create_actor_area 33 8 jungle_rock_area 0
+create_actor_area 35 8 jungle_rock_area 0
+create_actor_area 39 12 jungle_rock_area 0
+create_actor_area 39 8 jungle_rock_area 0
+create_actor_area 47 6 jungle_rock_area 0
+create_actor_area 66 6 jungle_rock_area 0
+create_actor_area 89 9 jungle_rock_area 0
+create_actor_area 108 28 jungle_rock_area 0
+create_actor_area 111 34 jungle_rock_area 0
+create_actor_area 113 41 jungle_rock_area 0
+create_actor_area 113 47 jungle_rock_area 0
+create_actor_area 107 66 jungle_rock_area 0
+create_actor_area 113 65 jungle_rock_area 0
+create_actor_area 113 60 jungle_rock_area 0
+create_actor_area 113 78 jungle_rock_area 0
+create_actor_area 93 108 jungle_rock_area 0
+create_actor_area 102 101 jungle_rock_area 0
+create_actor_area 108 93 jungle_rock_area 0
+create_actor_area 66 18 limestone_rock_area 0
+create_actor_area 67 18 limestone_rock_area 0
+create_actor_area 68 18 limestone_rock_area 0
+create_actor_area 102 20 limestone_rock_area 0
+create_actor_area 16 24 limestone_rock_area 0
+create_actor_area 95 36 limestone_rock_area 0
+create_actor_area 8 50 limestone_rock_area 0
+create_actor_area 59 9 limestone_rock_area 0
+create_actor_area 12 47 limestone_rock_area 0
+create_actor_area 60 7 limestone_rock_area 0
+create_actor_area 7 41 limestone_rock_area 0
+create_actor_area 53 100 limestone_rock_area 0
+create_actor_area 50 19 limestone_rock_area 0
+create_actor_area 12 62 limestone_rock_area 0
+create_actor_area 45 20 limestone_rock_area 0
+create_actor_area 65 18 limestone_rock_area 0
+create_actor_area 72 6 limestone_rock_area 0
+create_actor_area 63 103 limestone_rock_area 0
+create_actor_area 98 77 limestone_rock_area 0
+create_actor_area 84 9 limestone_rock_area 0
+create_actor_area 101 67 limestone_rock_area 0
+create_actor_area 49 19 limestone_rock_area 0
+create_actor_area 101 76 limestone_rock_area 0
+create_actor_area 46 20 limestone_rock_area 0
+create_actor_area 37 8 limestone_rock_area 0
+create_actor_area 72 19 limestone_rock_area 0
+create_actor_area 105 26 limestone_rock_area 0
+create_actor_area 51 19 limestone_rock_area 0
+create_actor_area 109 91 limestone_rock_area 0
+create_actor_area 98 81 limestone_rock_area 0
+create_actor_area 101 52 limestone_rock_area 0
+create_actor_area 92 33 limestone_rock_area 0
+create_actor_area 40 8 limestone_rock_area 0
+create_actor_area 73 113 limestone_rock_area 0
+create_actor_area 43 20 limestone_rock_area 0
+create_actor_area 90 93 limestone_rock_area 0
+create_actor_area 98 80 limestone_rock_area 0
+create_actor_area 102 59 limestone_rock_area 0
+create_actor_area 107 47 limestone_rock_area 0
+create_actor_area 72 100 limestone_rock_area 0
+create_actor_area 111 40 limestone_rock_area 0
+create_actor_area 107 45 limestone_rock_area 0
+create_actor_area 12 68 limestone_rock_area 0
+create_actor_area 113 71 limestone_rock_area 0
+create_actor_area 78 101 limestone_rock_area 0
+create_actor_area 108 39 limestone_rock_area 0
+create_actor_area 113 58 limestone_rock_area 0
+create_actor_area 13 29 limestone_rock_area 0
+create_actor_area 43 21 limestone_rock_area 0
+create_actor_area 102 60 limestone_rock_area 0
+create_actor_area 71 100 limestone_rock_area 0
+create_actor_area 72 99 limestone_rock_area 0
+create_actor_area 44 20 limestone_rock_area 0
+create_actor_area 99 37 limestone_rock_area 0
+create_actor_area 95 82 limestone_rock_area 0
+create_actor_area 105 96 limestone_rock_area 0
+create_actor_area 71 113 limestone_rock_area 0
+create_actor_area 84 11 limestone_rock_area 0
+create_actor_area 80 15 limestone_rock_area 0
+create_actor_area 77 18 limestone_rock_area 0
+create_actor_area 93 18 limestone_rock_area 0
+create_actor_area 95 21 limestone_rock_area 0
+create_actor_area 104 35 limestone_rock_area 0
+create_actor_area 104 38 limestone_rock_area 0
+create_actor_area 99 39 limestone_rock_area 0
+create_actor_area 110 39 limestone_rock_area 0
+create_actor_area 104 54 limestone_rock_area 0
+create_actor_area 36 95 limestone_rock_area 0
+create_actor_area 35 95 limestone_rock_area 0
+create_actor_area 38 98 limestone_rock_area 0
+create_actor_area 57 103 limestone_rock_area 0

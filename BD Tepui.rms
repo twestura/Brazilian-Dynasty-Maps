@@ -759,11 +759,10 @@ create_object_group CHICKENS {
 }
 
 create_object_group TOP_ROCKS {
-  add_object DLC_BOULDER_A 20
-  add_object DLC_BOULDER_B 20
-  add_object DLC_ROCKJUNGLE 20
-  add_object ROCK 20
-  add_object ROCK2 20
+  add_object DLC_BOULDER_A 25
+  add_object DLC_BOULDER_B 25
+  add_object DLC_ROCKJUNGLE 25
+  add_object ROCK 25
 }
 
 /* Places cliff objects inside of the appropriate actor areas. */

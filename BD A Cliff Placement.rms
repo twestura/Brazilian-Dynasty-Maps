@@ -1,0 +1,105 @@
+/* Places cliffs on actor areas. */
+
+/* Placeholders */
+#const PHON 1543
+#const PHONL 1544
+
+/* Cliff values. */
+#const GRAPHICS_CLIFF_LIMESTONE 1577
+#const CLIFF_LIMESTONE_01 2069
+#const CLIFF_LIMESTONE_02 2070
+#const CLIFF_LIMESTONE_03 2071
+#const CLIFF_LIMESTONE_04 2072
+#const CLIFF_LIMESTONE_05 2073
+#const CLIFF_LIMESTONE_06 2074
+#const CLIFF_LIMESTONE_07 2075
+#const CLIFF_LIMESTONE_08 2076
+#const CLIFF_LIMESTONE_09 2077
+
+#const CLIFF_FACET_0_CONST 2074
+#const CLIFF_FACET_1_CONST 2069
+#const CLIFF_FACET_2_CONST 2069
+#const CLIFF_FACET_3_CONST 2069
+#const CLIFF_FACET_4_CONST 2069
+#const CLIFF_FACET_5_CONST 2069
+#const CLIFF_FACET_6_CONST 2072
+#const CLIFF_FACET_7_CONST 2070
+#const CLIFF_FACET_8_CONST 2070
+#const CLIFF_FACET_9_CONST 2076
+#const CLIFF_FACET_10_CONST 2071
+#const CLIFF_FACET_11_CONST 2071
+#const CLIFF_FACET_12_CONST 2072
+#const CLIFF_FACET_13_CONST 2076
+#const CLIFF_FACET_14_CONST 2074
+#const CLIFF_FACET_15_CONST 2069
+#const CLIFF_FACET_16_CONST 2069
+#const CLIFF_FACET_17_CONST 2069
+#const CLIFF_FACET_18_CONST 2069
+#const CLIFF_FACET_19_CONST 2069
+#const CLIFF_FACET_20_CONST 2071
+#const CLIFF_FACET_21_CONST 2071
+#const CLIFF_FACET_22_CONST 2070
+#const CLIFF_FACET_23_CONST 2070
+
+<PLAYER_SETUP>
+direct_placement
+behavior_version 2
+
+<LAND_GENERATION>
+base_terrain BEACH
+enable_waves 0
+
+create_land {
+  assign_to_player 1
+  land_position 50 50
+  terrain_type DLC_BLACK
+  number_of_tiles 0
+  base_size 0
+}
+
+<OBJECTS_GENERATION>
+create_actor_area 10 10 facet_0 0
+create_actor_area 20 10 facet_1 0
+create_actor_area 30 10 facet_2 0
+create_actor_area 40 10 facet_3 0
+create_actor_area 50 10 facet_4 0
+create_actor_area 60 10 facet_5 0
+create_actor_area 70 10 facet_6 0
+create_actor_area 80 10 facet_7 0
+create_actor_area 90 10 facet_8 0
+create_actor_area 100 10 facet_9 0
+create_actor_area 110 10 facet_10 0
+create_actor_area 10 20 facet_11 0
+create_actor_area 20 20 facet_12 0
+create_actor_area 30 20 facet_13 0
+create_actor_area 40 20 facet_14 0
+create_actor_area 50 20 facet_15 0
+create_actor_area 60 20 facet_16 0
+create_actor_area 70 20 facet_17 0
+create_actor_area 80 20 facet_18 0
+create_actor_area 90 20 facet_19 0
+create_actor_area 100 20 facet_20 0
+create_actor_area 110 20 facet_21 0
+create_actor_area 10 30 facet_22 0
+create_actor_area 20 30 facet_23 0
+
+#FOR($i, 1, 24)
+  create_object CLIFF_FACET_$i_CONST {
+    number_of_objects 14400
+    actor_area_to_place_in facet_$i
+    set_facet $i
+  }
+#END_FOR
+
+/* Places facet 0 at the very end. */
+create_object CLIFF_FACET_0_CONST {
+  number_of_objects 14400
+  actor_area_to_place_in facet_0
+  set_facet 25
+}
+
+#FOR($i, 0, 24)
+  create_object FLAG_A {
+    actor_area_to_place_in facet_$i
+  }
+#END_FOR
