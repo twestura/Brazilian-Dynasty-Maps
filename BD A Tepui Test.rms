@@ -622,8 +622,9 @@ create_object TAPIR {
   number_of_objects 2
   set_gaia_object_only
   temp_min_distance_group_placement 8
-  min_distance_to_players 14
-  max_distance_to_players 17
+  min_distance_to_players 15
+  max_distance_to_players 18
+  set_circular_placement
   avoid_forest_zone 1
   avoid_actor_area edge_border
   require_path 0
